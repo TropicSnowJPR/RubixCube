@@ -1,0 +1,27 @@
+{
+  "name": "rubixcube",
+  "version": "1.0.0",
+  "private": true,
+  "description": "",
+  "license": "MIT",
+  "author": "TropicSnowJPR",
+  "type": "commonjs",
+  "main": "src/index.js",
+  "scripts": {
+    "vite": "vite",
+    "build": "vite build",
+    "preview": "vite preview"
+  },
+  "dependencies": {
+    "three": "^0.183.2"
+  },
+  "devDependencies": {
+    "@types/three": "^0.183.1",
+    "oxfmt": "^0.36.0",
+    "oxlint": "^1.51.0",
+    "playwright": "^1.58.2",
+    "typescript": "^5.9.3",
+    "vite": "^7.3.1",
+    "vitest": "^4.1.1"
+  }
+}
