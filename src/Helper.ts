@@ -1,39 +1,43 @@
-export const rotate90Clockwise = function rotate90Clockwise<T>(matrix: T[]): T[] {
-    const size = Math.sqrt(matrix.length);
+export const rotateFlatMatrix90 = function rotateFlatMatrix90<T>(list: T[]): T[] {
+    const size = Math.sqrt(list.length);
 
-    if (typeof(size) !== "number") {
-        throw new TypeError("Matrix must represent a square matrix");
-    }
+    // if (
+    //     typeof size === 'number'
+    // ) {
+    //     throw new Error("List length must form a square matrix");
+    // }
 
-    const result = new Array<T>(matrix.length);
+    const result: T[] = new Array(list.length);
 
     for (let row = 0; row < size; row++) {
         for (let col = 0; col < size; col++) {
-            const from = row * size + col;
-            const to = col * size + (size - 1 - row);
+            const oldIndex = row * size + col;
+            const newIndex = col * size + (size - 1 - row);
 
-            result[to] = matrix[from];
+            result[newIndex] = list[oldIndex];
         }
     }
 
     return result;
 }
 
-export const rotate90CounterClockwise = function rotate90CounterClockwise<T>(matrix: T[]): T[] {
-    const size = Math.sqrt(matrix.length);
+export const rotateFlatMatrix90Counter = function rotateFlatMatrix90Counter<T>(list: T[]): T[] {
+    const size = Math.sqrt(list.length);
 
-    if (typeof(size) !== "number") {
-        throw new TypeError("Matrix must represent a square matrix");
-    }
+    // if (
+    //     typeof size === 'number'
+    // ) {
+    //     throw new Error("List length must form a square matrix");
+    // }
 
-    const result = new Array<T>(matrix.length);
+    const result: T[] = new Array(list.length);
 
     for (let row = 0; row < size; row++) {
         for (let col = 0; col < size; col++) {
-            const from = row * size + col;
-            const to = (size - 1 - col) * size + row;
+            const oldIndex = row * size + col;
+            const newIndex = (size - 1 - col) * size + row;
 
-            result[to] = matrix[from];
+            result[newIndex] = list[oldIndex];
         }
     }
 
