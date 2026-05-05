@@ -2,21 +2,26 @@ import type { Position } from "./Position";
 import type { Rotation } from "./Rotation";
 
 export class Piece {
-    id: number | undefined;
-    position: Position;
-    rotation: Rotation;
+
+    public readonly position: Position;
+    public readonly rotation: Rotation;
+    public readonly type: "CORNER" | "EDGE" | "CENTER" | "CORE";
+    public readonly stickers: { id: number; side: "NORTH" | "EAST" | "WEST" | "SOUTH" | "UP" | "DOWN"; color: string }[];
 
     constructor(
-        id: number,
         x: number,
         y: number,
         z: number,
         pitch: number,
         yaw: number,
-        roll: number
+        roll: number,
+        type: "CORNER" | "EDGE" | "CENTER" | "CORE",
+        stickers: { id: number; side: "NORTH" | "EAST" | "WEST" | "SOUTH" | "UP" | "DOWN"; color: string }[]
     ) {
-        this.id = id;
         this.position = { x, y, z };
         this.rotation = { pitch, yaw, roll };
+        this.type = type
+        this.stickers = stickers;
     }
+
 }

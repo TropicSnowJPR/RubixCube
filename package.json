@@ -10,10 +10,16 @@
   "scripts": {
     "vite": "vite",
     "build": "vite build",
-    "preview": "vite preview"
+    "preview": "vite preview",
+    "build:atlas": "tsx scripts/buildAtlas.ts"
   },
   "dependencies": {
-    "three": "^0.183.2"
+    "core-js": "^3.49.0",
+    "fs": "^0.0.1-security",
+    "path": "^0.12.7",
+    "sharp": "^0.34.5",
+    "three": "^0.183.2",
+    "ts-matrix": "^1.5.0"
   },
   "devDependencies": {
     "@types/three": "^0.183.1",
