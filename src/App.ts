@@ -5,7 +5,6 @@ import { OrbitControls } from 'three/examples/jsm/controls/OrbitControls.js';
 import {Cube} from "./Classes/Cube";
 import {Animation} from "./Classes/Animation";
 import {AnimationQueue} from "./Classes/AnimationQueue";
-import {radToDeg} from "three/src/math/MathUtils";
 
 
 class App {
@@ -18,7 +17,7 @@ class App {
     public RubixCube: Cube;
     private InstancedPlaneMesh!: THREE.InstancedMesh;
     private Dummy = new THREE.Object3D();
-    private PressedKeys: Record<string, boolean> = {};
+    private readonly PressedKeys: Record<string, boolean> = {};
     private counter = 0;
 
     private Atlas: THREE.Texture<HTMLImageElement>;
@@ -69,6 +68,7 @@ class App {
 
         this.Atlas.minFilter = THREE.NearestFilter;
         this.Atlas.magFilter = THREE.NearestFilter;
+        // oxlint-disable-next-line no-multi-assign
         this.Atlas.wrapS = this.Atlas.wrapT = THREE.ClampToEdgeWrapping;
 
         this.AnimationQueue = new AnimationQueue();
@@ -235,14 +235,14 @@ class App {
     }
 
 
-    private animate():void {
+    private animate(): void {
 
         const now = performance.now();
         const delta = (now - this.LastTime) / 1000; // in Sekunden
         this.LastTime = now;
 
         let RotationType: "CLOCKWISE" | "COUNTERCLOCKWISE" = "CLOCKWISE";
-        let RotationFace: "NORTH" | "EAST" | "WEST" | "SOUTH" | "UP" | "DOWN"
+        let RotationFace: "NORTH" | "EAST" | "WEST" | "SOUTH" | "UP" | "DOWN" = undefined;
         let RotationDepth = 1;
 
         if (this.PressedKeys["x"]) { RotationType = "COUNTERCLOCKWISE"; }
@@ -262,45 +262,51 @@ class App {
             }
         }
 
-        if ( RotationFace && this.counter <= 0 ) {
+        if (RotationFace && this.counter <= 0) {
             this.counter += 1;
-            console.log("RotationFace:" + RotationFace + " RotationType:" + RotationType + " RotationDepth:" + RotationDepth);
-            try {
-                this.AnimationQueue.addAnimation(new Animation(RotationFace, RotationDepth, 90, "CLOCKWISE", 0.8));
-                this.RubixCube.rotateLayer(RotationFace, RotationDepth - 1, RotationType);
-            } catch (error) {
-                console.error("Error rotating face:", error);
-            }
+            this.AnimationQueue.addAnimation(
+                new Animation(RotationFace, RotationDepth, 90, RotationType, 0.8, this.Size)
+            );
+            this.RubixCube.rotateLayer(RotationFace, RotationDepth - 1, RotationType);
         }
 
         const currentAnimation = this.AnimationQueue.getCurrentAnimation()
+
+
 
         if (currentAnimation) {
             const objPositionList = currentAnimation.update(this.RubixCube, delta);
             if (objPositionList) {
                 for (const objPosition of objPositionList) {
 
-
                     let fixValuePitch = 0
                     let fixValueRoll= 0
                     let fixValueYaw = 0
-                    let fixValueX = -1
-                    let fixValueY = -0.5
+                    let fixValueX = 0
+                    let fixValueY = 0
                     let fixValueZ = 0
-
-                    if ( objPosition.side === "NORTH" ) {
-                        // PASS
-                    } else if ( objPosition.side === "SOUTH" ) {
-                        // PASS
-                    } else if ( objPosition.side === "EAST" ) {
-                        // PASS
-                    } else if ( objPosition.side === "WEST" ) {
-                        // PASS
-                    } else if ( objPosition.side === "UP" ) {
-                        // PASS
-                    } else if ( objPosition.side === "DOWN" ) {
-                        // PASS
-                    }
+                    //
+                    // if ( objPosition.side === "NORTH" ) {
+                    //     console.log("Object is on the NORTH face");
+                    // } else if ( objPosition.side === "SOUTH" ) {
+                    //     console.log("Object is on the SOUTH face");
+                    // } else if ( objPosition.side === "EAST" ) {
+                    //     console.log("Object is on the EAST face");
+                    //     fixValueX = -1.5
+                    //     fixValueYaw = Math.PI / 2
+                    // } else if ( objPosition.side === "WEST" ) {
+                    //     console.log("Object is on the WEST face");
+                    //     fixValueX = -2.5
+                    //     fixValueYaw = Math.PI / 2
+                    // } else if ( objPosition.side === "UP" ) {
+                    //     console.log("Object is on the UP face");
+                    //     // PASS
+                    // } else if ( objPosition.side === "DOWN" ) {
+                    //     console.log("Object is on the DOWN face");
+                    //     // PASS
+                    // } else {
+                    //     console.warn(`Unknown face ${objPosition.side} for object with id ${objPosition.id}`);
+                    // }
 
                     if (objPosition.position.x > this.Size-1 || objPosition.position.y > this.Size-1 || objPosition.position.z > this.Size-1) {
                         throw new Error(`Invalid position for object with id ${objPosition.id}: (${Math.round(fixValueX + objPosition.position.x)}, ${Math.round(fixValueY + objPosition.position.y)}, ${Math.round(fixValueZ + objPosition.position.z)})`);
@@ -351,14 +357,7 @@ class App {
         this.Renderer.render(this.Scene, this.Camera);
 
     }
-
-    private animateRubixCube(time: number) {
-
-
-
-    }
-
 }
 
-// oxlint-disable-next-line no-new
-const CubeApp = new App(4)
+
+const _CubeApp = new App(4)

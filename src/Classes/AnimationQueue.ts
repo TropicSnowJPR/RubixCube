@@ -7,16 +7,7 @@ export class AnimationQueue {
     constructor() {
         this.Queue = [];
     }
-
-    getQueue() {
-        return this.Queue;
-    }
-
-    getQueueLength() {
-        return this.Queue.length;
-    }
-
-    getCurrentAnimation() {
+    getCurrentAnimation(): Animation {
         while ( true ) {
             if (this.Queue.length === 0) {
                 return;
@@ -33,16 +24,7 @@ export class AnimationQueue {
         return this.Queue[0];
     }
 
-    addAnimation(animation: Animation) {
+    addAnimation(animation: Animation): void {
         this.Queue.push(animation);
     }
-
-    removeCurrentAnimation() {
-        this.Queue.shift();
-    }
-
-    clearQueue() {
-        this.Queue = [];
-    }
-
 }
