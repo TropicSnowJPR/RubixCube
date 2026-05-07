@@ -7,6 +7,7 @@ export class AnimationQueue {
     constructor() {
         this.Queue = [];
     }
+
     getCurrentAnimation(): Animation {
         while ( true ) {
             if (this.Queue.length === 0) {

@@ -1,5 +1,6 @@
 import {Piece} from "./Piece";
 import "core-js/es/array/find";
+import {Sticker} from "./Sticker";
 
 
 export class Cube {
@@ -7,76 +8,104 @@ export class Cube {
     readonly size: number;
     state: Piece[] = [];
 
-    constructor(size: number) {
+    constructor(size?: number, empty: boolean = false) {
 
-        this.size = size;
-
-        for (let x = 0; x < this.size; x += 1) {
-            for (let y = 0; y < this.size; y += 1) {
-                for (let z = 0; z < this.size; z += 1) {
-
-                    let type: "CORNER" | "EDGE" | "CENTER" | "CORE" | "UNKNOWN" = "UNKNOWN";
-
-                    const surfaceCount = [
-                        x === 0 || x === this.size - 1,
-                        y === 0 || y === this.size - 1,
-                        z === 0 || z === this.size - 1
-                    ].filter(Boolean).length;
-
-                    if (surfaceCount === 3) {
-                        type = "CORNER";
-                    } else if (surfaceCount === 2) {
-                        type = "EDGE";
-                    } else if (surfaceCount === 1) {
-                        type = "CENTER";
-                    } else {
-                        type = "CORE";
-                    }
-
-                    const stickers: { id: number; side: "NORTH" | "EAST" | "WEST" | "SOUTH" | "UP" | "DOWN"; color: string }[] = [];
-
-                    if (x === 0) {
-                        stickers.push({ id: -1, side: "WEST", color: "#009B48" });
-                    }
-
-                    if (x === this.size - 1) {
-                        stickers.push({ id: -1, side: "EAST", color: "#B90000" });
-                    }
-
-                    if (z === 0) {
-                        stickers.push({ id: -1, side: "SOUTH", color: "#0045AD" });
-                    }
-
-                    if (z === this.size - 1) {
-                        stickers.push({ id: -1, side: "NORTH", color: "#FF5900" });
-                    }
-
-                    if (y === 0) {
-                        stickers.push({ id: -1, side: "DOWN", color: "#FFD500" });
-                    }
-
-                    if (y === this.size - 1) {
-                        stickers.push({ id: -1, side: "UP", color: "#FFFFFF" });
-                    }
-
-                    const cubePiece = new Piece(x, y, z, 0, 0, 0, type, stickers);
-
-                    this.state.push(cubePiece);
-
-                }
-            }
+        if (!size || size <= 1) {
+            this.size = 3;
+        } else if (size > 1) {
+            this.size = size;
         }
 
-        console.log( this.state )
+        if (!empty) {
+            for (let x = 0; x < this.size; x += 1) {
+                for (let y = 0; y < this.size; y += 1) {
+                    for (let z = 0; z < this.size; z += 1) {
+
+                        let type: "CORNER" | "EDGE" | "CENTER" | "CORE" | "UNKNOWN" = "UNKNOWN";
+
+                        const surfaceCount = [
+                            x === 0 || x === this.size - 1,
+                            y === 0 || y === this.size - 1,
+                            z === 0 || z === this.size - 1
+                        ].filter(Boolean).length;
+
+                        if (surfaceCount === 3) {
+                            type = "CORNER";
+                        } else if (surfaceCount === 2) {
+                            type = "EDGE";
+                        } else if (surfaceCount === 1) {
+                            type = "CENTER";
+                        } else {
+                            type = "CORE";
+                        }
+
+                        const stickers: Sticker[] = [];
+
+                        if (x === 0) {
+                            stickers.push(new Sticker(-1, "WEST"));
+                        }
+
+                        if (x === this.size - 1) {
+                            stickers.push(new Sticker(-1, "EAST"));
+                        }
+
+                        if (z === 0) {
+                            stickers.push(new Sticker(-1, "SOUTH"));
+                        }
+
+                        if (z === this.size - 1) {
+                            stickers.push(new Sticker(-1, "NORTH"));
+                        }
+
+                        if (y === 0) {
+                            stickers.push(new Sticker(-1, "DOWN"));
+                        }
+
+                        if (y === this.size - 1) {
+                            stickers.push(new Sticker(-1, "UP"));
+                        }
+
+                        const cubePiece = new Piece(x+y+z+Math.random()+Math.random(),x, y, z, 0, 0, 0, type, stickers);
+
+                        this.state.push(cubePiece);
+
+                    }
+                }
+            }
+
+            console.log( this.state )
+        }
+
+
+
+
 
     }
 
-    getLayer(side: "NORTH" | "EAST" | "WEST" | "SOUTH" | "UP" | "DOWN", index: number): Piece[] {
+    getLayer(
+        side:
+            "NORTH" |
+            "EAST" |
+            "WEST" |
+            "SOUTH" |
+            "UP" |
+            "DOWN",
+        index: number
+    ): Piece[] {
 
         const layerPieces: Piece[] = [];
 
+        index = Math.abs(index);
+
         for (const piece of this.state) {
-            if ((side === "NORTH" && piece.position.z === this.size - 1 - index) || (side === "EAST" && piece.position.x === this.size - 1 - index) || (side === "WEST" && piece.position.x === index) || (side === "SOUTH" && piece.position.z === index) || (side === "UP" && piece.position.y === this.size - 1 - index) || (side === "DOWN" && piece.position.y === index)) {
+            if (
+                (side === "NORTH" && piece.position.z === this.size - 1 - index) ||
+                (side === "EAST" && piece.position.x === this.size - 1 - index) ||
+                (side === "WEST" && piece.position.x === index) ||
+                (side === "SOUTH" && piece.position.z === index) ||
+                (side === "UP" && piece.position.y === this.size - 1 - index) ||
+                (side === "DOWN" && piece.position.y === index)
+            ) {
                 layerPieces.push(piece);
             }
         }
@@ -85,17 +114,25 @@ export class Cube {
 
     }
 
-    rotateLayer(side: "NORTH" | "EAST" | "WEST" | "SOUTH" | "UP" | "DOWN", index: number, direction: "CLOCKWISE" | "COUNTERCLOCKWISE"): Piece[] {
-
-        //console.log( side );
-        //console.log(JSON.stringify(this.state, null, 2));
+    rotateLayer(
+        side:
+            "NORTH" |
+            "EAST" |
+            "WEST" |
+            "SOUTH" |
+            "UP" |
+            "DOWN",
+        index: number,
+        direction:
+            "CLOCKWISE" |
+            "COUNTERCLOCKWISE"
+    ): Piece[] {
 
         for ( const piece of this.getLayer(side, index) ) {
 
             const oldX = piece.position.x;
             const oldY = piece.position.y;
             const oldZ = piece.position.z;
-
 
             const mid = (this.size - 1) / 2;
 
@@ -138,10 +175,11 @@ export class Cube {
                 if (!newSide) {
                     throw new Error(`Invalid side rotation: ${sticker.side} with direction ${direction}`);
                 }
-                sticker.side = newSide;
+                sticker.setSide(newSide);
             }
 
             const updatedPiece = new Piece(
+                piece.id,
                 piece.position.x,
                 piece.position.y,
                 piece.position.z,
@@ -151,14 +189,17 @@ export class Cube {
                 piece.type,
                 piece.stickers
             );
+
             let pieceIndex = -1;
+
             for (let i = 0; i < this.state.length; i+=1) {
                 const p = this.state[i];
-                if (p.position.x === oldX && p.position.y === oldY && p.position.z === oldZ) {
+                if (p.id === piece.id) {
                     pieceIndex = i;
                     break;
                 }
             }
+
             if (pieceIndex !== -1) {
                 this.state[pieceIndex] = updatedPiece;
             }
@@ -175,11 +216,11 @@ export class Cube {
     ): "NORTH" | "EAST" | "WEST" | "SOUTH" | "UP" | "DOWN" {
 
         const rotations = {
-            EAST: {
+            WEST: {
                 CLOCKWISE: { UP: "NORTH", DOWN: "SOUTH", NORTH: "DOWN", SOUTH: "UP" },
                 COUNTERCLOCKWISE: { UP: "SOUTH", DOWN: "NORTH", NORTH: "UP", SOUTH: "DOWN" }
             },
-            WEST: {
+            EAST: {
                 CLOCKWISE: { UP: "SOUTH", DOWN: "NORTH", NORTH: "UP", SOUTH: "DOWN" },
                 COUNTERCLOCKWISE: { UP: "NORTH", DOWN: "SOUTH", NORTH: "DOWN", SOUTH: "UP" }
             },
@@ -202,6 +243,43 @@ export class Cube {
         };
 
         return rotations[rotatingFace][direction][stickerSide] || stickerSide;
+    }
+
+    clone(): Cube {
+        const cubeCopy = new Cube(this.size, true);
+
+        cubeCopy.state = this.state.map(piece => {
+            const clonedStickers = piece.stickers.map(sticker => {
+                const newSticker = new Sticker(
+                    sticker.id,
+                    sticker.side
+                );
+
+                newSticker.positionOffset = {
+                    x: sticker.positionOffset.x,
+                    y: sticker.positionOffset.y,
+                    z: sticker.positionOffset.z
+                };
+
+                return newSticker;
+            });
+
+            const newPiece = new Piece(
+                piece.id,
+                piece.position.x,
+                piece.position.y,
+                piece.position.z,
+                piece.rotation.pitch,
+                piece.rotation.yaw,
+                piece.rotation.roll,
+                piece.type,
+                clonedStickers
+            );
+
+            return newPiece;
+        });
+
+        return cubeCopy;
     }
 
 }

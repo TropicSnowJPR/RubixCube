@@ -14,7 +14,7 @@ class App {
     private readonly Controls: OrbitControls;
     public readonly Size: number;
     private readonly Loader: THREE.TextureLoader;
-    public RubixCube: Cube;
+    public RubiksCube: Cube;
     private InstancedPlaneMesh!: THREE.InstancedMesh;
     private Dummy = new THREE.Object3D();
     private readonly PressedKeys: Record<string, boolean> = {};
@@ -73,9 +73,9 @@ class App {
 
         this.AnimationQueue = new AnimationQueue();
 
-        this.RubixCube = new Cube(this.Size); // :))))
+        this.RubiksCube = new Cube(this.Size); // :))))
 
-        if (this.RubixCube.state.length !== this.Size ** 3) {
+        if (this.RubiksCube.state.length !== this.Size ** 3) {
             throw new Error("Cube state length does not match expected length");
         }
 
@@ -96,41 +96,50 @@ class App {
         this.InstancedPlaneMesh = new THREE.InstancedMesh(
             PlaneGeometry,
             new THREE.ShaderMaterial({
-                side: THREE.DoubleSide,
+                side: THREE.FrontSide,
+                transparent: true,
                 uniforms: {
                     atlas: { value: this.Atlas },
                     cols: { value: this.AtlasCols },
-                    rows: { value: this.AtlasRows },
+                    rows: { value: this.AtlasRows }
                 },
+
                 vertexShader: `
                     attribute vec2 uvOffset;
-
+                
                     varying vec2 vUv;
                     varying vec2 vUvOffset;
-                    
+                
                     void main() {
-                      vUv = uv;
-                      vUvOffset = uvOffset;
-                    
-                      gl_Position = projectionMatrix * modelViewMatrix * instanceMatrix * vec4(position, 1.0);
+                        vUv = uv;
+                        vUvOffset = uvOffset;
+                
+                        gl_Position =
+                            projectionMatrix *
+                            modelViewMatrix *
+                            instanceMatrix *
+                            vec4(position, 1.0);
                     }
-                `,
+                  `,
+
                 fragmentShader: `
                     uniform sampler2D atlas;
                     uniform float cols;
                     uniform float rows;
-                    
+                
                     varying vec2 vUv;
                     varying vec2 vUvOffset;
-                    
+                
                     void main() {
-                      vec2 tileSize = vec2(1.0 / cols, 1.0 / rows);
-                    
-                      vec2 uv = vUv * tileSize + vUvOffset;
-                    
-                      gl_FragColor = texture2D(atlas, uv);
+                        vec2 tileSize = vec2(1.0 / cols, 1.0 / rows);
+                        vec2 uv = vUv * tileSize + vUvOffset;
+                  
+                        vec4 color = texture2D(atlas, uv);
+                        if (color.a < 0.1) discard;
+                  
+                        gl_FragColor = color;
                     }
-                `,
+                `
             }),
             InstancedPlaneCount
         );
@@ -145,7 +154,7 @@ class App {
             "uvOffset"
         ) as THREE.InstancedBufferAttribute;
 
-        for (const state of this.RubixCube.state) {
+        for (const state of this.RubiksCube.state) {
 
             if (state.type === "CORE") {
                 continue;
@@ -238,11 +247,11 @@ class App {
     private animate(): void {
 
         const now = performance.now();
-        const delta = (now - this.LastTime) / 1000; // in Sekunden
+        const delta = (now - this.LastTime) / 1000;
         this.LastTime = now;
 
         let RotationType: "CLOCKWISE" | "COUNTERCLOCKWISE" = "CLOCKWISE";
-        let RotationFace: "NORTH" | "EAST" | "WEST" | "SOUTH" | "UP" | "DOWN" = undefined;
+        let RotationFace: "NORTH" | "EAST" | "WEST" | "SOUTH" | "UP" | "DOWN" | undefined = undefined;
         let RotationDepth = 1;
 
         if (this.PressedKeys["x"]) { RotationType = "COUNTERCLOCKWISE"; }
@@ -256,74 +265,118 @@ class App {
 
         for (let i = 1; i <= 10; i += 1) {
             if (this.PressedKeys[i.toString()]) {
-                if (i > Math.floor(this.Size / 2)) { break; }
+                if (i > Math.floor(this.Size / 2)) {
+                    break;
+                }
                 RotationDepth = i;
                 break;
             }
         }
 
+        const RubiksCubeCopy = this.RubiksCube.clone()
+
         if (RotationFace && this.counter <= 0) {
-            this.counter += 1;
             this.AnimationQueue.addAnimation(
-                new Animation(RotationFace, RotationDepth, 90, RotationType, 0.8, this.Size)
+                new Animation(RubiksCubeCopy ,RotationFace, RotationDepth, 90, RotationType, 1, this.Size)
             );
-            this.RubixCube.rotateLayer(RotationFace, RotationDepth - 1, RotationType);
+            this.RubiksCube.rotateLayer(RotationFace, RotationDepth - 1, RotationType);
+            this.counter = 30
         }
+        this.counter -= 1;
 
         const currentAnimation = this.AnimationQueue.getCurrentAnimation()
 
 
-
         if (currentAnimation) {
-            const objPositionList = currentAnimation.update(this.RubixCube, delta);
+            const objPositionList = currentAnimation.update(delta);
             if (objPositionList) {
                 for (const objPosition of objPositionList) {
 
-                    let fixValuePitch = 0
-                    let fixValueRoll= 0
-                    let fixValueYaw = 0
-                    let fixValueX = 0
-                    let fixValueY = 0
-                    let fixValueZ = 0
-                    //
-                    // if ( objPosition.side === "NORTH" ) {
-                    //     console.log("Object is on the NORTH face");
-                    // } else if ( objPosition.side === "SOUTH" ) {
-                    //     console.log("Object is on the SOUTH face");
-                    // } else if ( objPosition.side === "EAST" ) {
-                    //     console.log("Object is on the EAST face");
-                    //     fixValueX = -1.5
-                    //     fixValueYaw = Math.PI / 2
-                    // } else if ( objPosition.side === "WEST" ) {
-                    //     console.log("Object is on the WEST face");
-                    //     fixValueX = -2.5
-                    //     fixValueYaw = Math.PI / 2
-                    // } else if ( objPosition.side === "UP" ) {
-                    //     console.log("Object is on the UP face");
-                    //     // PASS
-                    // } else if ( objPosition.side === "DOWN" ) {
-                    //     console.log("Object is on the DOWN face");
-                    //     // PASS
-                    // } else {
-                    //     console.warn(`Unknown face ${objPosition.side} for object with id ${objPosition.id}`);
-                    // }
 
-                    if (objPosition.position.x > this.Size-1 || objPosition.position.y > this.Size-1 || objPosition.position.z > this.Size-1) {
-                        throw new Error(`Invalid position for object with id ${objPosition.id}: (${Math.round(fixValueX + objPosition.position.x)}, ${Math.round(fixValueY + objPosition.position.y)}, ${Math.round(fixValueZ + objPosition.position.z)})`);
+
+                    const SIDE_CONFIGS: Record<
+                        "NORTH" | "SOUTH" | "EAST" | "WEST" | "UP" | "DOWN",
+                        Partial<
+                            Record<
+                                "NORTH" | "SOUTH" | "EAST" | "WEST" | "UP" | "DOWN",
+                                {
+                                    pos: [number, number, number];
+                                    rot: [number, number, number];
+                                }
+                            >
+                        >
+                    > = {
+                        SOUTH: {
+                            SOUTH: { pos: [0, 0, -0.5], rot: [0, Math.PI, 0] },
+                            WEST:  { pos: [0.5, 0, 0], rot: [0, Math.PI / 2, 0] },
+                            EAST:  { pos: [-0.5, 0, 0], rot: [0, -Math.PI / 2, 0] },
+                            UP:    { pos: [0, -0.5, 0], rot: [Math.PI / 2, 0, 0] },
+                            DOWN:  { pos: [0, 0.5, 0], rot: [-Math.PI / 2, 0, 0] },
+                        },
+
+                        NORTH: {
+                            NORTH: { pos: [0, 0, 0.5], rot: [0, 0, 0] },
+                            WEST:  { pos: [0.5, 0, 0], rot: [0, Math.PI / 2, 0] },
+                            EAST:  { pos: [-0.5, 0, 0], rot: [0, -Math.PI / 2, 0] },
+                            UP:    { pos: [0, -0.5, 0], rot: [Math.PI / 2, 0, 0] },
+                            DOWN:  { pos: [0, 0.5, 0], rot: [-Math.PI / 2, 0, 0] },
+                        },
+
+                        WEST: {
+                            SOUTH: { pos: [0, 0, -0.5], rot: [Math.PI / 2, 0, 0] },
+                            NORTH: { pos: [0, 0, 0.5], rot: [-Math.PI / 2, 0, 0] },
+                            WEST:  { pos: [-0.5, 0, 0], rot: [0, -Math.PI / 2, 0] },
+                            UP:    { pos: [0, 0.5, 0], rot: [Math.PI, 0, 0] },
+                            DOWN:  { pos: [0, -0.5, 0], rot: [0, 0, 0] },
+                        },
+
+                        EAST: {
+                            SOUTH: { pos: [0, 0, -0.5], rot: [-Math.PI / 2, 0, 0] },
+                            NORTH: { pos: [0, 0, 0.5], rot: [Math.PI / 2, 0, 0] },
+                            EAST:  { pos: [0.5, 0, 0], rot: [0, Math.PI / 2, 0] },
+                            UP:    { pos: [0, 0.5, 0], rot: [0, 0, Math.PI / 2] },
+                            DOWN:  { pos: [0, -0.5, 0], rot: [0, Math.PI, 0] },
+                        },
+
+                        UP: {
+                            SOUTH: { pos: [0, 0, 0.5], rot: [0, 0, 0] },
+                            NORTH: { pos: [0, 0, -0.5], rot: [0, Math.PI, 0] },
+                            WEST:  { pos: [0.5, 0, 0], rot: [0, Math.PI / 2, 0] },
+                            EAST:  { pos: [-0.5, 0, 0], rot: [0, -Math.PI / 2, 0] },
+                            UP:    { pos: [0, 0.5, 0], rot: [-Math.PI / 2, 0, 0] },
+                        },
+
+                        DOWN: {
+                            SOUTH: { pos: [0, 0, -0.5], rot: [0, Math.PI, 0] },
+                            NORTH: { pos: [0, 0, 0.5], rot: [0, 0, 0] },
+                            WEST:  { pos: [-0.5, 0, 0], rot: [0, -Math.PI / 2, 0] },
+                            EAST:  { pos: [0.5, 0, 0], rot: [0, Math.PI / 2, 0] },
+                            DOWN:  { pos: [0, -0.5, 0], rot: [Math.PI / 2, 0, 0] },
+                        },
+                    };
+
+                    const sideConfig = SIDE_CONFIGS[currentAnimation.side];
+
+
+
+
+                    const config = sideConfig[objPosition.side as keyof typeof sideConfig];
+
+                    const X = Number((objPosition.position.x + config.pos[0] - this.Size / 2));
+                    const Y = Number((objPosition.position.y + config.pos[1] - this.Size / 2));
+                    const Z = Number((objPosition.position.z + config.pos[2] - this.Size / 2));
+
+
+                    const Pitch = config.rot[0] + THREE.MathUtils.degToRad(objPosition.rotation.pitch);
+                    const Yaw = config.rot[1] + THREE.MathUtils.degToRad(objPosition.rotation.yaw);
+                    const Roll = config.rot[2] + THREE.MathUtils.degToRad(objPosition.rotation.roll);
+
+
+                    if (objPosition.side !== currentAnimation.side) {
+                        console.log(`Object ID: ${objPosition.id}, Side: ${objPosition.side}`);
+                        console.log(`Position: (${X}, ${Y}, ${Z})`);
+                        console.log(`Pitch: ${Pitch}, Yaw: ${Yaw}, Roll: ${Roll}`);
                     }
-
-                    const X = Number((fixValueX + objPosition.position.x).toFixed(2))
-                    const Y = Number((fixValueY + objPosition.position.y).toFixed(2))
-                    const Z = Number((fixValueZ + objPosition.position.z).toFixed(2))
-
-                    const Pitch = Math.abs(fixValuePitch + THREE.MathUtils.degToRad(objPosition.rotation.pitch) % 360)
-                    const Yaw = Math.abs(fixValueYaw + THREE.MathUtils.degToRad(objPosition.rotation.yaw) % 360)
-                    const Roll = Math.abs(fixValueRoll + THREE.MathUtils.degToRad(objPosition.rotation.roll) % 360)
-
-                    console.log(`Object ID: ${objPosition.id}, Side: ${objPosition.side}`);
-                    console.log(`Position: (${X}, ${Y}, ${Z})`);
-                    console.log(`Pitch: ${Pitch}, Yaw: ${Yaw}, Roll: ${Roll}`);
-
 
                     this.Dummy.position.set(
                         X,
@@ -348,9 +401,6 @@ class App {
                 throw new Error("No current animation found, but expected one.");
             }
         }
-
-
-
 
 
         this.Controls.update();

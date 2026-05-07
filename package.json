@@ -15,7 +15,6 @@
   },
   "dependencies": {
     "core-js": "^3.49.0",
-    "fs": "^0.0.1-security",
     "path": "^0.12.7",
     "sharp": "^0.34.5",
     "three": "^0.183.2",
@@ -27,7 +26,7 @@
     "oxlint": "^1.51.0",
     "playwright": "^1.58.2",
     "typescript": "^5.9.3",
-    "vite": "^7.3.1",
+    "vite": "^8.0.5",
     "vitest": "^4.1.1"
   }
 }
