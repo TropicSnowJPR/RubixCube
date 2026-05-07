@@ -1,4 +1,5 @@
 import type {Position} from "./Position";
+import type {Side} from "./Side";
 
 export class Sticker {
     id: number;
@@ -15,42 +16,80 @@ export class Sticker {
         this.updatePositionOffset(side);
     }
 
-    setSide(side: "NORTH" | "EAST" | "WEST" | "SOUTH" | "UP" | "DOWN"): void {
-        this.side = side;
+    setSide( Side: Side, AnimationSide?: Side ): void {
+        this.side = Side;
 
-        this.updatePositionOffset(side);
+        if (AnimationSide) {
+            this.updatePositionOffset(Side, AnimationSide);
+        } else {
+            this.updatePositionOffset(Side);
+        }
+
     }
 
-    updatePositionOffset(side: "NORTH" | "EAST" | "WEST" | "SOUTH" | "UP" | "DOWN"): void {
-        switch (side) {
-            case "NORTH": {
-                this.positionOffset = { x: 0, y: 0, z: 0.5 };
-                break;
+    updatePositionOffset( Side: Side, AnimationSide?: Side ): void {
+        if (AnimationSide) {
+            switch (AnimationSide) {
+                case "NORTH": {
+                    this.positionOffset = { x: 0, y: -0.5, z: 0 };
+                    break;
+                }
+                case "EAST": {
+                    this.positionOffset = { x: 0.5, y: 0, z: 0 };
+                    break;
+                }
+                case "WEST": {
+                    this.positionOffset = { x: 0, y: 0, z: 0 };
+                    break;
+                }
+                case "SOUTH": {
+                    this.positionOffset = { x: 0, y: 0.5, z: 0 };
+                    break;
+                }
+                case "UP": {
+                    this.positionOffset = { x: 0, y: 0, z: 0.5 };
+                    break;
+                }
+                case "DOWN": {
+                    this.positionOffset = { x: 0, y: 0, z: -0.5 };
+                    break;
+                }
+                default: {
+                    break;
+                }
             }
-            case "EAST": {
-                this.positionOffset = { x: 0.5, y: 0, z: 0 };
-                break;
-            }
-            case "WEST": {
-                this.positionOffset = { x: -0.5, y: 0, z: 0 };
-                break;
-            }
-            case "SOUTH": {
-                this.positionOffset = { x: 0, y: 0, z: -0.5 };
-                break;
-            }
-            case "UP": {
-                this.positionOffset = { x: 0, y: 0.5, z: 0 };
-                break;
-            }
-            case "DOWN": {
-                this.positionOffset = { x: 0, y: -0.5, z: 0 };
-                break;
-            }
-            default: {
-                break;
+        } else {
+            switch (Side) {
+                case "NORTH": {
+                    this.positionOffset = { x: 0, y: -0.5, z: 0 };
+                    break;
+                }
+                case "EAST": {
+                    this.positionOffset = { x: 0.5, y: 0, z: 0 };
+                    break;
+                }
+                case "WEST": {
+                    this.positionOffset = { x: 0, y: 0, z: 0 };
+                    break;
+                }
+                case "SOUTH": {
+                    this.positionOffset = { x: 0, y: 0.5, z: 0 };
+                    break;
+                }
+                case "UP": {
+                    this.positionOffset = { x: 0, y: 0, z: 0.5 };
+                    break;
+                }
+                case "DOWN": {
+                    this.positionOffset = { x: 0, y: 0, z: -0.5 };
+                    break;
+                }
+                default: {
+                    break;
+                }
             }
         }
+
     }
 
 

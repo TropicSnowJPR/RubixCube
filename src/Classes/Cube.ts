@@ -1,6 +1,7 @@
 import {Piece} from "./Piece";
-import "core-js/es/array/find";
 import {Sticker} from "./Sticker";
+import type {Side} from "./Side";
+import type {Direction} from "./Direction";
 
 
 export class Cube {
@@ -8,8 +9,10 @@ export class Cube {
     readonly size: number;
     state: Piece[] = [];
 
-    constructor(size?: number, empty: boolean = false) {
-
+    constructor(
+        size?: number,
+        empty: boolean = false
+    ) {
         if (!size || size <= 1) {
             this.size = 3;
         } else if (size > 1) {
@@ -65,7 +68,17 @@ export class Cube {
                             stickers.push(new Sticker(-1, "UP"));
                         }
 
-                        const cubePiece = new Piece(x+y+z+Math.random()+Math.random(),x, y, z, 0, 0, 0, type, stickers);
+                        const cubePiece = new Piece(
+                            x+y+z+Math.random()+Math.random(),
+                            x,
+                            y,
+                            z,
+                            0,
+                            0,
+                            0,
+                            type,
+                            stickers
+                        );
 
                         this.state.push(cubePiece);
 
@@ -75,10 +88,6 @@ export class Cube {
 
             console.log( this.state )
         }
-
-
-
-
 
     }
 
@@ -99,12 +108,12 @@ export class Cube {
 
         for (const piece of this.state) {
             if (
-                (side === "NORTH" && piece.position.z === this.size - 1 - index) ||
-                (side === "EAST" && piece.position.x === this.size - 1 - index) ||
-                (side === "WEST" && piece.position.x === index) ||
-                (side === "SOUTH" && piece.position.z === index) ||
-                (side === "UP" && piece.position.y === this.size - 1 - index) ||
-                (side === "DOWN" && piece.position.y === index)
+                ( side === "NORTH" && piece.position.z === this.size - 1 - index ) ||
+                ( side === "EAST" && piece.position.x === this.size - 1 - index ) ||
+                ( side === "WEST" && piece.position.x === index ) ||
+                ( side === "SOUTH" && piece.position.z === index ) ||
+                ( side === "UP" && piece.position.y === this.size - 1 - index ) ||
+                ( side === "DOWN" && piece.position.y === index )
             ) {
                 layerPieces.push(piece);
             }
@@ -171,7 +180,7 @@ export class Cube {
             }
 
             for (const sticker of piece.stickers) {
-                const newSide = this.rotateSide(sticker.side, side, direction);
+                const newSide = Cube.rotateSide(sticker.side, side, direction);
                 if (!newSide) {
                     throw new Error(`Invalid side rotation: ${sticker.side} with direction ${direction}`);
                 }
@@ -209,36 +218,96 @@ export class Cube {
 
     }
 
-    private rotateSide(
-        rotatingFace: "NORTH" | "EAST" | "WEST" | "SOUTH" | "UP" | "DOWN",
-        stickerSide: "NORTH" | "EAST" | "WEST" | "SOUTH" | "UP" | "DOWN",
-        direction: "CLOCKWISE" | "COUNTERCLOCKWISE" = "CLOCKWISE"
-    ): "NORTH" | "EAST" | "WEST" | "SOUTH" | "UP" | "DOWN" {
+    static rotateSide(
+        rotatingFace: Side,
+        stickerSide: Side,
+        direction: Direction = "CLOCKWISE"
+    ): Side {
 
         const rotations = {
             WEST: {
-                CLOCKWISE: { UP: "NORTH", DOWN: "SOUTH", NORTH: "DOWN", SOUTH: "UP" },
-                COUNTERCLOCKWISE: { UP: "SOUTH", DOWN: "NORTH", NORTH: "UP", SOUTH: "DOWN" }
+                CLOCKWISE: {
+                    UP: "NORTH",
+                    DOWN: "SOUTH",
+                    NORTH: "DOWN",
+                    SOUTH: "UP"
+                },
+                COUNTERCLOCKWISE: {
+                    UP: "SOUTH",
+                    DOWN: "NORTH",
+                    NORTH: "UP",
+                    SOUTH: "DOWN"
+                }
             },
             EAST: {
-                CLOCKWISE: { UP: "SOUTH", DOWN: "NORTH", NORTH: "UP", SOUTH: "DOWN" },
-                COUNTERCLOCKWISE: { UP: "NORTH", DOWN: "SOUTH", NORTH: "DOWN", SOUTH: "UP" }
+                CLOCKWISE: {
+                    UP: "SOUTH",
+                    DOWN: "NORTH",
+                    NORTH: "UP",
+                    SOUTH: "DOWN"
+                },
+                COUNTERCLOCKWISE: {
+                    UP: "NORTH",
+                    DOWN: "SOUTH",
+                    NORTH: "DOWN",
+                    SOUTH: "UP"
+                }
             },
             SOUTH: {
-                CLOCKWISE: { UP: "EAST", DOWN: "WEST", EAST: "DOWN", WEST: "UP" },
-                COUNTERCLOCKWISE: { UP: "WEST", DOWN: "EAST", EAST: "UP", WEST: "DOWN" }
+                CLOCKWISE: {
+                    UP: "EAST",
+                    DOWN: "WEST",
+                    EAST: "DOWN",
+                    WEST: "UP"
+                },
+                COUNTERCLOCKWISE: {
+                    UP: "WEST",
+                    DOWN: "EAST",
+                    EAST: "UP",
+                    WEST: "DOWN"
+                }
             },
             NORTH: {
-                CLOCKWISE: { UP: "WEST", DOWN: "EAST", EAST: "UP", WEST: "DOWN" },
-                COUNTERCLOCKWISE: { UP: "EAST", DOWN: "WEST", EAST: "DOWN", WEST: "UP" }
+                CLOCKWISE: {
+                    UP: "WEST",
+                    DOWN: "EAST",
+                    EAST: "UP",
+                    WEST: "DOWN"
+                },
+                COUNTERCLOCKWISE: {
+                    UP: "EAST",
+                    DOWN: "WEST",
+                    EAST: "DOWN",
+                    WEST: "UP"
+                }
             },
             UP: {
-                CLOCKWISE: { NORTH: "EAST", SOUTH: "WEST", EAST: "SOUTH", WEST: "NORTH" },
-                COUNTERCLOCKWISE: { NORTH: "WEST", SOUTH: "EAST", EAST: "NORTH", WEST: "SOUTH" }
+                CLOCKWISE: {
+                    NORTH: "EAST",
+                    SOUTH: "WEST",
+                    EAST: "SOUTH",
+                    WEST: "NORTH"
+                },
+                COUNTERCLOCKWISE: {
+                    NORTH: "WEST",
+                    SOUTH: "EAST",
+                    EAST: "NORTH",
+                    WEST: "SOUTH"
+                }
             },
             DOWN: {
-                CLOCKWISE: { NORTH: "WEST", SOUTH: "EAST", EAST: "NORTH", WEST: "SOUTH" },
-                COUNTERCLOCKWISE: { NORTH: "EAST", SOUTH: "WEST", EAST: "SOUTH", WEST: "NORTH" }
+                CLOCKWISE: {
+                    NORTH: "WEST",
+                    SOUTH: "EAST",
+                    EAST: "NORTH",
+                    WEST: "SOUTH"
+                },
+                COUNTERCLOCKWISE: {
+                    NORTH: "EAST",
+                    SOUTH: "WEST",
+                    EAST: "SOUTH",
+                    WEST: "NORTH"
+                }
             }
         };
 
@@ -249,6 +318,7 @@ export class Cube {
         const cubeCopy = new Cube(this.size, true);
 
         cubeCopy.state = this.state.map(piece => {
+
             const clonedStickers = piece.stickers.map(sticker => {
                 const newSticker = new Sticker(
                     sticker.id,
@@ -264,7 +334,7 @@ export class Cube {
                 return newSticker;
             });
 
-            const newPiece = new Piece(
+            return new Piece(
                 piece.id,
                 piece.position.x,
                 piece.position.y,
@@ -276,7 +346,6 @@ export class Cube {
                 clonedStickers
             );
 
-            return newPiece;
         });
 
         return cubeCopy;

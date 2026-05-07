@@ -1,13 +1,17 @@
 // oxlint-disable no-console
-import type {Cube} from "./Cube";
+import {Cube} from "./Cube";
 import * as THREE from "three";
+import {Position} from "./Position";
+import {Rotation} from "./Rotation";
+import {Side} from "./Side";
+import {Direction} from "./Direction";
 
 export class Animation {
 
-    side: "NORTH" | "EAST" | "WEST" | "SOUTH" | "UP" | "DOWN";
+    side: Side;
     depth: number;
     angle: 90 | 180 | 270 | number;
-    direction: "CLOCKWISE" | "COUNTERCLOCKWISE";
+    direction: Direction;
     duration: number;
     isFinished = false;
     size: number;
@@ -16,10 +20,10 @@ export class Animation {
 
     constructor(
         cube: Cube,
-        side: "NORTH" | "EAST" | "WEST" | "SOUTH" | "UP" | "DOWN",
+        side: Side,
         depth: number,
         angle: 90 | 180 | 270 | number,
-        direction: "CLOCKWISE" | "COUNTERCLOCKWISE",
+        direction: Direction,
         duration: number,
         size: number
     ) {
@@ -34,34 +38,34 @@ export class Animation {
         for (const piece of this.cube.state) {
             for (const sticker of piece.stickers) {
                 console.log(sticker)
-                sticker.setSide(this.rotateSide(this.side, sticker.side, this.direction));
+                sticker.setSide(Cube.rotateSide(this.side, sticker.side, this.direction));
             }
         }
-
     }
 
     update(delta: number): ({
-        position: { x: number; y: number; z: number };
-        rotation: { pitch: number; yaw: number; roll: number };
-        id: number;
-        side: "NORTH" | "EAST" | "WEST" | "SOUTH" | "UP" | "DOWN";
+        position:   Position;
+        rotation:   Rotation;
+        id:         number;
+        side:       Side;
+
     })[] {
+
         const StickerOrbitList: {
-            position: { x: number; y: number; z: number };
-            rotation: { pitch: number; yaw: number; roll: number };
-            id: number;
-            side: "NORTH" | "EAST" | "WEST" | "SOUTH" | "UP" | "DOWN";
+            position:   Position;
+            rotation:   Rotation;
+            id:         number;
+            side:       Side;
         }[] = [];
 
         const layerIndex = this.depth - 1;
 
-
-        const inLayer = (state: { position: { x: number; y: number; z: number } }): boolean => {
-            if (this.side === "NORTH") {return state.position.z === this.cube.size - 1 - layerIndex;}
-            if (this.side === "SOUTH") {return state.position.z === layerIndex;}
-            if (this.side === "EAST") {return state.position.x === this.cube.size - 1 - layerIndex;}
-            if (this.side === "WEST") {return state.position.x === layerIndex;}
-            if (this.side === "UP") {return state.position.y === this.cube.size - 1 - layerIndex;}
+        const inLayer = (state: { position: Position }): boolean => {
+            if (this.side === "NORTH")  { return state.position.z === this.cube.size - 1 - layerIndex; }
+            if (this.side === "SOUTH")  { return state.position.z === layerIndex; }
+            if (this.side === "EAST")   { return state.position.x === this.cube.size - 1 - layerIndex; }
+            if (this.side === "WEST")   { return state.position.x === layerIndex; }
+            if (this.side === "UP")     { return state.position.y === this.cube.size - 1 - layerIndex; }
             return state.position.y === layerIndex;
         };
 
@@ -69,15 +73,17 @@ export class Animation {
             if (!inLayer(state)) {continue;}
             for (const sticker of state.stickers) {
                 StickerOrbitList.push({
-                    position: { x: state.position.x, y: state.position.y, z: state.position.z },
-                    rotation: state.rotation,
-                    id: sticker.id,
-                    side: sticker.side
+                    position:   {
+                                x: state.position.x + sticker.positionOffset.x,
+                                y: state.position.y + sticker.positionOffset.y,
+                                z: state.position.z + sticker.positionOffset.z
+                    },
+                    rotation:   state.rotation,
+                    id:         sticker.id,
+                    side:       sticker.side
                 });
             }
         }
-
-        // console.log(`Animating ${StickerOrbitList.length} stickers in layer ${this.depth} on side ${this.side} with angle ${this.angle} and direction ${this.direction}.`);
 
         this.elapsed = Math.min(this.elapsed + delta, this.duration);
         const t = this.duration <= 0 ? 1 : this.elapsed / this.duration;
@@ -87,53 +93,53 @@ export class Animation {
         }
 
         return StickerOrbitList.map(sticker => {
-            if (this.side === "NORTH") {
+            if ( this.side === "NORTH") {
                 const newPosition = this.orbitTransform(sticker.position.x, sticker.position.y, -signedAngle, THREE.MathUtils.radToDeg(sticker.rotation.roll));
                 return {
-                    position: {x: newPosition.x, y: newPosition.y, z: sticker.position.z},
-                    rotation: {pitch: sticker.rotation.pitch, yaw: sticker.rotation.yaw, roll: newPosition.rotation},
-                    id: sticker.id,
-                    side: sticker.side
+                    position:   {x: newPosition.x, y: newPosition.y, z: sticker.position.z},
+                    rotation:   {pitch: sticker.rotation.pitch, yaw: sticker.rotation.yaw, roll: newPosition.rotation},
+                    id:         sticker.id,
+                    side:       sticker.side
                 };
-            } else if (this.side === "SOUTH") {
+            } else if ( this.side === "SOUTH") {
                 const newPosition = this.orbitTransform(sticker.position.x, sticker.position.y, signedAngle, THREE.MathUtils.radToDeg(sticker.rotation.roll));
                 return {
-                    position: {x: newPosition.x, y: newPosition.y, z: sticker.position.z},
-                    rotation: {pitch: sticker.rotation.pitch, yaw: sticker.rotation.yaw, roll: -newPosition.rotation},
-                    id: sticker.id,
-                    side: sticker.side
+                    position:   {x: newPosition.x, y: newPosition.y, z: sticker.position.z},
+                    rotation:   {pitch: sticker.rotation.pitch, yaw: sticker.rotation.yaw, roll: -newPosition.rotation},
+                    id:         sticker.id,
+                    side:       sticker.side
                 };
-            } else if (this.side === "EAST") {
+            } else if ( this.side === "EAST") {
                 const newPosition = this.orbitTransform(sticker.position.y, sticker.position.z, -signedAngle, THREE.MathUtils.radToDeg(sticker.rotation.pitch));
                 return {
-                    position: {x: sticker.position.x, y: newPosition.x, z: newPosition.y},
-                    rotation: {pitch: newPosition.rotation, yaw: sticker.rotation.yaw, roll: sticker.rotation.roll},
-                    id: sticker.id,
-                    side: sticker.side
+                    position:   {x: sticker.position.x, y: newPosition.x, z: newPosition.y},
+                    rotation:   {pitch: newPosition.rotation, yaw: sticker.rotation.yaw, roll: sticker.rotation.roll},
+                    id:         sticker.id,
+                    side:       sticker.side
                 };
-            } else if (this.side === "WEST") {
+            } else if ( this.side === "WEST") {
                 const newPosition = this.orbitTransform(sticker.position.y, sticker.position.z, signedAngle, THREE.MathUtils.radToDeg(sticker.rotation.pitch));
                 return {
-                    position: {x: sticker.position.x, y: newPosition.x, z: newPosition.y},
-                    rotation: {pitch: newPosition.rotation, yaw: sticker.rotation.yaw, roll: sticker.rotation.roll},
-                    id: sticker.id,
-                    side: sticker.side
+                    position:   {x: sticker.position.x, y: newPosition.x, z: newPosition.y},
+                    rotation:   {pitch: newPosition.rotation, yaw: sticker.rotation.yaw, roll: sticker.rotation.roll},
+                    id:         sticker.id,
+                    side:       sticker.side
                 };
-            } else if (this.side === "UP") {
+            } else if ( this.side === "UP") {
                 const newPosition = this.orbitTransform(sticker.position.x, sticker.position.z, signedAngle, THREE.MathUtils.radToDeg(sticker.rotation.yaw));
                 return {
-                    position: {x: newPosition.x, y: sticker.position.y, z: newPosition.y},
-                    rotation: {pitch: sticker.rotation.pitch, yaw: sticker.rotation.yaw, roll: -newPosition.rotation},
-                    id: sticker.id,
-                    side: sticker.side
+                    position:   {x: newPosition.x, y: sticker.position.y+0.5, z: newPosition.y},
+                    rotation:   {pitch: sticker.rotation.pitch, yaw: sticker.rotation.yaw, roll: -newPosition.rotation},
+                    id:         sticker.id,
+                    side:       sticker.side
                 };
             } else if ( this.side === "DOWN") {
                 const newPosition = this.orbitTransform(sticker.position.x, sticker.position.z, signedAngle, THREE.MathUtils.radToDeg(sticker.rotation.yaw));
                 return {
-                    position: {x: newPosition.x, y: sticker.position.y, z: newPosition.y},
-                    rotation: {pitch: sticker.rotation.pitch, yaw: sticker.rotation.yaw, roll: newPosition.rotation},
-                    id: sticker.id,
-                    side: sticker.side
+                    position:   {x: newPosition.x, y: sticker.position.y, z: newPosition.y},
+                    rotation:   {pitch: sticker.rotation.pitch, yaw: sticker.rotation.yaw, roll: newPosition.rotation},
+                    id:         sticker.id,
+                    side:       sticker.side
                 };
             }
 
@@ -142,11 +148,6 @@ export class Animation {
         });
     }
 
-    /*
-        * Applies a 2D rotation transformation to the given (x, y) coordinates based on the provided angle and base rotation.
-        * The transformation is performed around the center of the cube layer, which is calculated as (size - 1) / 2.
-        * The function returns the new (x, y) coordinates and the updated rotation angle after applying the transformation.
-     */
     private orbitTransform(
         x: number, // Object X Position
         y: number, // Object Y Position
@@ -155,7 +156,7 @@ export class Animation {
     ): { x: number, y: number, rotation: number } {
         const alpha = alphaDeg * Math.PI / 180;
 
-        const mid = (this.size - 1) / 2;
+        const mid = (this.size-1) / 2;
 
         const relX = x - mid;
         const relY = y - mid;
@@ -170,42 +171,6 @@ export class Animation {
             y: yPrime,
             rotation
         };
-    }
-
-    private rotateSide(
-        rotatingFace: "NORTH" | "EAST" | "WEST" | "SOUTH" | "UP" | "DOWN",
-        stickerSide: "NORTH" | "EAST" | "WEST" | "SOUTH" | "UP" | "DOWN",
-        direction: "CLOCKWISE" | "COUNTERCLOCKWISE" = "CLOCKWISE"
-    ): "NORTH" | "EAST" | "WEST" | "SOUTH" | "UP" | "DOWN" {
-
-        const rotations = {
-            WEST: {
-                CLOCKWISE: { UP: "NORTH", DOWN: "SOUTH", NORTH: "DOWN", SOUTH: "UP" },
-                COUNTERCLOCKWISE: { UP: "SOUTH", DOWN: "NORTH", NORTH: "UP", SOUTH: "DOWN" }
-            },
-            EAST: {
-                CLOCKWISE: { UP: "SOUTH", DOWN: "NORTH", NORTH: "UP", SOUTH: "DOWN" },
-                COUNTERCLOCKWISE: { UP: "NORTH", DOWN: "SOUTH", NORTH: "DOWN", SOUTH: "UP" }
-            },
-            SOUTH: {
-                CLOCKWISE: { UP: "EAST", DOWN: "WEST", EAST: "DOWN", WEST: "UP" },
-                COUNTERCLOCKWISE: { UP: "WEST", DOWN: "EAST", EAST: "UP", WEST: "DOWN" }
-            },
-            NORTH: {
-                CLOCKWISE: { UP: "WEST", DOWN: "EAST", EAST: "UP", WEST: "DOWN" },
-                COUNTERCLOCKWISE: { UP: "EAST", DOWN: "WEST", EAST: "DOWN", WEST: "UP" }
-            },
-            UP: {
-                CLOCKWISE: { NORTH: "EAST", SOUTH: "WEST", EAST: "SOUTH", WEST: "NORTH" },
-                COUNTERCLOCKWISE: { NORTH: "WEST", SOUTH: "EAST", EAST: "NORTH", WEST: "SOUTH" }
-            },
-            DOWN: {
-                CLOCKWISE: { NORTH: "WEST", SOUTH: "EAST", EAST: "NORTH", WEST: "SOUTH" },
-                COUNTERCLOCKWISE: { NORTH: "EAST", SOUTH: "WEST", EAST: "SOUTH", WEST: "NORTH" }
-            }
-        };
-
-        return rotations[rotatingFace][direction][stickerSide] || stickerSide;
     }
 
 }

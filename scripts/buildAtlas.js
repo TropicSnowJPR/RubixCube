@@ -27,7 +27,7 @@ async function buildAtlas() {
         },
     });
 
-    let composites: sharp.OverlayOptions[] = [];
+    let composites = [];
 
     for (let i = 0; i < images.length; i++) {
         const img = images[i];
