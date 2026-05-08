@@ -137,7 +137,9 @@ export class Cube {
             "COUNTERCLOCKWISE"
     ): Piece[] {
 
-        for ( const piece of this.getLayer(side, index) ) {
+        const Layer = this.getLayer(side, index)
+
+        for ( const piece of Layer ) {
 
             const oldX = piece.position.x;
             const oldY = piece.position.y;
@@ -179,12 +181,18 @@ export class Cube {
                 }
             }
 
-            for (const sticker of piece.stickers) {
-                const newSide = Cube.rotateSide(sticker.side, side, direction);
-                if (!newSide) {
-                    throw new Error(`Invalid side rotation: ${sticker.side} with direction ${direction}`);
+            for ( const piece of Layer ) {
+                for ( const sticker of piece.stickers ) {
+                    if (sticker.side === side) {
+                        sticker.setSide(sticker.side);
+                        continue;
+                    }
+                    const newSide = Cube.rotateSide(sticker.side, side, direction);
+                    if (!newSide) {
+                        throw new Error(`Invalid side rotation: ${sticker.side} with direction ${direction}`);
+                    }
+                    sticker.setSide(newSide);
                 }
-                sticker.setSide(newSide);
             }
 
             const updatedPiece = new Piece(

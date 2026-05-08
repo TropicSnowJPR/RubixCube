@@ -1,10 +1,12 @@
 import type {Position} from "./Position";
 import type {Side} from "./Side";
+import {Rotation} from "./Rotation";
 
 export class Sticker {
     id: number;
     side: "NORTH" | "EAST" | "WEST" | "SOUTH" | "UP" | "DOWN";
     positionOffset: Position;
+    rotationOffset: Rotation;
 
     constructor(
         id: number,
@@ -13,84 +15,55 @@ export class Sticker {
         this.id = id;
         this.side = side;
 
-        this.updatePositionOffset(side);
+        this.updatePositionRotationOffset(side);
     }
 
     setSide( Side: Side, AnimationSide?: Side ): void {
         this.side = Side;
 
         if (AnimationSide) {
-            this.updatePositionOffset(Side, AnimationSide);
+            this.updatePositionRotationOffset(Side, AnimationSide);
         } else {
-            this.updatePositionOffset(Side);
+            this.updatePositionRotationOffset(Side);
         }
 
     }
 
-    updatePositionOffset( Side: Side, AnimationSide?: Side ): void {
-        if (AnimationSide) {
-            switch (AnimationSide) {
-                case "NORTH": {
-                    this.positionOffset = { x: 0, y: -0.5, z: 0 };
-                    break;
-                }
-                case "EAST": {
-                    this.positionOffset = { x: 0.5, y: 0, z: 0 };
-                    break;
-                }
-                case "WEST": {
-                    this.positionOffset = { x: 0, y: 0, z: 0 };
-                    break;
-                }
-                case "SOUTH": {
-                    this.positionOffset = { x: 0, y: 0.5, z: 0 };
-                    break;
-                }
-                case "UP": {
-                    this.positionOffset = { x: 0, y: 0, z: 0.5 };
-                    break;
-                }
-                case "DOWN": {
-                    this.positionOffset = { x: 0, y: 0, z: -0.5 };
-                    break;
-                }
-                default: {
-                    break;
-                }
+    updatePositionRotationOffset( Side: Side, AnimationSide?: Side ): void {
+        switch (Side) {
+            case "NORTH": {
+                this.positionOffset = { x: 0, y: 0, z: 0.5 };
+                this.rotationOffset = { pitch: 0, yaw: 0, roll: 0 };
+                break;
             }
-        } else {
-            switch (Side) {
-                case "NORTH": {
-                    this.positionOffset = { x: 0, y: -0.5, z: 0 };
-                    break;
-                }
-                case "EAST": {
-                    this.positionOffset = { x: 0.5, y: 0, z: 0 };
-                    break;
-                }
-                case "WEST": {
-                    this.positionOffset = { x: 0, y: 0, z: 0 };
-                    break;
-                }
-                case "SOUTH": {
-                    this.positionOffset = { x: 0, y: 0.5, z: 0 };
-                    break;
-                }
-                case "UP": {
-                    this.positionOffset = { x: 0, y: 0, z: 0.5 };
-                    break;
-                }
-                case "DOWN": {
-                    this.positionOffset = { x: 0, y: 0, z: -0.5 };
-                    break;
-                }
-                default: {
-                    break;
-                }
+            case "EAST": {
+                this.positionOffset = { x: 0.5, y: 0, z: 0 };
+                this.rotationOffset = { pitch: 0, yaw: 90, roll: 0 };
+                break;
+            }
+            case "WEST": {
+                this.positionOffset = { x: -0.5, y: 0, z: 0 };
+                this.rotationOffset = { pitch: 0, yaw: -90, roll: 0 };
+                break;
+            }
+            case "SOUTH": {
+                this.positionOffset = { x: 0, y: 0, z: -0.5 };
+                this.rotationOffset = { pitch: 0, yaw: 180, roll: 0 };
+                break;
+            }
+            case "UP": {
+                this.positionOffset = { x: 0, y: 0.5, z: 0 };
+                this.rotationOffset = { pitch: -90, yaw: 0, roll: 0 };
+                break;
+            }
+            case "DOWN": {
+                this.positionOffset = { x: 0, y: -0.5, z: 0 };
+                this.rotationOffset = { pitch: 90, yaw: 0, roll: 0 };
+                break;
+            }
+            default: {
+                break;
             }
         }
-
     }
-
-
 }

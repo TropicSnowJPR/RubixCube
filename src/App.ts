@@ -91,7 +91,7 @@ class App {
         this.InstancedPlaneMesh = new THREE.InstancedMesh(
             PlaneGeometry,
             new THREE.ShaderMaterial({
-                side: THREE.DoubleSide,
+                side: THREE.FrontSide,
                 transparent: true,
                 uniforms: {
                     atlas: { value: this.Atlas },
@@ -151,28 +151,16 @@ class App {
 
         const sideConfig = {
             SOUTH: {
-                pos:    [ 0, 0, -0.5 ] as [ number, number, number ],
-                rot:    [ 0, Math.PI, 0 ] as [ number, number, number ],
                 uv:     [ 1 / this.AtlasCols, 2 / this.AtlasRows ] as [ number, number ],
             }, NORTH: {
-                pos:    [ 0, 0, 0.5 ] as [ number, number, number ],
-                rot:    [ 0, 2 * Math.PI, 0 ] as [ number, number, number ],
                 uv:     [ 2 / this.AtlasCols, 1 / this.AtlasRows ] as [ number, number ],
             }, WEST: {
-                pos:    [ -0.5, 0, 0 ] as [ number, number, number ],
-                rot:    [ 0, -Math.PI / 2, 0 ] as [ number, number, number ],
                 uv:     [ 2 / this.AtlasCols, 2 / this.AtlasRows ] as [ number, number ],
             }, EAST: {
-                pos:    [ 0.5, 0, 0 ] as [ number, number, number ],
-                rot:    [ 0, Math.PI / 2, 0 ] as [ number, number, number ],
                 uv:     [ 0, 1 / this.AtlasRows ] as [ number, number ],
             }, UP: {
-                pos:    [ 0, 0.5, 0 ] as [ number, number, number ],
-                rot:    [ -Math.PI / 2, 0, 0 ] as [ number, number, number ],
                 uv:     [ 1 / this.AtlasCols, 1 / this.AtlasRows ] as [ number, number ],
             }, DOWN: {
-                pos:    [ 0, -0.5, 0 ] as [ number, number, number ],
-                rot:    [ Math.PI / 2, 0, 0 ] as [ number, number, number ],
                 uv:     [ 0, 2 / this.AtlasRows ] as [ number, number ],
             },
         };
@@ -193,15 +181,15 @@ class App {
                     const piece = state.position;
 
                     Dummy.position.set(
-                        piece.x + config.pos[ 0 ] - this.Size / 2,
-                        piece.y + config.pos[ 1 ] - this.Size / 2,
-                        piece.z + config.pos[ 2 ] - this.Size / 2
+                        piece.x + sticker.positionOffset.x - this.Size / 2,
+                        piece.y + sticker.positionOffset.y - this.Size / 2,
+                        piece.z + sticker.positionOffset.z - this.Size / 2
                     );
 
                     Dummy.rotation.set(
-                        config.rot[ 0 ],
-                        config.rot[ 1 ],
-                        config.rot[ 2 ]
+                        THREE.MathUtils.degToRad(sticker.rotationOffset.pitch),
+                        THREE.MathUtils.degToRad(sticker.rotationOffset.yaw),
+                        THREE.MathUtils.degToRad(sticker.rotationOffset.roll)
                     );
 
                     Dummy.updateMatrix();
@@ -230,13 +218,14 @@ class App {
         const RotationHiderPlaneInner = new THREE.Mesh( RotationHiderPlaneInnerGeometry, RotationHiderPlaneMaterial );
         const RotationHiderPlaneOuter = new THREE.Mesh( RotationHiderPlaneOuterGeometry, RotationHiderPlaneMaterial );
 
-        RotationHiderPlaneInner.position.set( 0, 0, 0 );
-        RotationHiderPlaneOuter.position.set( 0, 0, 0 );
+        RotationHiderPlaneInner.position.set( 1, 0, 0 );
+        RotationHiderPlaneOuter.position.set( 1, 0, 0 );
 
-        RotationHiderPlaneOuter.rotation.set( 0, Math.PI, 0 );
+        RotationHiderPlaneInner.rotation.set( 0, -Math.PI / 2, 0 );
+        RotationHiderPlaneOuter.rotation.set( 0, Math.PI / 2, 0 );
 
-        // this.Scene.add(RotationHiderPlaneInner);
-        // this.Scene.add(RotationHiderPlaneOuter);
+        this.Scene.add(RotationHiderPlaneInner);
+        this.Scene.add(RotationHiderPlaneOuter);
 
         this.PressedKeys = {};
 
@@ -299,6 +288,7 @@ class App {
                 RotationType
             );
             this.counter = 30
+            console.log( `Rotating ${RotationFace} layer ${RotationDepth} in ${RotationType} direction` );
         }
         this.counter -= 1;
 
@@ -310,76 +300,14 @@ class App {
             if ( objPositionList ) {
                 for ( const objPosition of objPositionList ) {
 
-                    const SIDE_CONFIGS: Record<
-                        Side,
-                        Partial<Record<Side, { pos: [ number, number, number ]; rot: [ number, number, number ]; }>>
-                    > = {
-                        SOUTH: {
-                            SOUTH: { pos: [ 0, 0, -0.5 ],   rot: [ 0, Math.PI, 0 ]      },
-                            NORTH: { pos: [ 0, 0, 0.5 ],    rot: [ 0, 0, 0 ]            },
-                            WEST:  { pos: [ 0.5, 0, 0 ],    rot: [ 0, Math.PI / 2, 0 ]  },
-                            EAST:  { pos: [ -0.5, 0, 0 ],   rot: [ 0, -Math.PI / 2, 0 ] },
-                            UP:    { pos: [ 0, -0.5, 0 ],   rot: [ Math.PI / 2, 0, 0 ]  },
-                            DOWN:  { pos: [ 0, 0.5, 0 ],    rot: [ -Math.PI / 2, 0, 0 ] },
-                        },
 
-                        NORTH: {
-                            NORTH: { pos: [ 0, 0, 0.5 ],    rot: [ 0, 0, 0 ]            },
-                            SOUTH: { pos: [ 0, 0, -0.5 ],   rot: [ 0, Math.PI, 0 ]      },
-                            WEST:  { pos: [ 0.5, 0, 0 ],    rot: [ 0, Math.PI / 2, 0 ]  },
-                            EAST:  { pos: [ -0.5, 0, 0 ],   rot: [ 0, -Math.PI / 2, 0 ] },
-                            UP:    { pos: [ 0, -0.5, 0 ],   rot: [ Math.PI / 2, 0, 0 ]  },
-                            DOWN:  { pos: [ 0, 0.5, 0 ],    rot: [ -Math.PI / 2, 0, 0 ] },
-                        },
+                    const X = Number((objPosition.position.x - this.Size / 2));
+                    const Y = Number((objPosition.position.y - this.Size / 2));
+                    const Z = Number((objPosition.position.z - this.Size / 2));
 
-                        WEST: {
-                            SOUTH: { pos: [ 0, 0, -0.5 ],   rot: [ Math.PI / 2, 0, 0 ]  },
-                            NORTH: { pos: [ 0, 0, 0.5 ],    rot: [ -Math.PI / 2, 0, 0 ] },
-                            WEST:  { pos: [ -0.5, 0, 0 ],   rot: [ 0, -Math.PI / 2, 0 ] },
-                            EAST:  { pos: [ 0.5, 0, 0 ],    rot: [ 0, Math.PI / 2, 0 ]  },
-                            UP:    { pos: [ 0, 0.5, 0 ],    rot: [ Math.PI, 0, 0 ]      },
-                            DOWN:  { pos: [ 0, -0.5, 0 ],   rot: [ 0, 0, 0 ]            },
-                        },
-
-                        EAST: {
-                            SOUTH: { pos: [ 0, 0, -0.5 ],   rot: [ -Math.PI / 2, 0, 0 ] },
-                            NORTH: { pos: [ 0, 0, 0.5 ],    rot: [ Math.PI / 2, 0, 0 ]  },
-                            WEST:  { pos: [ -0.5, 0, 0 ],   rot: [ 0, -Math.PI / 2, 0 ] },
-                            EAST:  { pos: [ 0.5, 0, 0 ],    rot: [ 0, Math.PI / 2, 0 ]  },
-                            UP:    { pos: [ 0, 0.5, 0 ],    rot: [ 0, 0, Math.PI / 2 ]  },
-                            DOWN:  { pos: [ 0, -0.5, 0 ],   rot: [ 0, Math.PI, 0 ]      },
-                        },
-
-                        UP: {
-                            SOUTH: { pos: [ 0, 0, 0.5 ],    rot: [ 0, 0, 0 ]            },
-                            NORTH: { pos: [ 0, 0, -0.5 ],   rot: [ 0, Math.PI, 0 ]      },
-                            WEST:  { pos: [ 0.5, 0, 0 ],    rot: [ 0, Math.PI / 2, 0 ]  },
-                            EAST:  { pos: [ -0.5, 0, 0 ],   rot: [ 0, -Math.PI / 2, 0 ] },
-                            UP:    { pos: [ 0, 0.5, 0 ],    rot: [ -Math.PI / 2, 0, 0 ] },
-                            DOWN:  { pos: [ 0, -0.5, 0 ],   rot: [ Math.PI / 2, 0, 0 ]  },
-                        },
-
-                        DOWN: {
-                            SOUTH: { pos: [ 0, 0, -0.5 ],   rot: [ 0, Math.PI, 0 ]      },
-                            NORTH: { pos: [ 0, 0, 0.5 ],    rot: [ 0, 0, 0 ]            },
-                            WEST:  { pos: [ -0.5, 0, 0 ],   rot: [ 0, -Math.PI / 2, 0 ] },
-                            EAST:  { pos: [ 0.5, 0, 0 ],    rot: [ 0, Math.PI / 2, 0 ]  },
-                            UP:    { pos: [ 0, 0.5, 0 ],    rot: [ -Math.PI / 2, 0, 0 ] },
-                            DOWN:  { pos: [ 0, -0.5, 0 ],   rot: [ Math.PI / 2, 0, 0 ]  },
-                        },
-                    };
-
-                    const sideConfig = SIDE_CONFIGS[ currentAnimation.side ];
-
-                    const config = sideConfig[ objPosition.side as keyof typeof sideConfig ];
-
-                    const X = Number( ( objPosition.position.x - this.Size / 2 ) );
-                    const Y = Number( ( objPosition.position.y - this.Size / 2 ) );
-                    const Z = Number( ( objPosition.position.z - this.Size / 2 ) );
-
-                    const Pitch = config.rot[0] + THREE.MathUtils.degToRad( objPosition.rotation.pitch );
-                    const Yaw = config.rot[1] + THREE.MathUtils.degToRad( objPosition.rotation.yaw );
-                    const Roll = config.rot[2] + THREE.MathUtils.degToRad( objPosition.rotation.roll );
+                    const Pitch = THREE.MathUtils.degToRad( objPosition.rotation.pitch );
+                    const Yaw = THREE.MathUtils.degToRad( objPosition.rotation.yaw );
+                    const Roll = THREE.MathUtils.degToRad( objPosition.rotation.roll );
 
                     this.Dummy.position.set(
                         X,

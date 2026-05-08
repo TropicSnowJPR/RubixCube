@@ -37,8 +37,7 @@ export class Animation {
 
         for (const piece of this.cube.state) {
             for (const sticker of piece.stickers) {
-                console.log(sticker)
-                sticker.setSide(Cube.rotateSide(this.side, sticker.side, this.direction));
+                sticker.setSide(Cube.rotateSide(this.side, sticker.side, this.direction), this.side);
             }
         }
     }
@@ -78,7 +77,11 @@ export class Animation {
                                 y: state.position.y + sticker.positionOffset.y,
                                 z: state.position.z + sticker.positionOffset.z
                     },
-                    rotation:   state.rotation,
+                    rotation:   {
+                                pitch: state.rotation.pitch + THREE.MathUtils.degToRad(sticker.rotationOffset.pitch),
+                                yaw: state.rotation.yaw + THREE.MathUtils.degToRad(sticker.rotationOffset.yaw),
+                                roll: state.rotation.roll + THREE.MathUtils.degToRad(sticker.rotationOffset.roll)
+                    },
                     id:         sticker.id,
                     side:       sticker.side
                 });
@@ -87,63 +90,169 @@ export class Animation {
 
         this.elapsed = Math.min(this.elapsed + delta, this.duration);
         const t = this.duration <= 0 ? 1 : this.elapsed / this.duration;
-        const signedAngle = (this.direction === "CLOCKWISE" ? this.angle : -this.angle) * t;
+        const signedAngle = (this.direction === "CLOCKWISE" ? -this.angle : this.angle) * t;
         if (t >= 1) {
             this.isFinished = true;
         }
 
         return StickerOrbitList.map(sticker => {
-            if ( this.side === "NORTH") {
-                const newPosition = this.orbitTransform(sticker.position.x, sticker.position.y, -signedAngle, THREE.MathUtils.radToDeg(sticker.rotation.roll));
-                return {
-                    position:   {x: newPosition.x, y: newPosition.y, z: sticker.position.z},
-                    rotation:   {pitch: sticker.rotation.pitch, yaw: sticker.rotation.yaw, roll: newPosition.rotation},
-                    id:         sticker.id,
-                    side:       sticker.side
-                };
-            } else if ( this.side === "SOUTH") {
-                const newPosition = this.orbitTransform(sticker.position.x, sticker.position.y, signedAngle, THREE.MathUtils.radToDeg(sticker.rotation.roll));
-                return {
-                    position:   {x: newPosition.x, y: newPosition.y, z: sticker.position.z},
-                    rotation:   {pitch: sticker.rotation.pitch, yaw: sticker.rotation.yaw, roll: -newPosition.rotation},
-                    id:         sticker.id,
-                    side:       sticker.side
-                };
-            } else if ( this.side === "EAST") {
-                const newPosition = this.orbitTransform(sticker.position.y, sticker.position.z, -signedAngle, THREE.MathUtils.radToDeg(sticker.rotation.pitch));
-                return {
-                    position:   {x: sticker.position.x, y: newPosition.x, z: newPosition.y},
-                    rotation:   {pitch: newPosition.rotation, yaw: sticker.rotation.yaw, roll: sticker.rotation.roll},
-                    id:         sticker.id,
-                    side:       sticker.side
-                };
-            } else if ( this.side === "WEST") {
-                const newPosition = this.orbitTransform(sticker.position.y, sticker.position.z, signedAngle, THREE.MathUtils.radToDeg(sticker.rotation.pitch));
-                return {
-                    position:   {x: sticker.position.x, y: newPosition.x, z: newPosition.y},
-                    rotation:   {pitch: newPosition.rotation, yaw: sticker.rotation.yaw, roll: sticker.rotation.roll},
-                    id:         sticker.id,
-                    side:       sticker.side
-                };
-            } else if ( this.side === "UP") {
-                const newPosition = this.orbitTransform(sticker.position.x, sticker.position.z, signedAngle, THREE.MathUtils.radToDeg(sticker.rotation.yaw));
-                return {
-                    position:   {x: newPosition.x, y: sticker.position.y+0.5, z: newPosition.y},
-                    rotation:   {pitch: sticker.rotation.pitch, yaw: sticker.rotation.yaw, roll: -newPosition.rotation},
-                    id:         sticker.id,
-                    side:       sticker.side
-                };
-            } else if ( this.side === "DOWN") {
-                const newPosition = this.orbitTransform(sticker.position.x, sticker.position.z, signedAngle, THREE.MathUtils.radToDeg(sticker.rotation.yaw));
-                return {
-                    position:   {x: newPosition.x, y: sticker.position.y, z: newPosition.y},
-                    rotation:   {pitch: sticker.rotation.pitch, yaw: sticker.rotation.yaw, roll: newPosition.rotation},
-                    id:         sticker.id,
-                    side:       sticker.side
-                };
+
+            const CurrentPosition: Position = {
+                x: sticker.position.x,
+                y: sticker.position.y,
+                z: sticker.position.z
+            };
+
+            const CurrentRotation: Rotation = {
+                pitch: THREE.MathUtils.radToDeg(sticker.rotation.pitch),
+                yaw: THREE.MathUtils.radToDeg(sticker.rotation.yaw),
+                roll: THREE.MathUtils.radToDeg(sticker.rotation.roll)
             }
 
-            throw new Error(`Invalid side ${this.side} for animation. Must be one of "NORTH", "EAST", "WEST", "SOUTH", "UP", or "DOWN".`);
+            switch ( this.side ) {
+                case "NORTH": { // Rotation Around the Z-Axis (Roll)
+
+                    const TransformedData = this.orbitTransform(CurrentPosition.x, CurrentPosition.y, signedAngle, CurrentRotation.roll);
+
+                    const UpdatedRotation: Rotation = {
+                        pitch: CurrentRotation.pitch,
+                        yaw: CurrentRotation.yaw,
+                        roll: TransformedData.rotation
+                    }
+
+                    const UpdatedPosition: Position = {
+                        x: TransformedData.x,
+                        y: TransformedData.y,
+                        z: CurrentPosition.z,
+                    };
+
+                    return {
+                        position:   UpdatedPosition,
+                        rotation:   UpdatedRotation,
+                        id:         sticker.id,
+                        side:       sticker.side
+                    };
+                }
+                case "EAST": { // Rotation Around the X-Axis (Pitch)
+
+                    const TransformedData = this.orbitTransform(CurrentPosition.y, CurrentPosition.z, -signedAngle, CurrentRotation.pitch);
+
+                    const UpdatedRotation: Rotation = {
+                        pitch: -TransformedData.rotation,
+                        yaw: CurrentRotation.yaw,
+                        roll: CurrentRotation.pitch
+                    }
+
+                    const UpdatedPosition: Position = {
+                        x: CurrentPosition.x,
+                        y: TransformedData.y,
+                        z: TransformedData.x,
+                    };
+
+                    return {
+                        position:   UpdatedPosition,
+                        rotation:   UpdatedRotation,
+                        id:         sticker.id,
+                        side:       sticker.side
+                    };
+                }
+                case "SOUTH": { // Rotation Around the Z-Axis (Roll)
+
+
+                    const TransformedData = this.orbitTransform(CurrentPosition.x, CurrentPosition.y, -signedAngle, CurrentRotation.roll);
+
+                    const UpdatedRotation: Rotation = {
+                        pitch: CurrentRotation.pitch,
+                        yaw: CurrentRotation.yaw,
+                        roll: TransformedData.rotation
+                    }
+
+                    const UpdatedPosition: Position = {
+                        x: TransformedData.x,
+                        y: TransformedData.y,
+                        z: CurrentPosition.z,
+                    };
+
+                    return {
+                        position:   UpdatedPosition,
+                        rotation:   UpdatedRotation,
+                        id:         sticker.id,
+                        side:       sticker.side
+                    };
+                }
+                case "WEST": { // Rotation Around the X-Axis (Pitch)
+
+                    const TransformedData = this.orbitTransform(CurrentPosition.y, CurrentPosition.z, signedAngle, CurrentRotation.pitch);
+
+                    const UpdatedRotation: Rotation = {
+                        pitch: -TransformedData.rotation,
+                        yaw: CurrentRotation.yaw,
+                        roll: CurrentRotation.pitch
+                    }
+
+                    const UpdatedPosition: Position = {
+                        x: CurrentPosition.x,
+                        y: TransformedData.y,
+                        z: TransformedData.x,
+                    };
+
+                    return {
+                        position:   UpdatedPosition,
+                        rotation:   UpdatedRotation,
+                        id:         sticker.id,
+                        side:       sticker.side
+                    };
+                }
+                case "UP": { // Rotation Around the Y-Axis (Yaw)
+
+                    const TransformedData = this.orbitTransform(CurrentPosition.x, CurrentPosition.z, signedAngle, CurrentRotation.pitch);
+
+                    const UpdatedRotation: Rotation = {
+                        pitch: CurrentRotation.pitch,
+                        yaw: TransformedData.rotation,
+                        roll: CurrentRotation.pitch
+                    }
+
+                    const UpdatedPosition: Position = {
+                        x: TransformedData.x,
+                        y: CurrentPosition.y,
+                        z: TransformedData.y,
+                    };
+
+                    return {
+                        position:   UpdatedPosition,
+                        rotation:   UpdatedRotation,
+                        id:         sticker.id,
+                        side:       sticker.side
+                    };
+                }
+                case "DOWN": { // Rotation Around the Y-Axis (Yaw)
+
+                    const TransformedData = this.orbitTransform(CurrentPosition.x, CurrentPosition.z, signedAngle, CurrentRotation.pitch);
+
+                    const UpdatedRotation: Rotation = {
+                        pitch: CurrentRotation.pitch,
+                        yaw: TransformedData.rotation,
+                        roll: CurrentRotation.pitch
+                    }
+
+                    const UpdatedPosition: Position = {
+                        x: TransformedData.x,
+                        y: CurrentPosition.y,
+                        z: TransformedData.y,
+                    };
+
+                    return {
+                        position:   UpdatedPosition,
+                        rotation:   UpdatedRotation,
+                        id:         sticker.id,
+                        side:       sticker.side
+                    };
+                }
+                default: {
+                    throw new Error(`Invalid side ${this.side} for animation. Must be one of "NORTH", "EAST", "WEST", "SOUTH", "UP", or "DOWN".`);
+                }
+            }
 
         });
     }
