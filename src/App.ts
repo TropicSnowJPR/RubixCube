@@ -68,7 +68,7 @@ class App {
 
         this.AnimationQueue = new AnimationQueue();
 
-        this.RubiksCube = new Cube( this.Size ); // :))))
+        this.RubiksCube = new Cube( this.Size, false, this.Scene ); // :))))
 
         if ( this.RubiksCube.state.length !== this.Size ** 3 ) {
             throw new Error( "Cube state length does not match expected length" );
@@ -278,8 +278,9 @@ class App {
                     RotationDepth,
                     90,
                     RotationType,
-                    5,
-                    this.Size
+                    0.5,
+                    this.Size,
+                    this.Scene
                 )
             );
             this.RubiksCube.rotateLayer(

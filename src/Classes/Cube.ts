@@ -2,17 +2,24 @@ import {Piece} from "./Piece";
 import {Sticker} from "./Sticker";
 import type {Side} from "./Side";
 import type {Direction} from "./Direction";
+import * as THREE from 'three';
 
 
 export class Cube {
 
     readonly size: number;
     state: Piece[] = [];
+    private Scene: THREE.Scene;
 
     constructor(
         size?: number,
-        empty: boolean = false
+        empty: boolean = false,
+        Scene?: THREE.Scene
     ) {
+        if (Scene) {
+            this.Scene = Scene;
+        }
+        
         if (!size || size <= 1) {
             this.size = 3;
         } else if (size > 1) {
@@ -79,6 +86,15 @@ export class Cube {
                             type,
                             stickers
                         );
+
+                        const TestSphere = new THREE.Mesh(new THREE.SphereGeometry(0.1), new THREE.MeshBasicMaterial({ color: 0x00_00_FF }))
+                        TestSphere.position.set(
+                            x - (this.size-1) / 2,
+                            y - (this.size-1) / 2,
+                            z - (this.size-1) / 2
+                        );
+
+                        this.Scene.add(TestSphere);
 
                         this.state.push(cubePiece);
 
@@ -147,7 +163,7 @@ export class Cube {
 
             const mid = (this.size - 1) / 2;
 
-            if (side === "NORTH" || side === "SOUTH") {
+            if (side === "NORTH") {
                 const relX = oldX - mid;
                 const relY = oldY - mid;
                 if (direction === "CLOCKWISE") {
@@ -158,7 +174,18 @@ export class Cube {
                     piece.position.y = relX + mid;
                 }
 
-            } else if (side === "EAST" || side === "WEST") {
+            } else if (side === "SOUTH") {
+                const relX = oldX - mid;
+                const relY = oldY - mid;
+                if (direction === "COUNTERCLOCKWISE") {
+                    piece.position.x = relY + mid;
+                    piece.position.y = -relX + mid;
+                } else {
+                    piece.position.x = -relY + mid;
+                    piece.position.y = relX + mid;
+                }
+
+            } else if (side === "EAST") {
                 const relY = oldY - mid;
                 const relZ = oldZ - mid;
                 if (direction === "CLOCKWISE") {
@@ -169,7 +196,18 @@ export class Cube {
                     piece.position.z = relY + mid;
                 }
 
-            } else if (side === "UP" || side === "DOWN") {
+            } else if (side === "WEST") {
+                const relY = oldY - mid;
+                const relZ = oldZ - mid;
+                if (direction === "COUNTERCLOCKWISE") {
+                    piece.position.y = relZ + mid;
+                    piece.position.z = -relY + mid;
+                } else {
+                    piece.position.y = -relZ + mid;
+                    piece.position.z = relY + mid;
+                }
+
+            } else if (side === "UP") {
                 const relX = oldX - mid;
                 const relZ = oldZ - mid;
                 if (direction === "CLOCKWISE") {
@@ -179,20 +217,30 @@ export class Cube {
                     piece.position.x = -relZ + mid;
                     piece.position.z = relX + mid;
                 }
+
+            } else if (side === "DOWN") {
+                const relX = oldX - mid;
+                const relZ = oldZ - mid;
+                if (direction === "COUNTERCLOCKWISE") {
+                    piece.position.x = relZ + mid;
+                    piece.position.z = -relX + mid;
+                } else {
+                    piece.position.x = -relZ + mid;
+                    piece.position.z = relX + mid;
+                }
+
             }
 
-            for ( const piece of Layer ) {
-                for ( const sticker of piece.stickers ) {
-                    if (sticker.side === side) {
-                        sticker.setSide(sticker.side);
-                        continue;
-                    }
-                    const newSide = Cube.rotateSide(sticker.side, side, direction);
-                    if (!newSide) {
-                        throw new Error(`Invalid side rotation: ${sticker.side} with direction ${direction}`);
-                    }
-                    sticker.setSide(newSide);
+            for ( const sticker of piece.stickers ) {
+                if (sticker.side === side) {
+                    sticker.setSide(sticker.side);
+                    continue;
                 }
+                const newSide = Cube.rotateSide(side, sticker.side, direction);
+                if (!newSide) {
+                    throw new Error(`Invalid side rotation: ${sticker.side} with direction ${direction}`);
+                }
+                sticker.setSide(newSide);
             }
 
             const updatedPiece = new Piece(
@@ -206,6 +254,15 @@ export class Cube {
                 piece.type,
                 piece.stickers
             );
+
+            const TestSphere = new THREE.Mesh(new THREE.SphereGeometry(0.2), new THREE.MeshBasicMaterial({ color: 0xFF_00_00 }))
+            TestSphere.position.set(
+                piece.position.x - (this.size-1) / 2,
+                piece.position.y - (this.size-1) / 2,
+                piece.position.z - (this.size-1) / 2
+            );
+
+            this.Scene.add(TestSphere);
 
             let pieceIndex = -1;
 
