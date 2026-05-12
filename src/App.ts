@@ -27,6 +27,7 @@ class App {
     private AtlasCols = 3;
     private LastTime: DOMHighResTimeStamp;
     private AnimationQueue: AnimationQueue;
+    private RandomLock: boolean = false;
 
     constructor(
 
@@ -255,6 +256,11 @@ class App {
         let RotationFace: Side | undefined = undefined;
         let RotationDepth = 1;
 
+        if (this.PressedKeys["r"] && this.RandomLock === false) {
+            this.addRandomAnimations(10000, 0.1);
+            this.RandomLock = true;
+        }
+
         if ( this.PressedKeys["x"] )        { RotationType = "COUNTERCLOCKWISE"; }
 
         if ( this.PressedKeys["q"] )        { RotationFace = "UP"; }
@@ -268,7 +274,7 @@ class App {
 
             if ( this.PressedKeys[ i.toString( ) ] ) {
 
-                if ( i > Math.floor( this.Size / 2 ) ) {
+                if ( i > Math.floor( this.Size - 1 ) ) {
                     break;
                 }
                 RotationDepth = i;
@@ -370,7 +376,35 @@ class App {
         this.Renderer.render( this.Scene, this.Camera );
 
     }
+
+    private addRandomAnimations(count = 100, duration = 0.05): void {
+        const sides: Side[] = ["NORTH", "SOUTH", "EAST", "WEST", "UP", "DOWN"];
+        const directions: Direction[] = ["CLOCKWISE", "COUNTERCLOCKWISE"];
+        const maxDepth = Math.max(1, Math.floor(this.Size / 2));
+
+        for (let i = 0; i < count; i += 1) {
+            const side = sides[Math.floor(Math.random() * sides.length)];
+            const direction = directions[Math.floor(Math.random() * directions.length)];
+            const depth = 1 + Math.floor(Math.random() * maxDepth);
+
+            this.AnimationQueue.addAnimation(
+                new Animation(
+                    this.RubiksCube.clone(),
+                    side,
+                    depth,
+                    90,
+                    direction,
+                    duration,
+                    this.Size,
+                    this.Scene
+                )
+            );
+
+            this.RubiksCube.rotateLayer(side, depth - 1, direction);
+        }
+    }
+
 }
 
 
-const _CubeApp = new App( 3 )
+const _CubeApp = new App( 5 )
