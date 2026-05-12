@@ -87,15 +87,6 @@ export class Cube {
                             stickers
                         );
 
-                        const TestSphere = new THREE.Mesh(new THREE.SphereGeometry(0.1), new THREE.MeshBasicMaterial({ color: 0x00_00_FF }))
-                        TestSphere.position.set(
-                            x - (this.size-1) / 2,
-                            y - (this.size-1) / 2,
-                            z - (this.size-1) / 2
-                        );
-
-                        this.Scene.add(TestSphere);
-
                         this.state.push(cubePiece);
 
                     }
@@ -255,15 +246,6 @@ export class Cube {
                 piece.stickers
             );
 
-            const TestSphere = new THREE.Mesh(new THREE.SphereGeometry(0.2), new THREE.MeshBasicMaterial({ color: 0xFF_00_00 }))
-            TestSphere.position.set(
-                piece.position.x - (this.size-1) / 2,
-                piece.position.y - (this.size-1) / 2,
-                piece.position.z - (this.size-1) / 2
-            );
-
-            this.Scene.add(TestSphere);
-
             let pieceIndex = -1;
 
             for (let i = 0; i < this.state.length; i+=1) {
@@ -320,30 +302,30 @@ export class Cube {
             },
             SOUTH: {
                 CLOCKWISE: {
-                    UP: "EAST",
-                    DOWN: "WEST",
-                    EAST: "DOWN",
-                    WEST: "UP"
-                },
-                COUNTERCLOCKWISE: {
                     UP: "WEST",
                     DOWN: "EAST",
                     EAST: "UP",
                     WEST: "DOWN"
+                },
+                COUNTERCLOCKWISE: {
+                    UP: "EAST",
+                    DOWN: "WEST",
+                    EAST: "DOWN",
+                    WEST: "UP"
                 }
             },
             NORTH: {
                 CLOCKWISE: {
-                    UP: "WEST",
-                    DOWN: "EAST",
-                    EAST: "UP",
-                    WEST: "DOWN"
-                },
-                COUNTERCLOCKWISE: {
                     UP: "EAST",
                     DOWN: "WEST",
                     EAST: "DOWN",
                     WEST: "UP"
+                },
+                COUNTERCLOCKWISE: {
+                    UP: "WEST",
+                    DOWN: "EAST",
+                    EAST: "UP",
+                    WEST: "DOWN"
                 }
             },
             UP: {
@@ -385,6 +367,7 @@ export class Cube {
         cubeCopy.state = this.state.map(piece => {
 
             const clonedStickers = piece.stickers.map(sticker => {
+
                 const newSticker = new Sticker(
                     sticker.id,
                     sticker.side
@@ -397,9 +380,11 @@ export class Cube {
                 };
 
                 return newSticker;
+
             });
 
             return new Piece(
+
                 piece.id,
                 piece.position.x,
                 piece.position.y,
@@ -409,6 +394,7 @@ export class Cube {
                 piece.rotation.roll,
                 piece.type,
                 clonedStickers
+
             );
 
         });

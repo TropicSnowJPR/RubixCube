@@ -1,25 +1,31 @@
 <!DOCTYPE html>
 <html lang="en">
-<head>
-    <title>Rubik's Cube - three.js WebGL</title>
-    <meta charset="utf-8">
-    <meta name="viewport" content="width=device-width, user-scalable=no, minimum-scale=1.0, maximum-scale=1.0">
-    <link rel="icon" type="image/x-icon" href="/favicon.ico">
-    <link type="text/css" rel="stylesheet" href="main.css">
-</head>
-<body>
-<div id="scene-container"></div>
 
-    <script type="importmap">
-        {
-            "imports": {
-                "three": "../build/three.module.js",
-                "three/addons/": "./jsm/"
+    <head>
+
+        <title>Rubik's Cube - three.js WebGL</title>
+        <meta charset="utf-8">
+        <meta name="viewport" content="width=device-width, user-scalable=no, minimum-scale=1.0, maximum-scale=1.0">
+        <link rel="icon" type="image/x-icon" href="/favicon.ico">
+        <link type="text/css" rel="stylesheet" href="main.css">
+
+    </head>
+
+    <body>
+
+        <div id="scene-container"></div>
+
+        <script type="importmap">
+            {
+                "imports": {
+                    "three": "../build/three.module.js",
+                    "three/addons/": "./jsm/"
+                }
             }
-        }
-    </script>
+        </script>
 
-    <script type="module" src="./src/App.ts"></script>
+        <script type="module" src="./src/App.ts"></script>
 
-</body>
+    </body>
+
 </html>

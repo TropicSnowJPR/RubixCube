@@ -109,14 +109,14 @@ export class Animation {
                     side: sticker.side
                 });
 
-                const TestSphere = new THREE.Mesh(new THREE.SphereGeometry(0.1), new THREE.MeshBasicMaterial({ color: 0xFF_FF_FF }))
+                const TestSphere = new THREE.Mesh(new THREE.SphereGeometry(0.1), new THREE.MeshBasicMaterial({ color: 0xFF_FF_FF, transparent: true, opacity: 0.5 }))
                 TestSphere.position.set(
-                    state.position.x + sticker.positionOffset.x - (this.size-1) / 2,
-                    state.position.y + sticker.positionOffset.y - (this.size-1) / 2,
-                    state.position.z + sticker.positionOffset.z - (this.size-1) / 2
+                    state.position.x + sticker.positionOffset.x - ( this.size - 1 ) / 2,
+                    state.position.y + sticker.positionOffset.y - ( this.size - 1 ) / 2,
+                    state.position.z + sticker.positionOffset.z - ( this.size - 1 ) / 2
                 );
 
-                this.SCENE.add(TestSphere);
+                // this.SCENE.add(TestSphere);
 
             }
         }
@@ -148,10 +148,32 @@ export class Animation {
 
                     const TransformedData = this.orbitTransform( CurrentPosition.x, CurrentPosition.y, signedAngle, CurrentRotation.roll );
 
-                    const UpdatedRotation: Rotation = {
-                        pitch: CurrentRotation.pitch,
-                        yaw: CurrentRotation.yaw,
-                        roll: TransformedData.rotation
+                    let UpdatedRotation
+
+                    if ( sticker.side === "NORTH" ) {
+
+                        UpdatedRotation = {
+                            pitch: 0,
+                            yaw: 0,
+                            roll: TransformedData.rotation
+                        };
+
+                    } else if ( sticker.side === "UP" || sticker.side === "DOWN" ) {
+
+                        UpdatedRotation = {
+                            pitch: 90,
+                            yaw: TransformedData.rotation,
+                            roll: 0,
+                        };
+
+                    } else {
+
+                        UpdatedRotation = {
+                            pitch: 90,
+                            yaw: TransformedData.rotation - 90,
+                            roll: 0,
+                        };
+
                     }
 
                     const UpdatedPosition: Position = {
@@ -166,6 +188,7 @@ export class Animation {
                         id:         sticker.id,
                         side:       sticker.side
                     };
+
                 }
 
                 case "EAST": { // Rotation Around the X-Axis (Pitch)
@@ -176,7 +199,7 @@ export class Animation {
                         pitch: -TransformedData.rotation,
                         yaw: CurrentRotation.yaw,
                         roll: CurrentRotation.roll
-                    }
+                    };
 
                     const UpdatedPosition: Position = {
                         x: CurrentPosition.x,
@@ -184,31 +207,45 @@ export class Animation {
                         z: TransformedData.x,
                     };
 
-                    // const TestSphere = new THREE.Mesh(new THREE.SphereGeometry(0.1), new THREE.MeshBasicMaterial({ color: 0x00_FF_00 }))
-                    // TestSphere.position.set(
-                    //     UpdatedPosition.x - (this.size-1) / 2,
-                    //     UpdatedPosition.y - (this.size-1) / 2,
-                    //     UpdatedPosition.z - (this.size-1) / 2
-                    // );
-                    //
-                    // this.SCENE.add(TestSphere);
-
                     return {
                         position:   UpdatedPosition,
                         rotation:   UpdatedRotation,
                         id:         sticker.id,
                         side:       sticker.side
                     };
+
                 }
 
                 case "SOUTH": { // Rotation Around the Z-Axis (Roll)
 
-                    const TransformedData = this.orbitTransform( CurrentPosition.y, CurrentPosition.x, -signedAngle, -CurrentRotation.roll );
+                    const TransformedData = this.orbitTransform( CurrentPosition.x, CurrentPosition.y, -signedAngle, -CurrentRotation.roll );
 
-                    const UpdatedRotation: Rotation = {
-                        pitch: CurrentRotation.pitch,
-                        yaw: CurrentRotation.yaw,
-                        roll: -TransformedData.rotation
+                    let UpdatedRotation
+
+                    if ( sticker.side === "SOUTH" ) {
+
+                        UpdatedRotation = {
+                            pitch: 0,
+                            yaw: 0,
+                            roll: TransformedData.rotation
+                        };
+
+                    } else if ( sticker.side === "UP" || sticker.side === "DOWN" ) {
+
+                        UpdatedRotation = {
+                            pitch: 90,
+                            yaw: TransformedData.rotation,
+                            roll: 0,
+                        };
+
+                    } else {
+
+                        UpdatedRotation = {
+                            pitch: 90,
+                            yaw: TransformedData.rotation - 90,
+                            roll: 0,
+                        };
+
                     }
 
                     const UpdatedPosition: Position = {
@@ -217,21 +254,13 @@ export class Animation {
                         z: CurrentPosition.z,
                     };
 
-                    // const TestSphere = new THREE.Mesh(new THREE.SphereGeometry(0.1), new THREE.MeshBasicMaterial({ color: 0x00_FF_00 }))
-                    // TestSphere.position.set(
-                    //     UpdatedPosition.x - (this.size-1) / 2,
-                    //     UpdatedPosition.y - (this.size-1) / 2,
-                    //     UpdatedPosition.z - (this.size-1) / 2
-                    // );
-                    //
-                    // this.SCENE.add(TestSphere);
-
                     return {
                         position:   UpdatedPosition,
                         rotation:   UpdatedRotation,
                         id:         sticker.id,
                         side:       sticker.side
                     };
+
                 }
 
                 case "WEST": { // Rotation Around the X-Axis (Pitch)
@@ -242,7 +271,7 @@ export class Animation {
                         pitch: -TransformedData.rotation,
                         yaw: CurrentRotation.yaw,
                         roll: CurrentRotation.roll
-                    }
+                    };
 
                     const UpdatedPosition: Position = {
                         x: CurrentPosition.x,
@@ -250,39 +279,37 @@ export class Animation {
                         z: TransformedData.x,
                     };
 
-                    // const TestSphere = new THREE.Mesh(new THREE.SphereGeometry(0.1), new THREE.MeshBasicMaterial({ color: 0x00_FF_00 }))
-                    // TestSphere.position.set(
-                    //     UpdatedPosition.x - (this.size-1) / 2,
-                    //     UpdatedPosition.y - (this.size-1) / 2,
-                    //     UpdatedPosition.z - (this.size-1) / 2
-                    // );
-                    //
-                    // this.SCENE.add(TestSphere);
-
                     return {
                         position:   UpdatedPosition,
                         rotation:   UpdatedRotation,
                         id:         sticker.id,
                         side:       sticker.side
                     };
+
                 }
 
                 case "UP": { // Rotation Around the Y-Axis (Yaw)
 
-                    if (sticker.id === 1) {
-                        console.log(`Current Position: (${CurrentPosition.x.toFixed(2)}, ${CurrentPosition.y.toFixed(2)}, ${CurrentPosition.z.toFixed(2)})`);
-                    }
+                    const TransformedData = this.orbitTransform( CurrentPosition.x, CurrentPosition.z, signedAngle, CurrentRotation.yaw );
 
-                    const TransformedData = this.orbitTransform(CurrentPosition.x, CurrentPosition.z, signedAngle, CurrentRotation.yaw, sticker.id);
+                    let UpdatedRotation: Rotation;
 
-                    if (sticker.id === 1) {
-                        console.log(`Transformed Position: (${TransformedData.x.toFixed(2)}, ${CurrentPosition.y.toFixed(2)}, ${TransformedData.y.toFixed(2)})`);
-                    }
+                    if ( sticker.side === "UP" ) {
 
-                    const UpdatedRotation: Rotation = {
-                        pitch: CurrentRotation.pitch,
-                        yaw: -TransformedData.rotation,
-                        roll: CurrentRotation.roll,
+                        UpdatedRotation = {
+                            pitch: -90,
+                            yaw: 0,
+                            roll: -TransformedData.rotation
+                        };
+
+                    } else {
+
+                        UpdatedRotation = {
+                            pitch: CurrentRotation.pitch,
+                            yaw: -TransformedData.rotation,
+                            roll: CurrentRotation.roll
+                        };
+
                     }
 
                     const UpdatedPosition: Position = {
@@ -291,31 +318,37 @@ export class Animation {
                         z: TransformedData.y,
                     };
 
-                    const TestSphere = new THREE.Mesh(new THREE.SphereGeometry(0.1), new THREE.MeshBasicMaterial({ color: 0x00_FF_00 }))
-                    TestSphere.position.set(
-                        UpdatedPosition.x - (this.size-1) / 2,
-                        UpdatedPosition.y - (this.size-1) / 2,
-                        UpdatedPosition.z - (this.size-1) / 2
-                    );
-
-                    this.SCENE.add(TestSphere);
-
                     return {
                         position:   UpdatedPosition,
                         rotation:   UpdatedRotation,
                         id:         sticker.id,
                         side:       sticker.side
                     };
+
                 }
 
                 case "DOWN": { // Rotation Around the Y-Axis (Yaw)
 
-                    const TransformedData = this.orbitTransform(CurrentPosition.x, CurrentPosition.z, signedAngle, CurrentRotation.yaw);
+                    const TransformedData = this.orbitTransform( CurrentPosition.z, CurrentPosition.x, signedAngle, CurrentRotation.yaw );
 
-                    const UpdatedRotation: Rotation = {
-                        pitch: CurrentRotation.pitch,
-                        yaw: TransformedData.rotation,
-                        roll: CurrentRotation.roll
+                    let UpdatedRotation: Rotation;
+
+                    if ( sticker.side === "DOWN" ) {
+
+                        UpdatedRotation = {
+                            pitch: 90,
+                            yaw: 0,
+                            roll: -TransformedData.rotation
+                        };
+
+                    } else {
+
+                        UpdatedRotation = {
+                            pitch: CurrentRotation.pitch,
+                            yaw: TransformedData.rotation,
+                            roll: CurrentRotation.roll
+                        };
+
                     }
 
                     const UpdatedPosition: Position = {
@@ -324,22 +357,15 @@ export class Animation {
                         z: TransformedData.x,
                     };
 
-                    // const TestSphere = new THREE.Mesh(new THREE.SphereGeometry(0.01), new THREE.MeshBasicMaterial({ color: 0x00_FF_00 }))
-                    // TestSphere.position.set(
-                    //     UpdatedPosition.x - (this.size-1) / 2,
-                    //     UpdatedPosition.y - (this.size-1) / 2,
-                    //     UpdatedPosition.z - (this.size-1) / 2
-                    // );
-                    //
-                    // this.SCENE.add(TestSphere);
-
                     return {
                         position:   UpdatedPosition,
                         rotation:   UpdatedRotation,
                         id:         sticker.id,
                         side:       sticker.side
                     };
+
                 }
+
                 default: {
                     throw new Error(`Invalid side ${this.side} for animation. Must be one of "NORTH", "EAST", "WEST", "SOUTH", "UP", or "DOWN".`);
                 }
@@ -349,69 +375,31 @@ export class Animation {
     }
 
     private orbitTransform(
+
         x: number,
         y: number,
         alphaDeg: number,
         baseRotationDeg = 0,
-        id?: number
+
     ): { x: number, y: number, rotation: number } {
-        if (id === 1) {
-            console.log(`--- Orbit Transform for Sticker ID: ${id} ---`);
 
-            console.log("orbitTranform")
+        const alpha = alphaDeg * Math.PI / 180;
 
-            console.log("alphaDeg", alphaDeg);
+        const mid = (this.size-1) / 2;
 
-            const alpha = alphaDeg * Math.PI / 180;
+        const relX = x - mid;
+        const relY = y - mid;
 
-            console.log("alpha", alpha);
+        const xPrime = mid + relX * Math.cos(alpha) - relY * Math.sin(alpha);
+        const yPrime = mid + relX * Math.sin(alpha) + relY * Math.cos(alpha);
 
-            const mid = (this.size-1) / 2;
+        const rotation = -(baseRotationDeg - alphaDeg);
 
-            console.log("mid", mid);
-
-            const relX = x - mid;
-            const relY = y - mid;
-
-            console.log("relX", relX);
-            console.log("relY", relY);
-
-            const xPrime = mid + relX * Math.cos(alpha) - relY * Math.sin(alpha);
-            const yPrime = mid + relX * Math.sin(alpha) + relY * Math.cos(alpha);
-
-            console.log("yPrime", yPrime);
-            console.log("xPrime", xPrime);
-
-            const rotation = -(baseRotationDeg - alphaDeg);
-
-            console.log("rotation", rotation);
-
-            return {
-                x: xPrime,
-                y: yPrime,
-                rotation
-            };
-        } else {
-
-            const alpha = alphaDeg * Math.PI / 180;
-
-            const mid = (this.size-1) / 2;
-
-            const relX = x - mid;
-            const relY = y - mid;
-
-            const xPrime = mid + relX * Math.cos(alpha) - relY * Math.sin(alpha);
-            const yPrime = mid + relX * Math.sin(alpha) + relY * Math.cos(alpha);
-
-            const rotation = -(baseRotationDeg - alphaDeg);
-
-            return {
-                x: xPrime,
-                y: yPrime,
-                rotation
-            };
-        }
-
+        return {
+            x: xPrime,
+            y: yPrime,
+            rotation
+        };
 
     }
 

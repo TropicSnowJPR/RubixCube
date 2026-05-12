@@ -7,7 +7,7 @@ export class Piece {
     public readonly position: Position;
     public readonly rotation: Rotation;
     public readonly type: "CORNER" | "EDGE" | "CENTER" | "CORE";
-    public stickers: Sticker[];
+    public readonly stickers: Sticker[];
     public readonly id: number;
 
     constructor(

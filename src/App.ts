@@ -29,8 +29,11 @@ class App {
     private AnimationQueue: AnimationQueue;
 
     constructor(
+
         size: number
+
     ) {
+
         this.Size = size;
 
         this.Scene = new THREE.Scene();
@@ -89,9 +92,10 @@ class App {
         );
 
         this.InstancedPlaneMesh = new THREE.InstancedMesh(
+
             PlaneGeometry,
             new THREE.ShaderMaterial({
-                side: THREE.FrontSide,
+                side: THREE.DoubleSide,
                 transparent: true,
                 uniforms: {
                     atlas: { value: this.Atlas },
@@ -137,6 +141,7 @@ class App {
                 `
             }),
             InstancedPlaneCount
+
         );
 
         this.InstancedPlaneMesh.position.set( 0.5, 0.5, 0.5 );
@@ -173,11 +178,10 @@ class App {
 
             for ( const sticker of state.stickers ) {
 
-
-
                 const config = sideConfig[ sticker.side as keyof typeof sideConfig ];
 
                 if (config) {
+
                     const piece = state.position;
 
                     Dummy.position.set(
@@ -205,7 +209,9 @@ class App {
                     attr.needsUpdate = true;
 
                     InstancedPlaneMeshIterator -= 1;
+
                 }
+
             }
 
         }
@@ -224,8 +230,8 @@ class App {
         RotationHiderPlaneInner.rotation.set( 0, -Math.PI / 2, 0 );
         RotationHiderPlaneOuter.rotation.set( 0, Math.PI / 2, 0 );
 
-        this.Scene.add(RotationHiderPlaneInner);
-        this.Scene.add(RotationHiderPlaneOuter);
+        // this.Scene.add(RotationHiderPlaneInner);
+        // this.Scene.add(RotationHiderPlaneOuter);
 
         this.PressedKeys = {};
 
@@ -259,18 +265,33 @@ class App {
         else if ( this.PressedKeys["d"] )   { RotationFace = "EAST"; }
 
         for ( let i = 1; i <= 10; i += 1 ) {
+
             if ( this.PressedKeys[ i.toString( ) ] ) {
+
                 if ( i > Math.floor( this.Size / 2 ) ) {
                     break;
                 }
                 RotationDepth = i;
                 break;
+
+            }
+
+        }
+
+        if ((RotationFace && RotationType) && (RotationFace === "UP" || RotationFace === "DOWN")) {
+            if (RotationType === "COUNTERCLOCKWISE") {
+                RotationType = "CLOCKWISE";
+            } else if (RotationType === "CLOCKWISE") {
+                RotationType = "COUNTERCLOCKWISE";
             }
         }
 
         const RubiksCubeCopy = this.RubiksCube.clone()
 
+        const time = 0.3
+
         if ( RotationFace && this.counter <= 0 ) {
+
             this.AnimationQueue.addAnimation(
                 new Animation(
                     RubiksCubeCopy,
@@ -278,27 +299,34 @@ class App {
                     RotationDepth,
                     90,
                     RotationType,
-                    0.5,
+                    time,
                     this.Size,
                     this.Scene
                 )
             );
+
             this.RubiksCube.rotateLayer(
                 RotationFace,
                 RotationDepth - 1,
                 RotationType
             );
-            this.counter = 30
+
+            this.counter = parseInt((time * 60).toFixed(0))
             console.log( `Rotating ${RotationFace} layer ${RotationDepth} in ${RotationType} direction` );
+
         }
+
         this.counter -= 1;
 
         const currentAnimation = this.AnimationQueue.getCurrentAnimation()
 
 
         if ( currentAnimation ) {
+
             const objPositionList = currentAnimation.update( delta );
+
             if ( objPositionList ) {
+
                 for ( const objPosition of objPositionList ) {
 
 
@@ -328,9 +356,13 @@ class App {
 
                     this.InstancedPlaneMesh.computeBoundingBox( );
                 }
+
                 this.InstancedPlaneMesh.instanceMatrix.needsUpdate = true;
+
             } else {
+
                 throw new Error( "No current animation found, but expected one." );
+
             }
         }
 
@@ -341,4 +373,4 @@ class App {
 }
 
 
-const _CubeApp = new App( 4 )
+const _CubeApp = new App( 3 )
