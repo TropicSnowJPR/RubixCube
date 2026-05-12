@@ -7,13 +7,65 @@
         <meta charset="utf-8">
         <meta name="viewport" content="width=device-width, user-scalable=no, minimum-scale=1.0, maximum-scale=1.0">
         <link rel="icon" type="image/x-icon" href="/favicon.ico">
+        <link rel="preconnect" href="https://fonts.googleapis.com">
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+        <link href="https://fonts.googleapis.com/css2?family=Asap:ital,wght@0,100..900;1,100..900&family=JetBrains+Mono:ital,wght@0,100..800;1,100..800&family=Special+Gothic+Expanded+One&display=swap" rel="stylesheet">
         <link type="text/css" rel="stylesheet" href="main.css">
+
 
     </head>
 
     <body>
 
         <div id="scene-container"></div>
+        <div id="overlay">
+            <div class="legend">
+                <div class="legend-title">Controls</div>
+                <div class="legend-grid">
+                    <div class="legend-item">
+                        <img class="legend-key" src="./assets/other/letter-q.png" alt="Q">
+                        <span class="legend-label">To rotate top face</span>
+                    </div>
+                    <div class="legend-item">
+                        <img class="legend-key" src="./assets/other/letter-w.png" alt="W">
+                        <span class="legend-label">To rotate front face</span>
+                    </div>
+                    <div class="legend-item">
+                        <img class="legend-key" src="./assets/other/letter-e.png" alt="E">
+                        <span class="legend-label">To rotate bottom face</span>
+                    </div>
+                    <div class="legend-item">
+                        <img class="legend-key" src="./assets/other/letter-a.png" alt="A">
+                        <span class="legend-label">To rotate left face</span>
+                    </div>
+                    <div class="legend-item">
+                        <img class="legend-key" src="./assets/other/letter-s.png" alt="S">
+                        <span class="legend-label">To rotate back face</span>
+                    </div>
+                    <div class="legend-item">
+                        <img class="legend-key" src="./assets/other/letter-d.png" alt="D">
+                        <span class="legend-label">To rotate right face</span>
+                    </div>
+                    <div class="legend-item">
+                        <img class="legend-key" src="./assets/other/letter-r.png" alt="R">
+                        <span class="legend-label">To scamble the cube</span>
+                    </div>
+                    <div class="legend-item">
+                        <img class="legend-key" src="./assets/other/letter-x.png" alt="X">
+                        <span class="legend-label">Hold for counterclockwise</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div id="overlay-bottom">
+            <div class="legend">
+                <div class="legend-title">Moves</div>
+                <div class="legend-meta">
+                    <span class="legend-meta-label">Count:</span>
+                    <span id="move-count" class="legend-meta-value">0</span>
+                </div>
+            </div>
+        </div>
 
         <script type="importmap">
             {
@@ -26,6 +78,9 @@
 
         <script type="module" src="./src/App.ts"></script>
 
+        <a class="attribution" href="https://www.flaticon.com/free-icons/keyboard-key" title="keyboard key icons">
+            Keyboard key icons created by littleicon - Flaticon
+        </a>
     </body>
 
 </html>

@@ -2,7 +2,7 @@ import {Piece} from "./Piece";
 import {Sticker} from "./Sticker";
 import type {Side} from "./Side";
 import type {Direction} from "./Direction";
-import * as THREE from 'three';
+import type * as THREE from 'three';
 
 
 export class Cube {
@@ -13,7 +13,7 @@ export class Cube {
 
     constructor(
         size?: number,
-        empty: boolean = false,
+        empty = false,
         Scene?: THREE.Scene
     ) {
         if (Scene) {
@@ -93,7 +93,6 @@ export class Cube {
                 }
             }
 
-            console.log( this.state )
         }
 
     }
@@ -106,12 +105,12 @@ export class Cube {
             "SOUTH" |
             "UP" |
             "DOWN",
-        index: number
+        unformatedIndex: number
     ): Piece[] {
 
         const layerPieces: Piece[] = [];
 
-        index = Math.abs(index);
+        const index = Math.abs(unformatedIndex);
 
         for (const piece of this.state) {
             if (
@@ -400,6 +399,41 @@ export class Cube {
         });
 
         return cubeCopy;
+    }
+
+    isSolvedLike(other: Cube): boolean {
+        if (this.size !== other.size || this.state.length !== other.state.length) {
+            return false;
+        }
+
+        const otherById = new Map<number, Piece>();
+        for (const piece of other.state) {
+            otherById.set(piece.id, piece);
+        }
+
+        for (const piece of this.state) {
+            const target = otherById.get(piece.id);
+            if (!target) {
+                return false;
+            }
+
+            if (
+                piece.position.x !== target.position.x ||
+                piece.position.y !== target.position.y ||
+                piece.position.z !== target.position.z
+            ) {
+                return false;
+            }
+
+            const pieceSides = piece.stickers.map((sticker) => sticker.side).sort().join("|");
+            const targetSides = target.stickers.map((sticker) => sticker.side).sort().join("|");
+
+            if (pieceSides !== targetSides) {
+                return false;
+            }
+        }
+
+        return true;
     }
 
 }

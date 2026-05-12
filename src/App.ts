@@ -27,7 +27,9 @@ class App {
     private AtlasCols = 3;
     private LastTime: DOMHighResTimeStamp;
     private AnimationQueue: AnimationQueue;
-    private RandomLock: boolean = false;
+    private RandomLock = false;
+    private WinnerCube: Cube;
+    private movesCounter: number;
 
     constructor(
 
@@ -42,6 +44,8 @@ class App {
         this.Renderer = new THREE.WebGLRenderer( { antialias: true, alpha: true, powerPreference: "high-performance", precision: "highp" } );
         this.Controls = new OrbitControls( this.Camera, this.Renderer.domElement );
         this.Loader = new THREE.TextureLoader();
+
+        this.movesCounter = 0
 
         this.LastTime = performance.now();
 
@@ -244,6 +248,8 @@ class App {
             this.PressedKeys[ event.key.toLowerCase( ) ] = false;
         });
 
+        this.WinnerCube = this.RubiksCube.clone()
+
     }
 
     private animate(): void {
@@ -257,7 +263,7 @@ class App {
         let RotationDepth = 1;
 
         if (this.PressedKeys["r"] && this.RandomLock === false) {
-            this.addRandomAnimations(10000, 0.1);
+            this.addRandomAnimations(100, 0.05);
             this.RandomLock = true;
         }
 
@@ -294,7 +300,7 @@ class App {
 
         const RubiksCubeCopy = this.RubiksCube.clone()
 
-        const time = 0.3
+        const time = 0.2
 
         if ( RotationFace && this.counter <= 0 ) {
 
@@ -317,8 +323,17 @@ class App {
                 RotationType
             );
 
-            this.counter = parseInt((time * 60).toFixed(0))
-            console.log( `Rotating ${RotationFace} layer ${RotationDepth} in ${RotationType} direction` );
+            if ( this.RubiksCube.isSolvedLike(this.WinnerCube) ) {
+
+                console.log( "Congratulations, you solved the cube!" );
+
+            } else {
+                this.movesCounter += 1
+                const moveElement = document.querySelector("move-count")
+                moveElement.textContent = String(this.movesCounter)
+            }
+
+            this.counter = Number.parseInt((time * 60).toFixed(0), 10)
 
         }
 
