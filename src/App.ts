@@ -7,6 +7,7 @@ import {Animation} from "./Classes/Animation";
 import {AnimationQueue} from "./Classes/AnimationQueue";
 import type {Side} from "./Classes/Side";
 import type {Direction} from "./Classes/Direction";
+import { GamepadWrapper, BUTTONS, AXES } from 'gamepad-wrapper';
 
 
 class App {
@@ -23,7 +24,7 @@ class App {
     private counter = 0;
 
     private Atlas: THREE.Texture<HTMLImageElement>;
-    private AtlasRows = 3;
+    private AtlasRows = 2;
     private AtlasCols = 3;
     private LastTime: DOMHighResTimeStamp;
     private AnimationQueue: AnimationQueue;
@@ -33,6 +34,7 @@ class App {
     private CubeRotationHider: THREE.Mesh;
     private RotationHiderPlaneInner: THREE.Mesh<THREE.PlaneGeometry, THREE.MeshBasicMaterial, THREE.Object3DEventMap>;
     private RotationHiderPlaneOuter: THREE.Mesh<THREE.PlaneGeometry, THREE.MeshBasicMaterial, THREE.Object3DEventMap>;
+    private gamepadWrapper;
 
     constructor(
 
@@ -165,17 +167,17 @@ class App {
 
         const sideConfig = {
             SOUTH: {
-                uv:     [ 1 / this.AtlasCols, 2 / this.AtlasRows ] as [ number, number ],
-            }, NORTH: {
-                uv:     [ 2 / this.AtlasCols, 1 / this.AtlasRows ] as [ number, number ],
-            }, WEST: {
-                uv:     [ 2 / this.AtlasCols, 2 / this.AtlasRows ] as [ number, number ],
-            }, EAST: {
-                uv:     [ 0, 1 / this.AtlasRows ] as [ number, number ],
-            }, UP: {
                 uv:     [ 1 / this.AtlasCols, 1 / this.AtlasRows ] as [ number, number ],
+            }, NORTH: {
+                uv:     [ 2 / this.AtlasCols, 0 / this.AtlasRows ] as [ number, number ],
+            }, WEST: {
+                uv:     [ 2 / this.AtlasCols, 1 / this.AtlasRows ] as [ number, number ],
+            }, EAST: {
+                uv:     [ 0, 0 ] as [ number, number ],
+            }, UP: {
+                uv:     [ 1 / this.AtlasCols, 0 / this.AtlasRows ] as [ number, number ],
             }, DOWN: {
-                uv:     [ 0, 2 / this.AtlasRows ] as [ number, number ],
+                uv:     [ 2 / this.AtlasCols, 1 / this.AtlasRows ] as [ number, number ],
             },
         };
 
@@ -250,6 +252,10 @@ class App {
 
         document.addEventListener( "keyup", (event) => {
             this.PressedKeys[ event.key.toLowerCase( ) ] = false;
+        });
+
+        document.addEventListener('gamepadconnected', (event: unknown) => {
+            this.gamepadWrapper = new GamepadWrapper(event.gamepad);
         });
 
         this.WinnerCube = this.RubiksCube.clone()
@@ -332,6 +338,10 @@ class App {
             if ( this.RubiksCube.isSolvedLike(this.WinnerCube) ) {
 
                 console.log( "Congratulations, you solved the cube!" );
+
+                this.movesCounter = 0
+                const moveElement = document.getElementById("move-count")
+                moveElement.textContent = String(this.movesCounter)
 
             } else {
                 this.movesCounter += 1
@@ -526,4 +536,4 @@ class App {
 
 }
 
-const _CubeApp = new App( 3 )
+const _CubeApp = new App( 6 )

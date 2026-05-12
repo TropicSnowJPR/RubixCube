@@ -10,7 +10,7 @@ const images = fs
     .filter(f => /\.(png|jpg|jpeg)$/.test(f))
     .map(f => path.join(TEXTURE_DIR, f));
 
-const size = 256; // tile size (keep power of 2 for sanity)
+const size = 256*4; // tile size (keep power of 2 for sanity)
 const cols = Math.ceil(Math.sqrt(images.length));
 const rows = Math.ceil(images.length / cols);
 
