@@ -30,6 +30,9 @@ class App {
     private RandomLock = false;
     private WinnerCube: Cube;
     private movesCounter: number;
+    private CubeRotationHider: THREE.Mesh;
+    private RotationHiderPlaneInner: THREE.Mesh<THREE.PlaneGeometry, THREE.MeshBasicMaterial, THREE.Object3DEventMap>;
+    private RotationHiderPlaneOuter: THREE.Mesh<THREE.PlaneGeometry, THREE.MeshBasicMaterial, THREE.Object3DEventMap>;
 
     constructor(
 
@@ -60,6 +63,7 @@ class App {
         this.Controls.enableZoom = false;
         this.Controls.enablePan = false;
 
+        this.CubeRotationHider = new THREE.Mesh(new THREE.BoxGeometry(1-0.001, this.Size-0.001, this.Size-0.001), new THREE.MeshBasicMaterial({ color: 0x00_00_00, side: THREE.BackSide}) )
 
         this.Scene.add( new THREE.AmbientLight( 0xFF_FF_FF, 1 ) );
         this.Scene.add( new THREE.HemisphereLight( 0xFF_FF_FF, 0xFF_FF_FF, 1 ) );
@@ -226,17 +230,17 @@ class App {
 
         const RotationHiderPlaneMaterial = new THREE.MeshBasicMaterial( { color: 0x00_00_00, side: THREE.FrontSide } );
 
-        const RotationHiderPlaneInner = new THREE.Mesh( RotationHiderPlaneInnerGeometry, RotationHiderPlaneMaterial );
-        const RotationHiderPlaneOuter = new THREE.Mesh( RotationHiderPlaneOuterGeometry, RotationHiderPlaneMaterial );
+        this.RotationHiderPlaneInner = new THREE.Mesh( RotationHiderPlaneInnerGeometry, RotationHiderPlaneMaterial );
+        this.RotationHiderPlaneOuter = new THREE.Mesh( RotationHiderPlaneOuterGeometry, RotationHiderPlaneMaterial );
 
-        RotationHiderPlaneInner.position.set( 1, 0, 0 );
-        RotationHiderPlaneOuter.position.set( 1, 0, 0 );
+        this.RotationHiderPlaneInner.position.set( 1, 0, 0 );
+        this.RotationHiderPlaneOuter.position.set( 1, 0, 0 );
 
-        RotationHiderPlaneInner.rotation.set( 0, -Math.PI / 2, 0 );
-        RotationHiderPlaneOuter.rotation.set( 0, Math.PI / 2, 0 );
+        this.RotationHiderPlaneInner.rotation.set( 0, -Math.PI / 2, 0 );
+        this.RotationHiderPlaneOuter.rotation.set( 0, Math.PI / 2, 0 );
 
-        // this.Scene.add(RotationHiderPlaneInner);
-        // this.Scene.add(RotationHiderPlaneOuter);
+        this.Scene.add(this.RotationHiderPlaneInner);
+        this.Scene.add(this.RotationHiderPlaneOuter);
 
         this.PressedKeys = {};
 
@@ -249,6 +253,8 @@ class App {
         });
 
         this.WinnerCube = this.RubiksCube.clone()
+
+        this.Scene.add(this.CubeRotationHider)
 
     }
 
@@ -300,7 +306,7 @@ class App {
 
         const RubiksCubeCopy = this.RubiksCube.clone()
 
-        const time = 0.2
+        const time = 0.3
 
         if ( RotationFace && this.counter <= 0 ) {
 
@@ -329,7 +335,7 @@ class App {
 
             } else {
                 this.movesCounter += 1
-                const moveElement = document.querySelector("move-count")
+                const moveElement = document.getElementById("move-count")
                 moveElement.textContent = String(this.movesCounter)
             }
 
@@ -341,10 +347,107 @@ class App {
 
         const currentAnimation = this.AnimationQueue.getCurrentAnimation()
 
-
         if ( currentAnimation ) {
 
             const objPositionList = currentAnimation.update( delta );
+
+            if ( currentAnimation.side === "UP" ) {
+
+                this.CubeRotationHider.position.set( 0, this.Size / 2 - currentAnimation.depth + 0.5, 0 )
+                this.CubeRotationHider.rotation.set( 0, THREE.MathUtils.degToRad( objPositionList[1].rotation.yaw ), -Math.PI / 2 )
+
+                if (currentAnimation.depth > 1) {
+                    this.RotationHiderPlaneInner.position.set( 0, this.Size / 2 - currentAnimation.depth + 1 - 0.0001, 0 )
+                    this.RotationHiderPlaneInner.rotation.set( Math.PI / 2, 0, 0 )
+                } else {
+                    this.RotationHiderPlaneInner.position.set( 1_000_000, 1_000_000, 1_000_000 )
+                }
+
+                this.RotationHiderPlaneOuter.position.set( 0, this.Size / 2 - currentAnimation.depth + 0.0001, 0 )
+                this.RotationHiderPlaneOuter.rotation.set( -Math.PI / 2, 0, 0 )
+
+
+            } else if ( currentAnimation.side === "DOWN" ) {
+
+                this.CubeRotationHider.position.set( 0, currentAnimation.depth - this.Size / 2 - 0.5, 0 )
+                this.CubeRotationHider.rotation.set( 0, THREE.MathUtils.degToRad( objPositionList[1].rotation.yaw ), Math.PI / 2 )
+
+                if (currentAnimation.depth > 1) {
+                    this.RotationHiderPlaneInner.position.set( 0, currentAnimation.depth - this.Size / 2 - 1 - 0.0001, 0 )
+                    this.RotationHiderPlaneInner.rotation.set( -Math.PI / 2, 0, 0 )
+                } else {
+                    this.RotationHiderPlaneInner.position.set( 1_000_000, 1_000_000, 1_000_000 )
+                }
+
+                this.RotationHiderPlaneOuter.position.set( 0, currentAnimation.depth - this.Size / 2 + 0.0001, 0 )
+                this.RotationHiderPlaneOuter.rotation.set( Math.PI / 2, 0, 0 )
+
+
+            } else if ( currentAnimation.side === "NORTH" ) {
+
+                this.CubeRotationHider.position.set( 0, 0, this.Size / 2 - currentAnimation.depth + 0.5 )
+                this.CubeRotationHider.rotation.set( - Math.PI / 2, - THREE.MathUtils.degToRad( objPositionList[1].rotation.yaw ), - Math.PI / 2 )
+
+                if (currentAnimation.depth > 1) {
+                    this.RotationHiderPlaneInner.position.set( 0, 0, this.Size / 2 - currentAnimation.depth + 1 - 0.0001 )
+                    this.RotationHiderPlaneInner.rotation.set( Math.PI, 0, 0 )
+                } else {
+                    this.RotationHiderPlaneInner.position.set( 1_000_000, 1_000_000, 1_000_000 )
+                }
+
+                this.RotationHiderPlaneOuter.position.set( 0, 0, this.Size / 2 - currentAnimation.depth + 0.0001 )
+                this.RotationHiderPlaneOuter.rotation.set( 0, 0, 0 )
+
+
+            } else if ( currentAnimation.side === "SOUTH" ) {
+
+                this.CubeRotationHider.position.set( 0, 0, currentAnimation.depth - this.Size / 2 -  0.5 )
+                this.CubeRotationHider.rotation.set( - Math.PI / 2, - THREE.MathUtils.degToRad( objPositionList[1].rotation.yaw ), - Math.PI / 2 )
+
+                if (currentAnimation.depth > 1) {
+                    this.RotationHiderPlaneInner.position.set( 0, 0, currentAnimation.depth - this.Size / 2 - 1 - 0.0001 )
+                    this.RotationHiderPlaneInner.rotation.set( 0, 0, 0 )
+                } else {
+                    this.RotationHiderPlaneInner.position.set( 1_000_000, 1_000_000, 1_000_000 )
+                }
+
+                this.RotationHiderPlaneOuter.position.set( 0, 0, currentAnimation.depth - this.Size / 2 + 0.0001 )
+                this.RotationHiderPlaneOuter.rotation.set( Math.PI, 0, 0 )
+
+
+            } else if ( currentAnimation.side === "EAST" ) {
+
+                this.CubeRotationHider.position.set( this.Size / 2 - currentAnimation.depth + 0.5, 0, 0 )
+                this.CubeRotationHider.rotation.set( THREE.MathUtils.degToRad( objPositionList[1].rotation.pitch ), 0, 0 )
+
+                if (currentAnimation.depth > 1) {
+                    this.RotationHiderPlaneInner.position.set( this.Size / 2 - currentAnimation.depth + 1 - 0.0001, 0, 0 )
+                    this.RotationHiderPlaneInner.rotation.set( 0, -Math.PI / 2, -Math.PI / 2 )
+                } else {
+                    this.RotationHiderPlaneInner.position.set( 1_000_000, 1_000_000, 1_000_000 )
+                }
+
+                this.RotationHiderPlaneOuter.position.set( this.Size / 2 - currentAnimation.depth + 0.0001, 0, 0 )
+                this.RotationHiderPlaneOuter.rotation.set( 0, Math.PI / 2, -Math.PI / 2 )
+
+
+            } else if ( currentAnimation.side === "WEST" ) {
+
+                this.CubeRotationHider.position.set( currentAnimation.depth - this.Size / 2 -  0.5, 0, 0 )
+                this.CubeRotationHider.rotation.set( THREE.MathUtils.degToRad( objPositionList[1].rotation.pitch ), 0, 0 )
+
+                if (currentAnimation.depth > 1) {
+                    this.RotationHiderPlaneInner.position.set( currentAnimation.depth - this.Size / 2 - 1 - 0.0001, 0, 0 )
+                    this.RotationHiderPlaneInner.rotation.set( 0, Math.PI / 2, -Math.PI / 2 )
+                } else {
+                    this.RotationHiderPlaneInner.position.set( 1_000_000, 1_000_000, 1_000_000 )
+                }
+
+                this.RotationHiderPlaneOuter.position.set( currentAnimation.depth - this.Size / 2 + 0.0001, 0, 0 )
+                this.RotationHiderPlaneOuter.rotation.set( 0, -Math.PI / 2, -Math.PI / 2 )
+
+
+            }
 
             if ( objPositionList ) {
 
@@ -370,6 +473,8 @@ class App {
                         Yaw,
                         Roll
                     );
+
+
 
                     this.Dummy.updateMatrix( );
 
@@ -421,5 +526,4 @@ class App {
 
 }
 
-
-const _CubeApp = new App( 5 )
+const _CubeApp = new App( 3 )
