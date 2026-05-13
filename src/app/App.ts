@@ -73,12 +73,12 @@ class App {
 
         const image = this.Loader.load("./assets/other/cardinal-points.png");
 
-        const planeSize = 3 * this.Size;
+        const planeSize = 4 * this.Size;
         const planeGeo = new THREE.PlaneGeometry(planeSize, planeSize);
         const planeMat = new THREE.MeshBasicMaterial({ map: image, transparent: true });
         const plane = new THREE.Mesh(planeGeo, planeMat);
 
-        plane.position.set(0, -1.5 * this.Size, 0);
+        plane.position.set(0, -this.Size, 0);
 
         this.Scene.add(plane);
 
