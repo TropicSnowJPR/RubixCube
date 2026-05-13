@@ -2,11 +2,11 @@
 import * as THREE from 'three';
 
 import { OrbitControls } from 'three/examples/jsm/controls/OrbitControls.js';
-import {Cube} from "./Classes/Cube";
-import {Animation} from "./Classes/Animation";
-import {AnimationQueue} from "./Classes/AnimationQueue";
-import type {Side} from "./Classes/Side";
-import type {Direction} from "./Classes/Direction";
+import { Cube } from "./Classes/Cube";
+import { Animation } from "./Classes/Animation";
+import { AnimationQueue } from "./Classes/AnimationQueue";
+import type { Side } from "./Classes/Side";
+import type { Direction } from "./Classes/Direction";
 import { GamepadWrapper, BUTTONS, AXES } from 'gamepad-wrapper';
 
 
@@ -45,7 +45,7 @@ class App {
         this.Size = size;
 
         this.Scene = new THREE.Scene();
-        this.Camera = new THREE.PerspectiveCamera( 70, window.innerWidth / window.innerHeight, 0.1, 100_000 );
+        this.Camera = new THREE.PerspectiveCamera( 70, window.innerWidth / window.innerHeight, 0.1, 20_000 );
         this.Renderer = new THREE.WebGLRenderer( { antialias: true, alpha: true, powerPreference: "high-performance", precision: "highp" } );
         this.Controls = new OrbitControls( this.Camera, this.Renderer.domElement );
         this.Loader = new THREE.TextureLoader();
@@ -65,7 +65,7 @@ class App {
         this.Controls.enableZoom = false;
         this.Controls.enablePan = false;
 
-        this.CubeRotationHider = new THREE.Mesh(new THREE.BoxGeometry(1-0.001, this.Size-0.001, this.Size-0.001), new THREE.MeshBasicMaterial({ color: 0x00_00_00, side: THREE.BackSide}) )
+        this.CubeRotationHider = new THREE.Mesh(new THREE.BoxGeometry(1-0.005, this.Size-0.005, this.Size-0.005), new THREE.MeshBasicMaterial({ color: 0x00_00_00, side: THREE.BackSide}) )
 
         this.Scene.add( new THREE.AmbientLight( 0xFF_FF_FF, 1 ) );
         this.Scene.add( new THREE.HemisphereLight( 0xFF_FF_FF, 0xFF_FF_FF, 1 ) );
@@ -177,7 +177,7 @@ class App {
             }, UP: {
                 uv:     [ 1 / this.AtlasCols, 0 / this.AtlasRows ] as [ number, number ],
             }, DOWN: {
-                uv:     [ 2 / this.AtlasCols, 1 / this.AtlasRows ] as [ number, number ],
+                uv:     [ 0 / this.AtlasCols, 1 / this.AtlasRows ] as [ number, number ],
             },
         };
 
@@ -254,7 +254,8 @@ class App {
             this.PressedKeys[ event.key.toLowerCase( ) ] = false;
         });
 
-        document.addEventListener('gamepadconnected', (event: unknown) => {
+        document.addEventListener('gamepadconnected', (event: GamepadEvent) => {
+            console.log("Gamepad Connected")
             this.gamepadWrapper = new GamepadWrapper(event.gamepad);
         });
 
@@ -270,9 +271,160 @@ class App {
         const delta = ( now - this.LastTime ) / 1000;
         this.LastTime = now;
 
+        const offset = new THREE.Vector3();
+        offset.copy(this.Camera.position).sub(this.Controls.target);
+        const radius = offset.length();
+
+        let phi = THREE.MathUtils.radToDeg(Math.acos(offset.y / radius));
+        let theta = THREE.MathUtils.radToDeg(Math.atan2(offset.z, offset.x));
+
+        console.log(theta, phi);
+
         let RotationType: Direction = "CLOCKWISE";
         let RotationFace: Side | undefined = undefined;
         let RotationDepth = 1;
+
+        if (!this.gamepadWrapper) {
+            const pads = navigator.getGamepads();
+            const pad = pads.find((p): p is Gamepad => p !== null);
+            if (pad) {
+                this.gamepadWrapper = new GamepadWrapper(pad);
+            }
+        }
+
+        const pad = navigator.getGamepads()[0];
+        if (pad) {
+            const rawXLeft = (pad.axes[0] ?? 0);
+            const rawYLeft = (pad.axes[1] ?? 0);
+            const rawXRight = (pad.axes[2] ?? 0);
+            const rawYRight = (pad.axes[3] ?? 0);
+
+            // console.log( pad.buttons.map((b, i) => b.pressed ? `${i}` : null).filter(Boolean).join(",") || "none" );
+
+            const PressedButtons = pad.buttons.map((b, i) => b.pressed ? `${i}` : null).filter(Boolean);
+
+            for ( const p of PressedButtons ) {
+                switch (p) {
+                    case "1": {
+                        console.log("A")
+
+                        RotationFace = "EAST"
+
+                        break;
+                    }
+                    case "0": {
+                        console.log("B")
+
+                        RotationFace = "NORTH"
+
+                        break;
+                    }
+                    case "3": {
+                        console.log("X")
+
+                        RotationFace = "SOUTH"
+
+                        break;
+                    }
+                    case "2": {
+                        console.log("Y")
+
+                        RotationFace = "WEST"
+
+                        break;
+                    }
+                    case "4": {
+                        console.log("LEFT SHOULDER")
+
+                        RotationFace = "UP"
+
+                        break;
+                    }
+                    case "5": {
+                        console.log("RIGHT SHOULDER")
+
+                        RotationFace = "DOWN"
+
+                        break;
+                    }
+                    case "6": {
+                        console.log("LEFT TRIGGER")
+
+                        RotationFace = "UP"
+
+                        break;
+                    }
+                    case "7": {
+                        console.log("RIGHT TRIGGER")
+
+                        RotationFace = "DOWN"
+
+                        break;
+                    }
+                    case "8": {
+                        console.log("SELECT")
+                        break;
+                    }
+                    case "9": {
+                        console.log("START")
+
+                        if (this.RandomLock === false) {
+                            this.addRandomAnimations(100, 0.05);
+                            this.RandomLock = true;
+                        }
+
+                        break;
+                    }
+                    case "10": {
+                        console.log("LEFT THUMB")
+                        break;
+                    }
+                    case "11": {
+                        console.log("RIGHT THUMB")
+                        break;
+                    }
+                    case "12": {
+                        console.log("D-PAD UP")
+                        break;
+                    }
+                    case "13": {
+                        console.log("D-PAD DOWN")
+
+                        RotationType = "COUNTERCLOCKWISE";
+
+                        break;
+                    }
+                    case "14": {
+                        console.log("D-PAD LEFT")
+                        break;
+                    }
+                    case "15": {
+                        console.log("D-PAD RIGHT")
+                        break;
+                    }
+                    default: {
+                        console.log(`Button ${p} pressed`)
+                    }
+                }
+            }
+
+            theta -= Math.round(rawXLeft * 100) * 0.025
+            phi += Math.round(rawYLeft * 100) * 0.025
+
+            console.log("Left Stick", rawXLeft, rawYLeft, "|" , "Right Stick", rawXRight, rawYRight );
+        }
+
+        if (phi >= 179) {
+            phi = 179
+        } else if (phi <= 1) {
+            phi = 1
+        }
+
+        this.Camera.position.x = radius * Math.sin(THREE.MathUtils.degToRad(phi)) * Math.cos(THREE.MathUtils.degToRad(theta));
+        this.Camera.position.y = radius * Math.cos(THREE.MathUtils.degToRad(phi));
+        this.Camera.position.z = radius * Math.sin(THREE.MathUtils.degToRad(phi)) * Math.sin(THREE.MathUtils.degToRad(theta));
+
+        this.Camera.lookAt(0, 0, 0);
 
         if (this.PressedKeys["r"] && this.RandomLock === false) {
             this.addRandomAnimations(100, 0.05);
@@ -536,4 +688,4 @@ class App {
 
 }
 
-const _CubeApp = new App( 6 )
+const _CubeApp = new App( 3 )
