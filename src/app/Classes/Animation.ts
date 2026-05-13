@@ -67,8 +67,8 @@ export class Animation {
 
         const inLayer = (state: { position: Position }): boolean => {
 
-            if (this.side === "NORTH")  { return state.position.z === this.cube.size - 1 - layerIndex; }
-            if (this.side === "SOUTH")  { return state.position.z === layerIndex; }
+            if (this.side === "NORTH")  { return state.position.z === layerIndex; }
+            if (this.side === "SOUTH")  { return state.position.z === this.cube.size - 1 - layerIndex; }
             if (this.side === "EAST")   { return state.position.x === this.cube.size - 1 - layerIndex; }
             if (this.side === "WEST")   { return state.position.x === layerIndex; }
             if (this.side === "UP")     { return state.position.y === this.cube.size - 1 - layerIndex; }
@@ -144,7 +144,7 @@ export class Animation {
 
             switch ( this.side ) {
 
-                case "NORTH": { // Rotation Around the Z-Axis (Roll)
+                case "SOUTH": { // Rotation Around the Z-Axis (Roll)
 
                     const TransformedData = this.orbitTransform( CurrentPosition.x, CurrentPosition.y, signedAngle, CurrentRotation.roll );
 
@@ -154,7 +154,7 @@ export class Animation {
                         roll: 0
                     };
 
-                    if ( sticker.side === "NORTH" ) {
+                    if ( sticker.side === "SOUTH" ) {
 
                         UpdatedRotation = {
                             pitch: 0,
@@ -174,7 +174,7 @@ export class Animation {
 
                         UpdatedRotation = {
                             pitch: 90,
-                            yaw: TransformedData.rotation - 90,
+                            yaw: TransformedData.rotation + 90,
                             roll: 0,
                         };
 
@@ -220,7 +220,7 @@ export class Animation {
 
                 }
 
-                case "SOUTH": { // Rotation Around the Z-Axis (Roll)
+                case "NORTH": { // Rotation Around the Z-Axis (Roll)
 
                     const TransformedData = this.orbitTransform( CurrentPosition.x, CurrentPosition.y, -signedAngle, -CurrentRotation.roll );
 
@@ -230,7 +230,7 @@ export class Animation {
                         roll: 0
                     };
 
-                    if ( sticker.side === "SOUTH" ) {
+                    if ( sticker.side === "NORTH" ) {
 
                         UpdatedRotation = {
                             pitch: 0,

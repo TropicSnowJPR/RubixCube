@@ -164,9 +164,9 @@ class App {
         ) as THREE.InstancedBufferAttribute;
 
         const sideConfig = {
-            SOUTH: {
+            NORTH: {
                 uv:     [ 1 / this.AtlasCols, 1 / this.AtlasRows ] as [ number, number ],
-            }, NORTH: {
+            }, SOUTH: {
                 uv:     [ 2 / this.AtlasCols, 0 / this.AtlasRows ] as [ number, number ],
             }, WEST: {
                 uv:     [ 2 / this.AtlasCols, 1 / this.AtlasRows ] as [ number, number ],
@@ -608,4 +608,5 @@ class App {
 
 }
 
-const _CubeApp = new App( 3 )
+const CubeApp = new App( 4 )
+console.log( "CubeApp:", CubeApp );

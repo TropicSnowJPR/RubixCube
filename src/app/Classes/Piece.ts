@@ -11,6 +11,7 @@ export class Piece {
     public readonly id: number;
 
     constructor(
+
         id: number,
         x: number,
         y: number,
@@ -20,12 +21,23 @@ export class Piece {
         roll: number,
         type: "CORNER" | "EDGE" | "CENTER" | "CORE",
         stickers: Sticker[],
+
     ) {
-        this.position = { x, y, z };
-        this.rotation = { pitch, yaw, roll };
+
+        this.position = {
+            x,
+            y,
+            z
+        };
+        this.rotation = {
+            pitch,
+            yaw,
+            roll
+        };
         this.type = type
         this.stickers = stickers;
         this.id = id
+
     }
 
 }

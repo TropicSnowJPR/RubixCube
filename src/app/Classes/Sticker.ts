@@ -1,12 +1,12 @@
 import type {Position} from "./Position";
 import type {Side} from "./Side";
 import type {Rotation} from "./Rotation";
-
-
+import type {Color} from "./Color";
 
 export class Sticker {
 
     id: number;
+    color: Color;
     side: Side;
     positionOffset: Position;
     rotationOffset: Rotation;
@@ -14,11 +14,13 @@ export class Sticker {
     constructor(
 
         id: number,
+        color: Color,
         side: Side
 
     ) {
 
         this.id = id;
+        this.color = color
         this.side = side;
 
         this.updatePositionRotationOffset( side );
@@ -38,8 +40,8 @@ export class Sticker {
 
             case "NORTH": {
 
-                this.positionOffset = { x: 0, y: 0, z: 0.5 };
-                this.rotationOffset = { pitch: 0, yaw: 0, roll: 0 };
+                this.positionOffset = { x: 0, y: 0, z: -0.5 };
+                this.rotationOffset = { pitch: 0, yaw: 180, roll: 0 };
 
                 break;
 
@@ -65,8 +67,8 @@ export class Sticker {
 
             case "SOUTH": {
 
-                this.positionOffset = { x: 0, y: 0, z: -0.5 };
-                this.rotationOffset = { pitch: 0, yaw: 180, roll: 0 };
+                this.positionOffset = { x: 0, y: 0, z: 0.5 };
+                this.rotationOffset = { pitch: 0, yaw: 0, roll: 0 };
 
                 break;
 

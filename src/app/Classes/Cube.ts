@@ -3,7 +3,6 @@ import {Sticker} from "./Sticker";
 import type {Side} from "./Side";
 import type {Direction} from "./Direction";
 
-
 export class Cube {
 
     readonly size: number;
@@ -43,27 +42,27 @@ export class Cube {
                         const stickers: Sticker[] = [];
 
                         if (x === 0) {
-                            stickers.push(new Sticker(-1, "WEST"));
+                            stickers.push(new Sticker(-1, "ORANGE" , "WEST" ));
                         }
 
                         if (x === this.size - 1) {
-                            stickers.push(new Sticker(-1, "EAST"));
+                            stickers.push(new Sticker(-1, "RED" , "EAST"));
                         }
 
                         if (z === 0) {
-                            stickers.push(new Sticker(-1, "SOUTH"));
+                            stickers.push(new Sticker(-1, "GREEN" , "NORTH"));
                         }
 
                         if (z === this.size - 1) {
-                            stickers.push(new Sticker(-1, "NORTH"));
+                            stickers.push(new Sticker(-1, "BLUE" , "SOUTH"));
                         }
 
                         if (y === 0) {
-                            stickers.push(new Sticker(-1, "DOWN"));
+                            stickers.push(new Sticker(-1, "WHITE" , "DOWN"));
                         }
 
                         if (y === this.size - 1) {
-                            stickers.push(new Sticker(-1, "UP"));
+                            stickers.push(new Sticker(-1, "YELLOW" , "UP"));
                         }
 
                         const cubePiece = new Piece(
@@ -105,10 +104,10 @@ export class Cube {
 
         for (const piece of this.state) {
             if (
-                ( side === "NORTH" && piece.position.z === this.size - 1 - index ) ||
+                ( side === "NORTH" && piece.position.z === index ) ||
                 ( side === "EAST" && piece.position.x === this.size - 1 - index ) ||
                 ( side === "WEST" && piece.position.x === index ) ||
-                ( side === "SOUTH" && piece.position.z === index ) ||
+                ( side === "SOUTH" && piece.position.z === this.size - 1 - index ) ||
                 ( side === "UP" && piece.position.y === this.size - 1 - index ) ||
                 ( side === "DOWN" && piece.position.y === index )
             ) {
@@ -147,7 +146,7 @@ export class Cube {
             if (side === "NORTH") {
                 const relX = oldX - mid;
                 const relY = oldY - mid;
-                if (direction === "CLOCKWISE") {
+                if (direction === "COUNTERCLOCKWISE") {
                     piece.position.x = relY + mid;
                     piece.position.y = -relX + mid;
                 } else {
@@ -158,7 +157,7 @@ export class Cube {
             } else if (side === "SOUTH") {
                 const relX = oldX - mid;
                 const relY = oldY - mid;
-                if (direction === "COUNTERCLOCKWISE") {
+                if (direction === "CLOCKWISE") {
                     piece.position.x = relY + mid;
                     piece.position.y = -relX + mid;
                 } else {
@@ -264,86 +263,86 @@ export class Cube {
         const rotations = {
             WEST: {
                 CLOCKWISE: {
-                    UP: "NORTH",
-                    DOWN: "SOUTH",
-                    NORTH: "DOWN",
-                    SOUTH: "UP"
-                },
-                COUNTERCLOCKWISE: {
                     UP: "SOUTH",
                     DOWN: "NORTH",
                     NORTH: "UP",
                     SOUTH: "DOWN"
+                },
+                COUNTERCLOCKWISE: {
+                    UP: "NORTH",
+                    DOWN: "SOUTH",
+                    NORTH: "DOWN",
+                    SOUTH: "UP"
                 }
             },
             EAST: {
                 CLOCKWISE: {
-                    UP: "SOUTH",
-                    DOWN: "NORTH",
-                    NORTH: "UP",
-                    SOUTH: "DOWN"
-                },
-                COUNTERCLOCKWISE: {
                     UP: "NORTH",
                     DOWN: "SOUTH",
                     NORTH: "DOWN",
                     SOUTH: "UP"
+                },
+                COUNTERCLOCKWISE: {
+                    UP: "SOUTH",
+                    DOWN: "NORTH",
+                    NORTH: "UP",
+                    SOUTH: "DOWN"
                 }
             },
             SOUTH: {
                 CLOCKWISE: {
-                    UP: "WEST",
-                    DOWN: "EAST",
-                    EAST: "UP",
-                    WEST: "DOWN"
-                },
-                COUNTERCLOCKWISE: {
                     UP: "EAST",
                     DOWN: "WEST",
                     EAST: "DOWN",
                     WEST: "UP"
+                },
+                COUNTERCLOCKWISE: {
+                    UP: "WEST",
+                    DOWN: "EAST",
+                    EAST: "UP",
+                    WEST: "DOWN"
                 }
             },
             NORTH: {
                 CLOCKWISE: {
-                    UP: "EAST",
-                    DOWN: "WEST",
-                    EAST: "DOWN",
-                    WEST: "UP"
-                },
-                COUNTERCLOCKWISE: {
                     UP: "WEST",
                     DOWN: "EAST",
                     EAST: "UP",
                     WEST: "DOWN"
+                },
+                COUNTERCLOCKWISE: {
+                    UP: "EAST",
+                    DOWN: "WEST",
+                    EAST: "DOWN",
+                    WEST: "UP"
                 }
             },
             UP: {
                 CLOCKWISE: {
-                    NORTH: "EAST",
-                    SOUTH: "WEST",
-                    EAST: "SOUTH",
-                    WEST: "NORTH"
-                },
-                COUNTERCLOCKWISE: {
                     NORTH: "WEST",
                     SOUTH: "EAST",
                     EAST: "NORTH",
                     WEST: "SOUTH"
+                },
+                COUNTERCLOCKWISE: {
+                    NORTH: "EAST",
+                    SOUTH: "WEST",
+                    EAST: "SOUTH",
+                    WEST: "NORTH"
                 }
             },
             DOWN: {
                 CLOCKWISE: {
-                    NORTH: "WEST",
-                    SOUTH: "EAST",
-                    EAST: "NORTH",
-                    WEST: "SOUTH"
-                },
-                COUNTERCLOCKWISE: {
                     NORTH: "EAST",
                     SOUTH: "WEST",
                     EAST: "SOUTH",
                     WEST: "NORTH"
+                },
+                COUNTERCLOCKWISE: {
+                    NORTH: "WEST",
+                    SOUTH: "EAST",
+                    EAST: "NORTH",
+                    WEST: "SOUTH"
                 }
             }
         };
@@ -360,6 +359,7 @@ export class Cube {
 
                 const newSticker = new Sticker(
                     sticker.id,
+                    sticker.color,
                     sticker.side
                 );
 

@@ -51,4 +51,4 @@ async function buildAtlas() {
     console.log(`Grid: ${cols} x ${rows}, tiles: ${images.length}`);
 }
 
-buildAtlas();
+await buildAtlas();
