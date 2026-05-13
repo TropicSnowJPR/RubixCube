@@ -22,9 +22,9 @@ Notes
 - Runtime entrypoint: `index.html` loads `src/App.ts` as a module.
 - Default cube size is configured in `src/App.ts` at the bottom of the file (e.g. `new App(4)`). Change that number to test other NxN sizes.
 - Atlas image: `assets/atlas.png`. It's produced by `scripts/buildAtlas.js` from the files in `assets/textures/`.
-- `src/App.ts` currently hardcodes `AtlasRows` / `AtlasCols` (default 3x3). Ensure those match the atlas grid produced by `buildAtlas`.
-- The `build:atlas` npm script runs `tsx scripts/buildAtlas.js`. If `tsx` is not available, install it as a dev dependency (`npm i -D tsx`) or compile the script with `tsc` and run with `node`.
+- `src/App.ts` currently hardcodes `AtlasRows` / `AtlasCols` (default 2x3). Ensure those match the atlas grid produced by `buildAtlas`.
+- The `build:atlas` npm script currently runs `tsx scripts/buildAtlas.ts`, but the repo has `scripts/buildAtlas.js`. Update the script entry or rename the file before running.
+- If `tsx` is not available, install it as a dev dependency (`npm i -D tsx`) or compile the script with `tsc` and run with `node`.
 
 License
 - MIT (see `package.json`)
-
