@@ -7,7 +7,6 @@ import { Animation } from "./Classes/Animation";
 import { AnimationQueue } from "./Classes/AnimationQueue";
 import type { Side } from "./Classes/Side";
 import type { Direction } from "./Classes/Direction";
-import { GamepadWrapper, BUTTONS, AXES } from 'gamepad-wrapper';
 
 
 class App {
@@ -18,23 +17,22 @@ class App {
     public readonly Size: number;
     private readonly Loader: THREE.TextureLoader;
     public RubiksCube: Cube;
-    private InstancedPlaneMesh!: THREE.InstancedMesh;
+    private readonly InstancedPlaneMesh!: THREE.InstancedMesh;
     private Dummy = new THREE.Object3D();
     private readonly PressedKeys: Record<string, boolean> = {};
     private counter = 0;
 
-    private Atlas: THREE.Texture<HTMLImageElement>;
+    private readonly Atlas: THREE.Texture<HTMLImageElement>;
     private AtlasRows = 2;
     private AtlasCols = 3;
     private LastTime: DOMHighResTimeStamp;
     private AnimationQueue: AnimationQueue;
     private RandomLock = false;
-    private WinnerCube: Cube;
+    private readonly WinnerCube: Cube;
     private movesCounter: number;
-    private CubeRotationHider: THREE.Mesh;
-    private RotationHiderPlaneInner: THREE.Mesh<THREE.PlaneGeometry, THREE.MeshBasicMaterial, THREE.Object3DEventMap>;
-    private RotationHiderPlaneOuter: THREE.Mesh<THREE.PlaneGeometry, THREE.MeshBasicMaterial, THREE.Object3DEventMap>;
-    private gamepadWrapper;
+    private readonly CubeRotationHider: THREE.Mesh;
+    private readonly RotationHiderPlaneInner: THREE.Mesh<THREE.PlaneGeometry, THREE.MeshBasicMaterial, THREE.Object3DEventMap>;
+    private readonly RotationHiderPlaneOuter: THREE.Mesh<THREE.PlaneGeometry, THREE.MeshBasicMaterial, THREE.Object3DEventMap>;
 
     constructor(
 
@@ -82,7 +80,7 @@ class App {
 
         this.AnimationQueue = new AnimationQueue();
 
-        this.RubiksCube = new Cube( this.Size, false, this.Scene ); // :))))
+        this.RubiksCube = new Cube( this.Size, false); // :))))
 
         if ( this.RubiksCube.state.length !== this.Size ** 3 ) {
             throw new Error( "Cube state length does not match expected length" );
@@ -254,11 +252,6 @@ class App {
             this.PressedKeys[ event.key.toLowerCase( ) ] = false;
         });
 
-        document.addEventListener('gamepadconnected', (event: GamepadEvent) => {
-            console.log("Gamepad Connected")
-            this.gamepadWrapper = new GamepadWrapper(event.gamepad);
-        });
-
         this.WinnerCube = this.RubiksCube.clone()
 
         this.Scene.add(this.CubeRotationHider)
@@ -278,140 +271,71 @@ class App {
         let phi = THREE.MathUtils.radToDeg(Math.acos(offset.y / radius));
         let theta = THREE.MathUtils.radToDeg(Math.atan2(offset.z, offset.x));
 
-        console.log(theta, phi);
-
         let RotationType: Direction = "CLOCKWISE";
         let RotationFace: Side | undefined = undefined;
         let RotationDepth = 1;
 
-        if (!this.gamepadWrapper) {
-            const pads = navigator.getGamepads();
-            const pad = pads.find((p): p is Gamepad => p !== null);
-            if (pad) {
-                this.gamepadWrapper = new GamepadWrapper(pad);
-            }
-        }
-
-        const pad = navigator.getGamepads()[0];
+        const pads = navigator.getGamepads();
+        const pad = pads.find((p): p is Gamepad => p !== null);
         if (pad) {
             const rawXLeft = (pad.axes[0] ?? 0);
             const rawYLeft = (pad.axes[1] ?? 0);
-            const rawXRight = (pad.axes[2] ?? 0);
-            const rawYRight = (pad.axes[3] ?? 0);
 
-            // console.log( pad.buttons.map((b, i) => b.pressed ? `${i}` : null).filter(Boolean).join(",") || "none" );
-
-            const PressedButtons = pad.buttons.map((b, i) => b.pressed ? `${i}` : null).filter(Boolean);
+            const PressedButtons = pad.buttons.map((b, i) => b.pressed ? `${i}` : undefined).filter(Boolean);
 
             for ( const p of PressedButtons ) {
                 switch (p) {
                     case "1": {
-                        console.log("A")
-
                         RotationFace = "EAST"
-
                         break;
                     }
                     case "0": {
-                        console.log("B")
-
                         RotationFace = "NORTH"
-
                         break;
                     }
                     case "3": {
-                        console.log("X")
-
                         RotationFace = "SOUTH"
-
                         break;
                     }
                     case "2": {
-                        console.log("Y")
-
                         RotationFace = "WEST"
-
                         break;
                     }
                     case "4": {
-                        console.log("LEFT SHOULDER")
-
                         RotationFace = "UP"
-
                         break;
                     }
                     case "5": {
-                        console.log("RIGHT SHOULDER")
-
                         RotationFace = "DOWN"
-
                         break;
                     }
                     case "6": {
-                        console.log("LEFT TRIGGER")
-
                         RotationFace = "UP"
-
                         break;
                     }
                     case "7": {
-                        console.log("RIGHT TRIGGER")
-
                         RotationFace = "DOWN"
-
-                        break;
-                    }
-                    case "8": {
-                        console.log("SELECT")
                         break;
                     }
                     case "9": {
-                        console.log("START")
-
                         if (this.RandomLock === false) {
                             this.addRandomAnimations(100, 0.05);
                             this.RandomLock = true;
                         }
-
-                        break;
-                    }
-                    case "10": {
-                        console.log("LEFT THUMB")
-                        break;
-                    }
-                    case "11": {
-                        console.log("RIGHT THUMB")
-                        break;
-                    }
-                    case "12": {
-                        console.log("D-PAD UP")
                         break;
                     }
                     case "13": {
-                        console.log("D-PAD DOWN")
-
                         RotationType = "COUNTERCLOCKWISE";
-
-                        break;
-                    }
-                    case "14": {
-                        console.log("D-PAD LEFT")
-                        break;
-                    }
-                    case "15": {
-                        console.log("D-PAD RIGHT")
                         break;
                     }
                     default: {
-                        console.log(`Button ${p} pressed`)
+                        console.debug(`Button ${p} pressed`)
                     }
                 }
             }
 
             theta -= Math.round(rawXLeft * 100) * 0.025
             phi += Math.round(rawYLeft * 100) * 0.025
-
-            console.log("Left Stick", rawXLeft, rawYLeft, "|" , "Right Stick", rawXRight, rawYRight );
         }
 
         if (phi >= 179) {
@@ -488,18 +412,14 @@ class App {
             );
 
             if ( this.RubiksCube.isSolvedLike(this.WinnerCube) ) {
-
-                console.log( "Congratulations, you solved the cube!" );
-
+                console.debug( "Congratulations, you solved the cube!" );
                 this.movesCounter = 0
-                const moveElement = document.getElementById("move-count")
-                moveElement.textContent = String(this.movesCounter)
-
             } else {
                 this.movesCounter += 1
-                const moveElement = document.getElementById("move-count")
-                moveElement.textContent = String(this.movesCounter)
             }
+
+            const moveElement = document.querySelector("#move-count")
+            moveElement.textContent = String(this.movesCounter)
 
             this.counter = Number.parseInt((time * 60).toFixed(0), 10)
 

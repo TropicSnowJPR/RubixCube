@@ -1,7 +1,7 @@
 {
   "name": "rubixcube",
   "version": "1.0.0",
-  "private": true,
+  "private": false,
   "description": "",
   "license": "MIT",
   "author": "TropicSnowJPR",

@@ -1,10 +1,10 @@
 // oxlint-disable no-console
 import {Cube} from "./Cube";
 import * as THREE from "three";
-import {Position} from "./Position";
-import {Rotation} from "./Rotation";
-import {Side} from "./Side";
-import {Direction} from "./Direction";
+import type {Position} from "./Position";
+import type {Rotation} from "./Rotation";
+import type {Side} from "./Side";
+import type {Direction} from "./Direction";
 
 export class Animation {
 
@@ -148,7 +148,11 @@ export class Animation {
 
                     const TransformedData = this.orbitTransform( CurrentPosition.x, CurrentPosition.y, signedAngle, CurrentRotation.roll );
 
-                    let UpdatedRotation
+                    let UpdatedRotation: Rotation = {
+                        pitch: 0,
+                        yaw: 0,
+                        roll: 0
+                    };
 
                     if ( sticker.side === "NORTH" ) {
 
@@ -220,7 +224,11 @@ export class Animation {
 
                     const TransformedData = this.orbitTransform( CurrentPosition.x, CurrentPosition.y, -signedAngle, -CurrentRotation.roll );
 
-                    let UpdatedRotation
+                    let UpdatedRotation: Rotation = {
+                        pitch: 0,
+                        yaw: 0,
+                        roll: 0
+                    };
 
                     if ( sticker.side === "SOUTH" ) {
 
@@ -292,25 +300,18 @@ export class Animation {
 
                     const TransformedData = this.orbitTransform( CurrentPosition.x, CurrentPosition.z, signedAngle, CurrentRotation.yaw );
 
-                    let UpdatedRotation: Rotation;
-
-                    if ( sticker.side === "UP" ) {
-
-                        UpdatedRotation = {
+                    const UpdatedRotation = sticker.side === "UP"
+                        ? {
                             pitch: -90,
                             yaw: 0,
                             roll: -TransformedData.rotation
-                        };
-
-                    } else {
-
-                        UpdatedRotation = {
+                        }
+                        : {
                             pitch: CurrentRotation.pitch,
                             yaw: -TransformedData.rotation,
                             roll: CurrentRotation.roll
                         };
 
-                    }
 
                     const UpdatedPosition: Position = {
                         x: TransformedData.x,
@@ -331,25 +332,18 @@ export class Animation {
 
                     const TransformedData = this.orbitTransform( CurrentPosition.z, CurrentPosition.x, signedAngle, CurrentRotation.yaw );
 
-                    let UpdatedRotation: Rotation;
-
-                    if ( sticker.side === "DOWN" ) {
-
-                        UpdatedRotation = {
+                    const UpdatedRotation = sticker.side === "DOWN"
+                        ? {
                             pitch: 90,
                             yaw: 0,
                             roll: -TransformedData.rotation
-                        };
-
-                    } else {
-
-                        UpdatedRotation = {
+                        }
+                        : {
                             pitch: CurrentRotation.pitch,
                             yaw: TransformedData.rotation,
                             roll: CurrentRotation.roll
                         };
 
-                    }
 
                     const UpdatedPosition: Position = {
                         x: TransformedData.y,

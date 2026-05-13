@@ -2,24 +2,15 @@ import {Piece} from "./Piece";
 import {Sticker} from "./Sticker";
 import type {Side} from "./Side";
 import type {Direction} from "./Direction";
-import type * as THREE from 'three';
 
 
 export class Cube {
 
     readonly size: number;
     state: Piece[] = [];
-    private Scene: THREE.Scene;
 
-    constructor(
-        size?: number,
-        empty = false,
-        Scene?: THREE.Scene
-    ) {
-        if (Scene) {
-            this.Scene = Scene;
-        }
-        
+    constructor(size?: number, empty = false) {
+
         if (!size || size <= 1) {
             this.size = 3;
         } else if (size > 1) {
