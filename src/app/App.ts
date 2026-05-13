@@ -71,6 +71,19 @@ class App {
         dir.position.set( -this.Size, 2*this.Size, -this.Size );
         this.Scene.add( dir );
 
+        const image = this.Loader.load("./assets/other/cardinal-points.png");
+
+        const planeSize = 3 * this.Size;
+        const planeGeo = new THREE.PlaneGeometry(planeSize, planeSize);
+        const planeMat = new THREE.MeshBasicMaterial({ map: image, transparent: true });
+        const plane = new THREE.Mesh(planeGeo, planeMat);
+
+        plane.position.set(0, -1.5 * this.Size, 0);
+
+        this.Scene.add(plane);
+
+        plane.rotation.set(- Math.PI / 2, 0, 0);
+
         this.Atlas = this.Loader.load( "./assets/atlas.png" );
 
         this.Atlas.minFilter = THREE.NearestFilter;
@@ -465,10 +478,10 @@ class App {
                 this.RotationHiderPlaneOuter.rotation.set( Math.PI / 2, 0, 0 )
 
 
-            } else if ( currentAnimation.side === "NORTH" ) {
+            } else if ( currentAnimation.side === "SOUTH" ) {
 
                 this.CubeRotationHider.position.set( 0, 0, this.Size / 2 - currentAnimation.depth + 0.5 )
-                this.CubeRotationHider.rotation.set( - Math.PI / 2, - THREE.MathUtils.degToRad( objPositionList[1].rotation.yaw ), - Math.PI / 2 )
+                this.CubeRotationHider.rotation.set( - Math.PI / 2, - THREE.MathUtils.degToRad( objPositionList[6].rotation.yaw ), - Math.PI / 2 )
 
                 if (currentAnimation.depth > 1) {
                     this.RotationHiderPlaneInner.position.set( 0, 0, this.Size / 2 - currentAnimation.depth + 1 - 0.0001 )
@@ -481,10 +494,10 @@ class App {
                 this.RotationHiderPlaneOuter.rotation.set( 0, 0, 0 )
 
 
-            } else if ( currentAnimation.side === "SOUTH" ) {
+            } else if ( currentAnimation.side === "NORTH" ) {
 
                 this.CubeRotationHider.position.set( 0, 0, currentAnimation.depth - this.Size / 2 -  0.5 )
-                this.CubeRotationHider.rotation.set( - Math.PI / 2, - THREE.MathUtils.degToRad( objPositionList[1].rotation.yaw ), - Math.PI / 2 )
+                this.CubeRotationHider.rotation.set( - Math.PI / 2, - THREE.MathUtils.degToRad( objPositionList[6].rotation.yaw ), - Math.PI / 2 )
 
                 if (currentAnimation.depth > 1) {
                     this.RotationHiderPlaneInner.position.set( 0, 0, currentAnimation.depth - this.Size / 2 - 1 - 0.0001 )
