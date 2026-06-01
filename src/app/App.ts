@@ -621,5 +621,5 @@ class App {
 
 }
 
-const CubeApp = new App( 4 )
+const CubeApp = new App( 3 )
 console.log( "CubeApp:", CubeApp );

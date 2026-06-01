@@ -28,7 +28,7 @@
                     </div>
                     <div class="legend-item">
                         <img class="legend-key" src="./assets/other/letter-w.png" alt="W">
-                        <span class="legend-label">To rotate front face</span>
+                        <span class="legend-label">To rotate south face</span>
                     </div>
                     <div class="legend-item">
                         <img class="legend-key" src="./assets/other/letter-e.png" alt="E">
@@ -36,15 +36,15 @@
                     </div>
                     <div class="legend-item">
                         <img class="legend-key" src="./assets/other/letter-a.png" alt="A">
-                        <span class="legend-label">To rotate left face</span>
+                        <span class="legend-label">To rotate west face</span>
                     </div>
                     <div class="legend-item">
                         <img class="legend-key" src="./assets/other/letter-s.png" alt="S">
-                        <span class="legend-label">To rotate back face</span>
+                        <span class="legend-label">To rotate north face</span>
                     </div>
                     <div class="legend-item">
                         <img class="legend-key" src="./assets/other/letter-d.png" alt="D">
-                        <span class="legend-label">To rotate right face</span>
+                        <span class="legend-label">To rotate east face</span>
                     </div>
                     <div class="legend-item">
                         <img class="legend-key" src="./assets/other/letter-r.png" alt="R">
@@ -56,6 +56,14 @@
                     </div>
                 </div>
             </div>
+            <div class="overlay-actions">
+                <button class="overlay-action-button" type="button" data-overlay-action="remove" data-overlay-target="overlay" aria-label="Remove controls overlay">
+                    <svg class="overlay-action-icon" viewBox="0 0 24 24" aria-hidden="true" focusable="false">
+                        <line x1="6" y1="6" x2="18" y2="18"></line>
+                        <line x1="18" y1="6" x2="6" y2="18"></line>
+                    </svg>
+                </button>
+            </div>
         </div>
         <div id="overlay-bottom">
             <div class="legend">
@@ -65,7 +73,93 @@
                     <span id="move-count" class="legend-meta-value">0</span>
                 </div>
             </div>
+            <div class="overlay-actions">
+                <button class="overlay-action-button" type="button" data-overlay-action="hide" data-overlay-target="overlay-bottom" aria-label="Hide moves overlay">
+                    <svg class="overlay-action-icon" viewBox="0 0 24 24" aria-hidden="true" focusable="false">
+                        <path d="M2 12c2.5-4.5 6.5-7 10-7s7.5 2.5 10 7c-2.5 4.5-6.5 7-10 7s-7.5-2.5-10-7z"></path>
+                        <circle cx="12" cy="12" r="3"></circle>
+                    </svg>
+                </button>
+            </div>
         </div>
+        <div id="overlay-userprofile" class="overlay-panel">
+            <div class="legend">
+                <div class="legend-title">User Profile</div>
+                <div class="legend-grid">
+                    <div class="legend-item">
+                        <span class="legend-label">Name:</span>
+                        <span id="user-name" class="legend-meta-value">Guest</span>
+                    </div>
+                    <div class="legend-item">
+                        <span class="legend-label">Rank:</span>
+                        <span id="user-rank" class="legend-meta-value">Rookie</span>
+                    </div>
+                    <div class="legend-item">
+                        <span class="legend-label">Best Time:</span>
+                        <span id="user-best-time" class="legend-meta-value">--:--</span>
+                    </div>
+                </div>
+            </div>
+            <div class="overlay-actions">
+                <button class="overlay-action-button" type="button" data-overlay-action="hide" data-overlay-target="overlay-userprofile" aria-label="Hide user profile overlay">
+                    <svg class="overlay-action-icon" viewBox="0 0 24 24" aria-hidden="true" focusable="false">
+                        <path d="M2 12c2.5-4.5 6.5-7 10-7s7.5 2.5 10 7c-2.5 4.5-6.5 7-10 7s-7.5-2.5-10-7z"></path>
+                        <circle cx="12" cy="12" r="3"></circle>
+                    </svg>
+                </button>
+            </div>
+        </div>
+        <div id="overlay-scoreboard" class="overlay-panel overlay-collapsed" aria-hidden="true">
+            <div class="legend">
+                <div class="legend-title">Scoreboard</div>
+                <div class="legend-grid">
+                    <div class="legend-item">
+                        <span class="legend-label">Today:</span>
+                        <span id="score-today" class="legend-meta-value">0</span>
+                    </div>
+                    <div class="legend-item">
+                        <span class="legend-label">Weekly:</span>
+                        <span id="score-weekly" class="legend-meta-value">0</span>
+                    </div>
+                    <div class="legend-item">
+                        <span class="legend-label">All Time:</span>
+                        <span id="score-alltime" class="legend-meta-value">0</span>
+                    </div>
+                </div>
+            </div>
+            <div class="overlay-actions">
+                <button class="overlay-action-button" type="button" data-overlay-action="hide" data-overlay-target="overlay-scoreboard" aria-label="Hide scoreboard overlay">
+                    <svg class="overlay-action-icon" viewBox="0 0 24 24" aria-hidden="true" focusable="false">
+                        <path d="M2 12c2.5-4.5 6.5-7 10-7s7.5 2.5 10 7c-2.5 4.5-6.5 7-10 7s-7.5-2.5-10-7z"></path>
+                        <circle cx="12" cy="12" r="3"></circle>
+                    </svg>
+                </button>
+            </div>
+        </div>
+
+        <script>
+            document.querySelectorAll("[data-overlay-action]").forEach((button) => {
+                button.addEventListener("click", () => {
+                    const targetId = button.getAttribute("data-overlay-target");
+                    const action = button.getAttribute("data-overlay-action");
+                    const overlay = targetId ? document.getElementById(targetId) : null;
+
+                    if (!overlay) {
+                        return;
+                    }
+
+                    if (action === "remove") {
+                        overlay.remove();
+                        return;
+                    }
+
+                    if (action === "hide") {
+                        const isCollapsed = overlay.classList.toggle("overlay-collapsed");
+                        overlay.setAttribute("aria-hidden", isCollapsed ? "true" : "false");
+                    }
+                });
+            });
+        </script>
 
         <script type="importmap">
             {

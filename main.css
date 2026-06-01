@@ -26,13 +26,89 @@ body {
 #overlay-bottom {
     position: fixed;
     display: block;
-    width: 160px;
+    width: 260px;
     height: 90px;
-    left: 10px;
+    right: 10px;
     bottom: 10px;
     border-radius: 20px;
     background-color: rgba(0, 0, 0, 0.6);
     z-index: 2;
+}
+
+.overlay-panel {
+    position: fixed;
+    display: block;
+    width: 260px;
+    max-height: 220px;
+    border-radius: 20px;
+    background-color: rgba(0, 0, 0, 0.6);
+    z-index: 2;
+}
+
+#overlay-userprofile {
+    top: 10px;
+    right: 10px;
+}
+
+#overlay-scoreboard {
+    right: 10px;
+    top: 50%;
+    transform: translateY(-50%);
+}
+
+.overlay-actions {
+    position: absolute;
+    top: 10px;
+    right: 10px;
+    display: flex;
+    gap: 8px;
+}
+
+.overlay-action-button {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 32px;
+    height: 32px;
+    padding: 0;
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    border-radius: 10px;
+    background-color: rgba(0, 0, 0, 0.55);
+    color: #f2f2f2;
+    cursor: pointer;
+}
+
+.overlay-action-button:hover {
+    border-color: rgba(255, 255, 255, 0.35);
+    background-color: rgba(0, 0, 0, 0.7);
+}
+
+.overlay-action-icon {
+    width: 16px;
+    height: 16px;
+    fill: none;
+    stroke: currentColor;
+    stroke-width: 2;
+    stroke-linecap: round;
+    stroke-linejoin: round;
+}
+
+.overlay-collapsed {
+    width: 52px;
+    height: 52px;
+    max-height: 52px;
+    max-width: 52px;
+}
+
+.overlay-collapsed .legend {
+    display: none;
+}
+
+.overlay-collapsed .overlay-actions {
+    position: static;
+    height: 100%;
+    align-items: center;
+    justify-content: center;
 }
 
 .legend {
@@ -82,7 +158,7 @@ body {
 
 .attribution {
     position: fixed;
-    right: 8px;
+    left: 8px;
     bottom: 8px;
     font-size: 11px;
     color: #bbb;
