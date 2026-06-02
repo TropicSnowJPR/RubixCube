@@ -113,18 +113,15 @@
             <div class="legend">
                 <div class="legend-title">Scoreboard</div>
                 <div class="legend-grid">
-                    <div class="legend-item">
-                        <span class="legend-label">Today:</span>
-                        <span id="score-today" class="legend-meta-value">0</span>
-                    </div>
-                    <div class="legend-item">
-                        <span class="legend-label">Weekly:</span>
-                        <span id="score-weekly" class="legend-meta-value">0</span>
-                    </div>
-                    <div class="legend-item">
-                        <span class="legend-label">All Time:</span>
-                        <span id="score-alltime" class="legend-meta-value">0</span>
-                    </div>
+                    <table class="scoreboard-table">
+                        <tbody id="scoreboard-table-body">
+                            <tr>
+                                <th class="scoreboard-table-header-text" style="text-align: left">Name:</th>
+                                <th class="scoreboard-table-header-text" style="text-align: left">Moves:</th>
+                                <th class="scoreboard-table-header-text" style="text-align: left">Time:</th>
+                            </tr>
+                        </tbody>
+                    </table>
                 </div>
             </div>
             <div class="overlay-actions">

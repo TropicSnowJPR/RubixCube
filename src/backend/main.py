@@ -1,4 +1,5 @@
 from fastapi import FastAPI, Response, Cookie, Form
+from fastapi.middleware.cors import CORSMiddleware  # Importieren Sie die Middleware
 from typing import Annotated
 import bcrypt
 import secrets
@@ -15,53 +16,36 @@ def generate_token_for_user(user_id: int, db_manager: SQLite.SQLiteDBManager) ->
 
 
 
+
+
 class Server:
+    """SomeDocString"""
     def __init__(self):
         self.app = FastAPI(
             title="rubix-backend",
             version="1.0.0",
         )
         self.db_manager = SQLite.SQLiteDBManager()
+
+        self.app.add_middleware(
+            CORSMiddleware,
+            allow_origins=["http://localhost:5173", "http://127.0.0.1:5173"],
+            allow_credentials=True,
+            allow_methods=["*"],
+            allow_headers=["*"],
+        )
     
-    def setRoutes(self):
+    def set_routes(self) -> None:
         @self.app.get("/active")
         async def root():
             return {
                 "success": "true"
             }
 
-        @self.app.get("/user/all")
-        async def get_all_users(token_cookie: Annotated[str | None, Cookie()] = None):
-            return {
-                "users": [
-                    {
-                        "id": 1,
-                        "name": ""
-                    }
-                ],
-                "success": True
-            }
-
-        @self.app.post("/user/score/{user_id}")
-        async def get_user_score(user_id: int, token_cookie: Annotated[str | None, Cookie()] = None):
-            return {
-                "score": 1,
-                "user_id": user_id,
-                "success": True
-            }
-
-        @self.app.get("/user/{user_id}")
-        async def get_user(user_id: int, token_cookie: Annotated[str | None, Cookie()] = None):
-            return {
-                "id": user_id,
-                "name": "",
-                "success": True
-            }
-
         @self.app.post("/user/create")
         async def create_user(username: Annotated[str, Form()], password: Annotated[str, Form()]):
-            self.db_manager.queryDB("SELECT id FROM Users WHERE username = ?", (username,))
-            if self.db_manager.cursor.fetchone():
+            user = self.db_manager.queryDB("SELECT id FROM Users WHERE username = ?", (username,))
+            if user == 1:
                 return {
                     "success": False,
                     "message": "Username already exists"
@@ -93,13 +77,13 @@ class Server:
             user_id, stored_password_hash = result[0]
 
             if bcrypt.checkpw(password.encode('utf-8'), stored_password_hash):
-                self.db_manager.queryDB("SELECT token FROM Tokens WHERE user_id = ?", (user_id,))
-                token_result = self.db_manager.cursor.fetchone()
+                token_result = self.db_manager.queryDB("SELECT token FROM Tokens WHERE user_id = ?", (user_id,))
                 if token_result:
                     token = token_result[0]
                 else:
                     token = generate_token_for_user(user_id, self.db_manager)
                 response.set_cookie(key="token", value=token, httponly=True)
+                
                 return {
                     "id": user_id,
                     "success": True
@@ -112,35 +96,39 @@ class Server:
             }
             
         @self.app.post("/user/logout")
-        async def logout_user(token_cookie: Annotated[str | None, Cookie()] = None, response: Response = None):
+        async def logout_user(response: Response = None):
             if response:
                 response.delete_cookie(key="token")
             return {
                 "success": True
             }
             
-        @self.app.get("/user/me")
+        @self.app.post("/user/score/me")
         async def get_current_user(token_cookie: Annotated[str | None, Cookie()] = None):
             if not token_cookie:
                 return {
                     "success": False,
                     "message": "Not authenticated"
                 }
-            self.db_manager.queryDB("SELECT user_id FROM Tokens WHERE token = ?", (token_cookie,))
-            result = self.db_manager.cursor.fetchone()
+            result = self.db_manager.queryDB("SELECT user_id FROM Tokens WHERE token = ?", (token_cookie,))
             if not result:
                 return {
                     "success": False,
                     "message": "Invalid token"
                 }
             user_id = result[0]
-            self.db_manager.queryDB("SELECT username FROM Users WHERE id = ?", (user_id,))
-            user_result = self.db_manager.cursor.fetchone()
-            if not user_result:
+            user_result = self.db_manager.queryDB("SELECT username FROM Users WHERE id = ?", (user_id,))
+            if not user_result[0]:
                 return {
                     "success": False,
                     "message": "User not found"
                 }
+            if len(user_result) > 1:
+                return {
+                    "success": False,
+                    "message": "Internal Server Error"
+                }
+                    
             username = user_result[0]
             return {
                 "id": user_id,
@@ -151,8 +139,7 @@ class Server:
         @self.app.post("/score/best")
         async def get_best_scores(cube_size: Annotated[int, Form()]):
             
-            # select best scores for completed games of the given cube size
-            self.db_manager.queryDB(
+            scores = self.db_manager.queryDB(
                 """
                 SELECT Scores.user_id, Users.username, Scores.moves_count, Scores.solve_time_ms
                 FROM Scores
@@ -164,7 +151,6 @@ class Server:
                 """,
                 (cube_size,)
             )
-            scores = self.db_manager.cursor.fetchall()
 
             print(scores)
 
@@ -183,5 +169,5 @@ class Server:
 
 
 server = Server()
-server.setRoutes()
+server.set_routes()
 app = server.app

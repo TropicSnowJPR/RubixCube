@@ -34,57 +34,61 @@ class App {
     private readonly RotationHiderPlaneInner: THREE.Mesh<THREE.PlaneGeometry, THREE.MeshBasicMaterial, THREE.Object3DEventMap>;
     private readonly RotationHiderPlaneOuter: THREE.Mesh<THREE.PlaneGeometry, THREE.MeshBasicMaterial, THREE.Object3DEventMap>;
 
-    constructor(
-
-        size: number
-
-    ) {
+    constructor(size: number) {
 
         this.Size = size;
 
         this.Scene = new THREE.Scene();
-        this.Camera = new THREE.PerspectiveCamera( 70, window.innerWidth / window.innerHeight, 0.1, 20_000 );
-        this.Renderer = new THREE.WebGLRenderer( { antialias: true, alpha: true, powerPreference: "high-performance", precision: "highp" } );
-        this.Controls = new OrbitControls( this.Camera, this.Renderer.domElement );
+        this.Camera = new THREE.PerspectiveCamera(70, window.innerWidth / window.innerHeight, 0.1, 20_000);
+        this.Renderer = new THREE.WebGLRenderer({
+            antialias: true,
+            alpha: true,
+            powerPreference: "high-performance",
+            precision: "highp"
+        });
+        this.Controls = new OrbitControls(this.Camera, this.Renderer.domElement);
         this.Loader = new THREE.TextureLoader();
 
         this.movesCounter = 0
 
         this.LastTime = performance.now();
 
-        this.Renderer.setSize( window.innerWidth, window.innerHeight );
-        this.Renderer.setPixelRatio( window.devicePixelRatio );
-        this.Renderer.setAnimationLoop( this.animate.bind(this) );
+        this.Renderer.setSize(window.innerWidth, window.innerHeight);
+        this.Renderer.setPixelRatio(window.devicePixelRatio);
+        this.Renderer.setAnimationLoop(this.animate.bind(this));
 
-        document.body.append( this.Renderer.domElement );
+        document.body.append(this.Renderer.domElement);
 
-        this.Camera.position.set( ( this.Size ), ( this.Size ), ( this.Size ) );
+        this.Camera.position.set((this.Size), (this.Size), (this.Size));
         this.Controls.enableDamping = true;
         this.Controls.enableZoom = false;
         this.Controls.enablePan = false;
 
-        this.CubeRotationHider = new THREE.Mesh(new THREE.BoxGeometry(1-0.005, this.Size-0.005, this.Size-0.005), new THREE.MeshBasicMaterial({ color: 0x00_00_00, side: THREE.BackSide}) )
+        this.CubeRotationHider = new THREE.Mesh(new THREE.BoxGeometry(1 - 0.005, this.Size - 0.005, this.Size - 0.005), new THREE.MeshBasicMaterial({
+            color: 0x00_00_00,
+            side: THREE.BackSide
+        }))
 
-        this.Scene.add( new THREE.AmbientLight( 0xFF_FF_FF, 1 ) );
-        this.Scene.add( new THREE.HemisphereLight( 0xFF_FF_FF, 0xFF_FF_FF, 1 ) );
-        const dir = new THREE.DirectionalLight( 0xFF_FF_FF, 2 );
-        dir.position.set( -this.Size, 2*this.Size, -this.Size );
-        this.Scene.add( dir );
+        this.Scene.add(new THREE.AmbientLight(0xFF_FF_FF, 1));
+        this.Scene.add(new THREE.HemisphereLight(0xFF_FF_FF, 0xFF_FF_FF, 1));
+        const dir = new THREE.DirectionalLight(0xFF_FF_FF, 2);
+        dir.position.set(-this.Size, 2 * this.Size, -this.Size);
+        this.Scene.add(dir);
 
         const image = this.Loader.load("./assets/other/cardinal-points.png");
 
         const planeSize = 4 * this.Size;
         const planeGeo = new THREE.PlaneGeometry(planeSize, planeSize);
-        const planeMat = new THREE.MeshBasicMaterial({ map: image, transparent: true });
+        const planeMat = new THREE.MeshBasicMaterial({map: image, transparent: true});
         const plane = new THREE.Mesh(planeGeo, planeMat);
 
         plane.position.set(0, -this.Size, 0);
 
         this.Scene.add(plane);
 
-        plane.rotation.set(- Math.PI / 2, 0, 0);
+        plane.rotation.set(-Math.PI / 2, 0, 0);
 
-        this.Atlas = this.Loader.load( "./assets/atlas.png" );
+        this.Atlas = this.Loader.load("./assets/atlas.png");
 
         this.Atlas.minFilter = THREE.NearestFilter;
         this.Atlas.magFilter = THREE.NearestFilter;
@@ -93,39 +97,29 @@ class App {
 
         this.AnimationQueue = new AnimationQueue();
 
-        this.RubiksCube = new Cube( this.Size, false); // :))))
+        this.RubiksCube = new Cube(this.Size, false); // :))))
 
-        if ( this.RubiksCube.state.length !== this.Size ** 3 ) {
-            throw new Error( "Cube state length does not match expected length" );
+        if (this.RubiksCube.state.length !== this.Size ** 3) {
+            throw new Error("Cube state length does not match expected length");
         }
 
         const Dummy = new THREE.Object3D();
 
-        const PlaneGeometry = new THREE.PlaneGeometry( 1, 1 );
+        const PlaneGeometry = new THREE.PlaneGeometry(1, 1);
 
 
         const InstancedPlaneCount = 6 * this.Size * this.Size;
 
-        const uvOffsets = new Float32Array( InstancedPlaneCount * 2 );
+        const uvOffsets = new Float32Array(InstancedPlaneCount * 2);
 
-        PlaneGeometry.setAttribute(
-            "uvOffset",
-            new THREE.InstancedBufferAttribute( uvOffsets, 2 )
-        );
+        PlaneGeometry.setAttribute("uvOffset", new THREE.InstancedBufferAttribute(uvOffsets, 2));
 
-        this.InstancedPlaneMesh = new THREE.InstancedMesh(
+        this.InstancedPlaneMesh = new THREE.InstancedMesh(PlaneGeometry, new THREE.ShaderMaterial({
+            side: THREE.DoubleSide, transparent: true, uniforms: {
+                atlas: {value: this.Atlas}, cols: {value: this.AtlasCols}, rows: {value: this.AtlasRows}
+            },
 
-            PlaneGeometry,
-            new THREE.ShaderMaterial({
-                side: THREE.DoubleSide,
-                transparent: true,
-                uniforms: {
-                    atlas: { value: this.Atlas },
-                    cols: { value: this.AtlasCols },
-                    rows: { value: this.AtlasRows }
-                },
-
-                vertexShader: `
+            vertexShader: `
                     attribute vec2 uvOffset;
                 
                     varying vec2 vUv;
@@ -143,7 +137,7 @@ class App {
                     }
                   `,
 
-                fragmentShader: `
+            fragmentShader: `
                     uniform sampler2D atlas;
                     uniform float cols;
                     uniform float rows;
@@ -161,72 +155,59 @@ class App {
                         gl_FragColor = color;
                     }
                 `
-            }),
-            InstancedPlaneCount
+        }), InstancedPlaneCount);
 
-        );
+        this.InstancedPlaneMesh.position.set(0.5, 0.5, 0.5);
 
-        this.InstancedPlaneMesh.position.set( 0.5, 0.5, 0.5 );
-
-        this.Scene.add( this.InstancedPlaneMesh );
+        this.Scene.add(this.InstancedPlaneMesh);
 
         let InstancedPlaneMeshIterator = InstancedPlaneCount - 1;
 
-        const attr = this.InstancedPlaneMesh.geometry.getAttribute(
-            "uvOffset"
-        ) as THREE.InstancedBufferAttribute;
+        const attr = this.InstancedPlaneMesh.geometry.getAttribute("uvOffset") as THREE.InstancedBufferAttribute;
 
         const sideConfig = {
             NORTH: {
-                uv:     [ 1 / this.AtlasCols, 1 / this.AtlasRows ] as [ number, number ],
+                uv: [1 / this.AtlasCols, 1 / this.AtlasRows] as [number, number],
             }, SOUTH: {
-                uv:     [ 2 / this.AtlasCols, 0 / this.AtlasRows ] as [ number, number ],
+                uv: [2 / this.AtlasCols, 0 / this.AtlasRows] as [number, number],
             }, WEST: {
-                uv:     [ 2 / this.AtlasCols, 1 / this.AtlasRows ] as [ number, number ],
+                uv: [2 / this.AtlasCols, 1 / this.AtlasRows] as [number, number],
             }, EAST: {
-                uv:     [ 0, 0 ] as [ number, number ],
+                uv: [0, 0] as [number, number],
             }, UP: {
-                uv:     [ 1 / this.AtlasCols, 0 / this.AtlasRows ] as [ number, number ],
+                uv: [1 / this.AtlasCols, 0 / this.AtlasRows] as [number, number],
             }, DOWN: {
-                uv:     [ 0 / this.AtlasCols, 1 / this.AtlasRows ] as [ number, number ],
+                uv: [0 / this.AtlasCols, 1 / this.AtlasRows] as [number, number],
             },
         };
 
-        for ( const state of this.RubiksCube.state ) {
+        for (const state of this.RubiksCube.state) {
 
-            if ( state.type === "CORE" ) {
+            if (state.type === "CORE") {
                 continue;
             }
 
-            for ( const sticker of state.stickers ) {
+            for (const sticker of state.stickers) {
 
-                const config = sideConfig[ sticker.side as keyof typeof sideConfig ];
+                const config = sideConfig[sticker.side as keyof typeof sideConfig];
 
                 if (config) {
 
                     const piece = state.position;
 
-                    Dummy.position.set(
-                        piece.x + sticker.positionOffset.x - this.Size / 2,
-                        piece.y + sticker.positionOffset.y - this.Size / 2,
-                        piece.z + sticker.positionOffset.z - this.Size / 2
-                    );
+                    Dummy.position.set(piece.x + sticker.positionOffset.x - this.Size / 2, piece.y + sticker.positionOffset.y - this.Size / 2, piece.z + sticker.positionOffset.z - this.Size / 2);
 
-                    Dummy.rotation.set(
-                        THREE.MathUtils.degToRad(sticker.rotationOffset.pitch),
-                        THREE.MathUtils.degToRad(sticker.rotationOffset.yaw),
-                        THREE.MathUtils.degToRad(sticker.rotationOffset.roll)
-                    );
+                    Dummy.rotation.set(THREE.MathUtils.degToRad(sticker.rotationOffset.pitch), THREE.MathUtils.degToRad(sticker.rotationOffset.yaw), THREE.MathUtils.degToRad(sticker.rotationOffset.roll));
 
                     Dummy.updateMatrix();
 
                     sticker.id = InstancedPlaneMeshIterator
 
-                    this.InstancedPlaneMesh.setMatrixAt( InstancedPlaneMeshIterator, Dummy.matrix );
+                    this.InstancedPlaneMesh.setMatrixAt(InstancedPlaneMeshIterator, Dummy.matrix);
 
                     this.InstancedPlaneMesh.instanceMatrix.needsUpdate = true;
 
-                    attr.setXY( InstancedPlaneMeshIterator, config.uv[ 0 ], config.uv[ 1 ] );
+                    attr.setXY(InstancedPlaneMeshIterator, config.uv[0], config.uv[1]);
 
                     attr.needsUpdate = true;
 
@@ -238,31 +219,31 @@ class App {
 
         }
 
-        const RotationHiderPlaneInnerGeometry = new THREE.PlaneGeometry( this.Size, this.Size )
-        const RotationHiderPlaneOuterGeometry = new THREE.PlaneGeometry( this.Size, this.Size )
+        const RotationHiderPlaneInnerGeometry = new THREE.PlaneGeometry(this.Size, this.Size)
+        const RotationHiderPlaneOuterGeometry = new THREE.PlaneGeometry(this.Size, this.Size)
 
-        const RotationHiderPlaneMaterial = new THREE.MeshBasicMaterial( { color: 0x00_00_00, side: THREE.FrontSide } );
+        const RotationHiderPlaneMaterial = new THREE.MeshBasicMaterial({color: 0x00_00_00, side: THREE.FrontSide});
 
-        this.RotationHiderPlaneInner = new THREE.Mesh( RotationHiderPlaneInnerGeometry, RotationHiderPlaneMaterial );
-        this.RotationHiderPlaneOuter = new THREE.Mesh( RotationHiderPlaneOuterGeometry, RotationHiderPlaneMaterial );
+        this.RotationHiderPlaneInner = new THREE.Mesh(RotationHiderPlaneInnerGeometry, RotationHiderPlaneMaterial);
+        this.RotationHiderPlaneOuter = new THREE.Mesh(RotationHiderPlaneOuterGeometry, RotationHiderPlaneMaterial);
 
-        this.RotationHiderPlaneInner.position.set( 1, 0, 0 );
-        this.RotationHiderPlaneOuter.position.set( 1, 0, 0 );
+        this.RotationHiderPlaneInner.position.set(1, 0, 0);
+        this.RotationHiderPlaneOuter.position.set(1, 0, 0);
 
-        this.RotationHiderPlaneInner.rotation.set( 0, -Math.PI / 2, 0 );
-        this.RotationHiderPlaneOuter.rotation.set( 0, Math.PI / 2, 0 );
+        this.RotationHiderPlaneInner.rotation.set(0, -Math.PI / 2, 0);
+        this.RotationHiderPlaneOuter.rotation.set(0, Math.PI / 2, 0);
 
         this.Scene.add(this.RotationHiderPlaneInner);
         this.Scene.add(this.RotationHiderPlaneOuter);
 
         this.PressedKeys = {};
 
-        document.addEventListener( "keydown", (event) => {
-            this.PressedKeys[ event.key.toLowerCase( ) ] = true;
+        document.addEventListener("keydown", (event) => {
+            this.PressedKeys[event.key.toLowerCase()] = true;
         });
 
-        document.addEventListener( "keyup", (event) => {
-            this.PressedKeys[ event.key.toLowerCase( ) ] = false;
+        document.addEventListener("keyup", (event) => {
+            this.PressedKeys[event.key.toLowerCase()] = false;
         });
 
         this.WinnerCube = this.RubiksCube.clone()
@@ -619,7 +600,47 @@ class App {
         }
     }
 
+    async updateScoreboard(): Promise<void> {
+        const params = new URLSearchParams();
+        params.append('cube_size', String(this.Size));
+
+        const response = await fetch('http://127.0.0.1:8000/score/best', {
+            method: 'POST',
+            // Use the correct content‑type for Form()
+            headers: {
+                'Content-Type': 'application/x-www-form-urlencoded',
+                'Accept': 'application/json'
+            },
+            body: params.toString()          // <-- form‑encoded payload
+        });
+
+        if (!response.ok) {
+            throw new Error('Failed to fetch scoreboard');
+        }
+
+        const data = await response.json();
+
+        const scoreboard = document.getElementById("scoreboard-table-body");
+
+        for (const score of data.scores) {
+            const trelement = document.createElement("tr");
+            const td1 = document.createElement("td");
+            td1.textContent = score.username.toString();
+            trelement.appendChild(td1);
+            const td2 = document.createElement("td");
+            td2.textContent = score.moves.toString();
+            trelement.appendChild(td2);
+            const td3 = document.createElement("td");
+            trelement.appendChild(td3);
+            td3.textContent = score.solve_time_ms.toString();
+            scoreboard.appendChild(trelement)
+        }
+
+
+    }
+
 }
 
-const CubeApp = new App( 3 )
+const CubeApp = new App( 4 )
+await CubeApp.updateScoreboard()
 console.log( "CubeApp:", CubeApp );

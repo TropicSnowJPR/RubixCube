@@ -2,6 +2,8 @@
 
 Minimal browser Rubik's Cube renderer/simulator built with TypeScript and Three.js, served by Vite.
 
+https://raw.githubusercontent.com/TropicSnowJPR/RubixCube/refs/heads/master/Preview.png
+
 Prerequisites
 - Node (16+ recommended) and npm
 
