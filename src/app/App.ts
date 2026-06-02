@@ -39,7 +39,7 @@ class App {
         this.Size = size;
 
         this.Scene = new THREE.Scene();
-        this.Camera = new THREE.PerspectiveCamera(70, window.innerWidth / window.innerHeight, 0.1, 20_000);
+        this.Camera = new THREE.PerspectiveCamera(50, window.innerWidth / window.innerHeight, 0.1, 20_000);
         this.Renderer = new THREE.WebGLRenderer({
             antialias: true,
             alpha: true,
@@ -59,7 +59,7 @@ class App {
 
         document.body.append(this.Renderer.domElement);
 
-        this.Camera.position.set((this.Size), (this.Size), (this.Size));
+        this.Camera.position.set((this.Size*1.5), (this.Size*1.5), (this.Size*1.5));
         this.Controls.enableDamping = true;
         this.Controls.enableZoom = false;
         this.Controls.enablePan = false;
