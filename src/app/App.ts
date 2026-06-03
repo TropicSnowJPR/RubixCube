@@ -33,13 +33,17 @@ class App {
     private readonly CubeRotationHider: THREE.Mesh;
     private readonly RotationHiderPlaneInner: THREE.Mesh<THREE.PlaneGeometry, THREE.MeshBasicMaterial, THREE.Object3DEventMap>;
     private readonly RotationHiderPlaneOuter: THREE.Mesh<THREE.PlaneGeometry, THREE.MeshBasicMaterial, THREE.Object3DEventMap>;
+    private Disabled: boolean;
+    private StartupDone: boolean;
 
     constructor(size: number) {
 
         this.Size = size;
+        this.Disabled = true;
+        this.StartupDone = false;
 
         this.Scene = new THREE.Scene();
-        this.Camera = new THREE.PerspectiveCamera(50, window.innerWidth / window.innerHeight, 0.1, 20_000);
+        this.Camera = new THREE.PerspectiveCamera(30, window.innerWidth / window.innerHeight, 0.1, 20_000);
         this.Renderer = new THREE.WebGLRenderer({
             antialias: true,
             alpha: true,
@@ -59,7 +63,7 @@ class App {
 
         document.body.append(this.Renderer.domElement);
 
-        this.Camera.position.set((this.Size*1.5), (this.Size*1.5), (this.Size*1.5));
+        this.Camera.position.set((this.Size*3), (this.Size*3), (this.Size*3));
         this.Controls.enableDamping = true;
         this.Controls.enableZoom = false;
         this.Controls.enablePan = false;
@@ -252,7 +256,43 @@ class App {
 
     }
 
-    private animate(): void {
+    private async animate(): Promise<void> {
+
+        if (!this.StartupDone) {
+            const loginButton = document.querySelector("#login-button");
+            loginButton.addEventListener("click", async (event) => {
+                const username = document.querySelector("#username-input");
+                const password = document.querySelector("#password-input");
+
+                if (username.tagName === "INPUT" && password.tagName === "INPUT") {
+                    console.log(username, password);
+
+                    const params = new URLSearchParams();
+                    params.append('username', String(
+                        username.value
+                    ));
+                    params.append('password', String(
+                        password.value
+                    ));
+
+                    await fetch('http://127.0.0.1:8000/user/login', {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/x-www-form-urlencoded',
+                            'Accept': 'application/json'
+                        },
+                        body: params.toString()
+                    })
+                }
+            });
+
+            const skipButton = document.getElementById("skip-button");
+            skipButton.addEventListener("click", (event) => {
+                console.log(event);
+            })
+
+            this.StartupDone = true
+        }
 
         const now = performance.now();
         const delta = ( now - this.LastTime ) / 1000;
@@ -312,7 +352,7 @@ class App {
                         break;
                     }
                     case "9": {
-                        if (this.RandomLock === false) {
+                        if (this.RandomLock === false && !this.Disabled ) {
                             this.addRandomAnimations(100, 0.05);
                             this.RandomLock = true;
                         }
@@ -344,7 +384,7 @@ class App {
 
         this.Camera.lookAt(0, 0, 0);
 
-        if (this.PressedKeys["r"] && this.RandomLock === false) {
+        if (this.PressedKeys["r"] && this.RandomLock === false && !this.Disabled ) {
             this.addRandomAnimations(100, 0.05);
             this.RandomLock = true;
         }
@@ -384,7 +424,7 @@ class App {
 
         const time = 0.3
 
-        if ( RotationFace && this.counter <= 0 ) {
+        if ( RotationFace && this.counter <= 0 && !this.Disabled ) {
 
             this.AnimationQueue.addAnimation(
                 new Animation(
@@ -611,6 +651,42 @@ class App {
                 'Content-Type': 'application/x-www-form-urlencoded',
                 'Accept': 'application/json'
             },
+            body: params.toString()
+        });
+
+        if (!response.ok) {
+            throw new Error('Failed to fetch scoreboard');
+        }
+
+        const data = await response.json();
+
+        const scoreboard = document.querySelector("#scoreboard-table-body");
+
+        for (const score of data.scores) {
+            const trelement = document.createElement("tr");
+            const td1 = document.createElement("td");
+            td1.textContent = score.username.toString();
+            trelement.append(td1);
+            const td2 = document.createElement("td");
+            td2.textContent = score.moves.toString();
+            trelement.append(td2);
+            const td3 = document.createElement("td");
+            trelement.append(td3);
+            td3.textContent = score.solve_time_ms.toString();
+            scoreboard.append(trelement)
+        }
+    }
+
+    async updateUsername(): Promise<void> {
+        const params = new URLSearchParams();
+
+        const response = await fetch('http://127.0.0.1:8000/me', {
+            method: 'POST',
+            // Use the correct content‑type for Form()
+            headers: {
+                'Content-Type': 'application/x-www-form-urlencoded',
+                'Accept': 'application/json'
+            },
             body: params.toString()          // <-- form‑encoded payload
         });
 
@@ -620,27 +696,21 @@ class App {
 
         const data = await response.json();
 
-        const scoreboard = document.getElementById("scoreboard-table-body");
+        const username = document.querySelector("#user-name");
 
-        for (const score of data.scores) {
-            const trelement = document.createElement("tr");
-            const td1 = document.createElement("td");
-            td1.textContent = score.username.toString();
-            trelement.appendChild(td1);
-            const td2 = document.createElement("td");
-            td2.textContent = score.moves.toString();
-            trelement.appendChild(td2);
-            const td3 = document.createElement("td");
-            trelement.appendChild(td3);
-            td3.textContent = score.solve_time_ms.toString();
-            scoreboard.appendChild(trelement)
+        if (!data.username) {
+            return
         }
 
+        username.textContent = data.username;
 
     }
 
 }
 
 const CubeApp = new App( 4 )
-await CubeApp.updateScoreboard()
 console.log( "CubeApp:", CubeApp );
+await CubeApp.updateUsername()
+await CubeApp.updateScoreboard()
+
+

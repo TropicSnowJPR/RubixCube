@@ -179,3 +179,65 @@ body {
     opacity: 1;
     text-decoration: underline;
 }
+
+#login-overlay {
+    position: fixed; /* Sit on top of the page content */
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    width: 100%; /* Full width (cover the whole page) */
+    height: 100%; /* Full height (cover the whole page) */
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background-color: rgba(0,0,0,0.5); /* Black background with opacity */
+    z-index: 2000000; /* Specify a stack order in case you're using a different order for other elements */
+    cursor: pointer; /* Add a pointer on hover */
+    font-family: "Asap", Arial, Helvetica, sans-serif;
+}
+
+#login-overlay-content {
+    position: fixed;
+    display: grid;
+    justify-items: center;
+    padding: 22px;
+    border-radius: 20px;
+    width: 400px;
+    height: 360px;
+    color: #f2f2f2;
+    background-color: rgb(0, 0, 0);
+    font-family: "Asap", Arial, Helvetica, sans-serif;
+}
+
+h1 {
+    font-family: "Special Gothic Expanded One", "Asap", Arial, Helvetica, sans-serif;
+}
+
+.login-button {
+    font-family: "Asap", Arial, Helvetica, sans-serif;
+    font-size: 16px;
+    border: none;
+    outline: none;
+    background: #222222;
+    border-radius: 4px;
+    padding: 16px;
+    max-width: 400px;
+    width: 400px;
+    color: #f2f2f2;
+    margin-top: 16px;
+}
+
+input {
+    font-family: "Asap", Arial, Helvetica, sans-serif;
+    font-size: 16px;
+    border: none;
+    outline: none;
+    background: #222222;
+    border-radius: 4px;
+    padding: 16px;
+    max-width: 368px;
+    width: 400px;
+    color: #f2f2f2;
+    margin-top: 16px;
+}

@@ -18,6 +18,17 @@
     <body>
 
         <div id="scene-container"></div>
+        <div id="login-overlay">
+            <div id="login-overlay-content">
+                <h1 class="login-title">Rubik's Cube Sim</h1>
+                <form id="login-form">
+                    <label for="username-input"></label><input type="text" id="username-input" name="username" placeholder="Username" required>
+                    <label for="password-input"></label><input type="password" id="password-input" name="password" placeholder="Password" required>
+                    <button class="login-button" type="button" id="login-button">Login as User</button>
+                    <button class="login-button" type="button" id="skip-button">Continue as Guest</button>
+                </form>
+            </div>
+        </div>
         <div id="overlay">
             <div class="legend">
                 <div class="legend-title">Controls</div>
@@ -89,10 +100,6 @@
                     <div class="legend-item">
                         <span class="legend-label">Name:</span>
                         <span id="user-name" class="legend-meta-value">Guest</span>
-                    </div>
-                    <div class="legend-item">
-                        <span class="legend-label">Rank:</span>
-                        <span id="user-rank" class="legend-meta-value">Rookie</span>
                     </div>
                     <div class="legend-item">
                         <span class="legend-label">Best Time:</span>
