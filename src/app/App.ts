@@ -256,39 +256,63 @@ class App {
 
     }
 
+    private formatMs(ms: number): string {
+        const totalSeconds = Math.floor(ms / 1000);
+        const minutes = Math.floor(totalSeconds / 60);
+        const seconds = totalSeconds % 60;
+
+        const mm = String(minutes).padStart(2, "0");
+        const ss = String(seconds).padStart(2, "0");
+
+        return `${mm}:${ss}`;
+    }
+
     private async animate(): Promise<void> {
 
         if (!this.StartupDone) {
             const loginButton = document.querySelector("#login-button");
-            loginButton.addEventListener("click", async (event) => {
+            loginButton.addEventListener("click", async (_) => {
                 const username = document.querySelector("#username-input");
                 const password = document.querySelector("#password-input");
 
                 if (username.tagName === "INPUT" && password.tagName === "INPUT") {
-                    console.log(username, password);
-
                     const params = new URLSearchParams();
                     params.append('username', String(
+                        // @ts-ignore
                         username.value
                     ));
+
                     params.append('password', String(
+                        // @ts-ignore
                         password.value
                     ));
 
-                    await fetch('http://127.0.0.1:8000/user/login', {
+                    const result = await fetch('http://127.0.0.1:8000/user/login', {
                         method: 'POST',
                         headers: {
                             'Content-Type': 'application/x-www-form-urlencoded',
                             'Accept': 'application/json'
                         },
-                        body: params.toString()
+                        body: params.toString(),
+                        credentials: 'include'
                     })
+
+                    const json = await result.json();
+
+                    if (json.success) {
+                        document.getElementById('login-overlay').style.display = 'none';
+                    }
+
+                    await this.updateUsername()
+                    this.Disabled = false;
+
                 }
             });
 
-            const skipButton = document.getElementById("skip-button");
+            const skipButton = document.querySelector("#skip-button");
             skipButton.addEventListener("click", (event) => {
-                console.log(event);
+                document.getElementById('login-overlay').style.display = 'none';
+                this.Disabled = false;
             })
 
             this.StartupDone = true
@@ -623,6 +647,12 @@ class App {
             const direction = directions[Math.floor(Math.random() * directions.length)];
             const depth = 1 + Math.floor(Math.random() * maxDepth);
 
+            this.movesCounter = 0
+
+            const moveElement = document.querySelector("#move-count")
+            moveElement.textContent = String(this.movesCounter)
+
+
             this.AnimationQueue.addAnimation(
                 new Animation(
                     this.RubiksCube.clone(),
@@ -651,7 +681,8 @@ class App {
                 'Content-Type': 'application/x-www-form-urlencoded',
                 'Accept': 'application/json'
             },
-            body: params.toString()
+            body: params.toString(),
+            credentials: 'include',
         });
 
         if (!response.ok) {
@@ -672,7 +703,7 @@ class App {
             trelement.append(td2);
             const td3 = document.createElement("td");
             trelement.append(td3);
-            td3.textContent = score.solve_time_ms.toString();
+            td3.textContent = this.formatMs(score.solve_time_ms).toString();
             scoreboard.append(trelement)
         }
     }
@@ -687,7 +718,8 @@ class App {
                 'Content-Type': 'application/x-www-form-urlencoded',
                 'Accept': 'application/json'
             },
-            body: params.toString()          // <-- form‑encoded payload
+            body: params.toString(),
+            credentials: "include"
         });
 
         if (!response.ok) {
@@ -702,7 +734,23 @@ class App {
             return
         }
 
+        document.getElementById('login-overlay').style.display = 'none';
+
         username.textContent = data.username;
+
+        const result = await fetch('http://127.0.0.1:8000/score/best/me', {
+            method: 'POST', headers: {
+                'Content-Type': 'application/x-www-form-urlencoded', 'Accept': 'application/json'
+            }, body: params.toString(), credentials: 'include'
+        })
+
+        const json = await result.json();
+
+        if (json.success) {
+            document.getElementById('user-best-time').textContent = this.formatMs(json.best_time);
+        }
+
+        this.Disabled = false;
 
     }
 

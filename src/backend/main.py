@@ -33,14 +33,20 @@ class Server:
 
     def set_routes(self) -> None:
         """Setup routes"""
+
+
         @self.app.get("/active")
         async def root():
             return {
                 "success": "true"
             }
 
+
         @self.app.post("/user/create")
-        async def create_user(username: Annotated[str, Form()], password: Annotated[str, Form()]):
+        async def create_user(
+            username: Annotated[str, Form()],
+            password: Annotated[str, Form()]
+        ):
             user = self.db_manager.queryDB(
                 "SELECT id FROM Users WHERE username = ?",
                 (username,)
@@ -91,15 +97,13 @@ class Server:
                 "success": True
             }
 
+
         @self.app.post("/user/login")
         async def login_user(
-                username: Annotated[str, Form()],
-                password: Annotated[str, Form()],
-                response: Response
+            username: Annotated[str, Form()],
+            password: Annotated[str, Form()],
+            response: Response
         ):
-
-            print(username)
-            print(password)
 
             result = self.db_manager.queryDB(
                 "SELECT id, password_hash FROM Users WHERE username = ?",
@@ -123,8 +127,14 @@ class Server:
                         token = self._generate_token_for_user(user_id)
                     token = str(token).replace("('", "")
                     token = token.replace("',)", "")
-                    print(token)
-                    response.set_cookie(key="token", value=token, httponly=True)
+                    response.set_cookie(
+                        key="token",
+                        value=token,
+                        httponly=True,
+                        max_age=2592000,
+                        samesite="lax",
+                        secure=False
+                    )
 
                     return {
                         "id": user_id,
@@ -136,16 +146,22 @@ class Server:
                 detail="Invalid username or password"
             )
 
+
         @self.app.post("/user/logout")
-        async def logout_user(response: Response = None):
+        async def logout_user(
+            response: Response = None
+        ):
             if response:
                 response.delete_cookie(key="token")
             return {
                 "success": True
             }
 
+
         @self.app.post("/me")
-        async def get_current_user(token: Annotated[str | None, Cookie()] = None):
+        async def get_current_user(
+            token: Annotated[str | None, Cookie()] = None
+        ):
             if not token:
                 return {
                     "success": False,
@@ -174,7 +190,9 @@ class Server:
 
 
         @self.app.post("/score/best/me")
-        async def get_current_user_best_score(token: Annotated[str | None, Cookie()] = None):
+        async def get_current_user_best_score(
+            token: Annotated[str | None, Cookie()] = None
+        ):
             if not token:
                 return {
                     "success": False,
@@ -225,9 +243,11 @@ class Server:
                 "success": True
             }
 
-        @self.app.post("/score/best")
-        async def get_best_scores(cube_size: Annotated[int, Form()]):
 
+        @self.app.post("/score/best")
+        async def get_best_scores(
+            cube_size: Annotated[int, Form()]
+        ):
             scores = self.db_manager.queryDB(
                 """
                 SELECT Scores.user_id, Users.username, Scores.moves_count, Scores.solve_time_ms
