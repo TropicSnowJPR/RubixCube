@@ -1,169 +1,104 @@
 <!DOCTYPE html>
 <html lang="en">
-
     <head>
-
         <title>Rubik's Cube - three.js WebGL</title>
         <meta charset="utf-8">
-        <meta name="viewport" content="width=device-width, user-scalable=no, minimum-scale=1.0, maximum-scale=1.0">
-        <link rel="icon" type="image/x-icon" href="/favicon.ico">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+        <link rel="icon" href="/favicon.ico">
+
         <link rel="preconnect" href="https://fonts.googleapis.com">
         <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-        <link href="https://fonts.googleapis.com/css2?family=Asap:ital,wght@0,100..900;1,100..900&family=JetBrains+Mono:ital,wght@0,100..800;1,100..800&family=Special+Gothic+Expanded+One&display=swap" rel="stylesheet">
-        <link type="text/css" rel="stylesheet" href="main.css">
+        <link href="https://fonts.googleapis.com/css2?family=Asap:wght@100..900&family=JetBrains+Mono:wght@100..800&family=Special+Gothic+Expanded+One&display=swap" rel="stylesheet">
 
-
+        <link rel="stylesheet" href="main.css">
     </head>
 
     <body>
 
         <div id="scene-container"></div>
+
+        <!-- LOGIN -->
         <div id="login-overlay">
-            <div id="login-overlay-content">
-                <h1 class="login-title">Rubik's Cube Sim</h1>
-                <form id="login-form">
-                    <label for="username-input"></label><input type="text" id="username-input" name="username" placeholder="Username" required>
-                    <label for="password-input"></label><input type="password" id="password-input" name="password" placeholder="Password" required>
-                    <button class="login-button" type="button" id="login-button">Login as User</button>
-                    <button class="login-button" type="button" id="skip-button">Continue as Guest</button>
-                </form>
-            </div>
-        </div>
-        <div id="overlay">
-            <div class="legend">
-                <div class="legend-title">Controls</div>
-                <div class="legend-grid">
-                    <div class="legend-item">
-                        <img class="legend-key" src="./assets/other/letter-q.png" alt="Q">
-                        <span class="legend-label">To rotate top face</span>
-                    </div>
-                    <div class="legend-item">
-                        <img class="legend-key" src="./assets/other/letter-w.png" alt="W">
-                        <span class="legend-label">To rotate south face</span>
-                    </div>
-                    <div class="legend-item">
-                        <img class="legend-key" src="./assets/other/letter-e.png" alt="E">
-                        <span class="legend-label">To rotate bottom face</span>
-                    </div>
-                    <div class="legend-item">
-                        <img class="legend-key" src="./assets/other/letter-a.png" alt="A">
-                        <span class="legend-label">To rotate west face</span>
-                    </div>
-                    <div class="legend-item">
-                        <img class="legend-key" src="./assets/other/letter-s.png" alt="S">
-                        <span class="legend-label">To rotate north face</span>
-                    </div>
-                    <div class="legend-item">
-                        <img class="legend-key" src="./assets/other/letter-d.png" alt="D">
-                        <span class="legend-label">To rotate east face</span>
-                    </div>
-                    <div class="legend-item">
-                        <img class="legend-key" src="./assets/other/letter-r.png" alt="R">
-                        <span class="legend-label">To scamble the cube</span>
-                    </div>
-                    <div class="legend-item">
-                        <img class="legend-key" src="./assets/other/letter-x.png" alt="X">
-                        <span class="legend-label">Hold for counterclockwise</span>
-                    </div>
-                </div>
-            </div>
-            <div class="overlay-actions">
-                <button class="overlay-action-button" type="button" data-overlay-action="remove" data-overlay-target="overlay" aria-label="Remove controls overlay">
-                    <svg class="overlay-action-icon" viewBox="0 0 24 24" aria-hidden="true" focusable="false">
-                        <line x1="6" y1="6" x2="18" y2="18"></line>
-                        <line x1="18" y1="6" x2="6" y2="18"></line>
-                    </svg>
-                </button>
-            </div>
-        </div>
-        <div id="overlay-bottom">
-            <div class="legend">
-                <div class="legend-title">Moves</div>
-                <div class="legend-meta">
-                    <span class="legend-meta-label">Count:</span>
-                    <span id="move-count" class="legend-meta-value">0</span>
-                </div>
-            </div>
-            <div class="overlay-actions">
-                <button class="overlay-action-button" type="button" data-overlay-action="hide" data-overlay-target="overlay-bottom" aria-label="Hide moves overlay">
-                    <svg class="overlay-action-icon" viewBox="0 0 24 24" aria-hidden="true" focusable="false">
-                        <path d="M2 12c2.5-4.5 6.5-7 10-7s7.5 2.5 10 7c-2.5 4.5-6.5 7-10 7s-7.5-2.5-10-7z"></path>
-                        <circle cx="12" cy="12" r="3"></circle>
-                    </svg>
-                </button>
-            </div>
-        </div>
-        <div id="overlay-userprofile" class="overlay-panel">
-            <div class="legend">
-                <div class="legend-title">User Profile</div>
-                <div class="legend-grid">
-                    <div class="legend-item">
-                        <span class="legend-label">Name:</span>
-                        <span id="user-name" class="legend-meta-value">Guest</span>
-                    </div>
-                    <div class="legend-item">
-                        <span class="legend-label">Best Time:</span>
-                        <span id="user-best-time" class="legend-meta-value">--:--</span>
-                    </div>
-                </div>
-            </div>
-            <div class="overlay-actions">
-                <button class="overlay-action-button" type="button" data-overlay-action="hide" data-overlay-target="overlay-userprofile" aria-label="Hide user profile overlay">
-                    <svg class="overlay-action-icon" viewBox="0 0 24 24" aria-hidden="true" focusable="false">
-                        <path d="M2 12c2.5-4.5 6.5-7 10-7s7.5 2.5 10 7c-2.5 4.5-6.5 7-10 7s-7.5-2.5-10-7z"></path>
-                        <circle cx="12" cy="12" r="3"></circle>
-                    </svg>
-                </button>
-            </div>
-        </div>
-        <div id="overlay-scoreboard" class="overlay-panel overlay-collapsed" aria-hidden="true">
-            <div class="legend">
-                <div class="legend-title">Scoreboard</div>
-                <div class="legend-grid">
-                    <table class="scoreboard-table">
-                        <tbody id="scoreboard-table-body">
-                            <tr>
-                                <th class="scoreboard-table-header-text" style="text-align: left">Name:</th>
-                                <th class="scoreboard-table-header-text" style="text-align: left">Moves:</th>
-                                <th class="scoreboard-table-header-text" style="text-align: left">Time:</th>
-                            </tr>
-                        </tbody>
-                    </table>
-                </div>
-            </div>
-            <div class="overlay-actions">
-                <button class="overlay-action-button" type="button" data-overlay-action="hide" data-overlay-target="overlay-scoreboard" aria-label="Hide scoreboard overlay">
-                    <svg class="overlay-action-icon" viewBox="0 0 24 24" aria-hidden="true" focusable="false">
-                        <path d="M2 12c2.5-4.5 6.5-7 10-7s7.5 2.5 10 7c-2.5 4.5-6.5 7-10 7s-7.5-2.5-10-7z"></path>
-                        <circle cx="12" cy="12" r="3"></circle>
-                    </svg>
-                </button>
+            <div class="modal">
+                <h1>Rubik's Cube Sim</h1>
+
+                <input id="username-input" type="text" placeholder="Username" required>
+                <input id="password-input" type="password" placeholder="Password" required>
+
+                <button id="login-button" class="btn">Login as User</button>
+                <button id="skip-login-button" class="btn">Continue as Guest</button>
             </div>
         </div>
 
-        <script>
-            document.querySelectorAll("[data-overlay-action]").forEach((button) => {
-                button.addEventListener("click", () => {
-                    const targetId = button.getAttribute("data-overlay-target");
-                    const action = button.getAttribute("data-overlay-action");
-                    const overlay = targetId ? document.getElementById(targetId) : null;
+        <!-- CONTROLS -->
+        <div class="ui-panel ui-panel--controls" id="panel-controls">
+            <div class="ui-header">Controls</div>
 
-                    if (!overlay) {
-                        return;
-                    }
+            <div class="ui-grid">
+                <div class="ui-item"><img src="./assets/other/letter-q.png"><span>Rotate top</span></div>
+                <div class="ui-item"><img src="./assets/other/letter-w.png"><span>Rotate south</span></div>
+                <div class="ui-item"><img src="./assets/other/letter-e.png"><span>Rotate bottom</span></div>
+                <div class="ui-item"><img src="./assets/other/letter-a.png"><span>Rotate west</span></div>
+                <div class="ui-item"><img src="./assets/other/letter-s.png"><span>Rotate north</span></div>
+                <div class="ui-item"><img src="./assets/other/letter-d.png"><span>Rotate east</span></div>
+                <div class="ui-item"><img src="./assets/other/letter-r.png"><span>Scramble</span></div>
+                <div class="ui-item"><img src="./assets/other/letter-x.png"><span>Reverse hold</span></div>
+            </div>
+        </div>
 
-                    if (action === "remove") {
-                        overlay.remove();
-                        return;
-                    }
+        <!-- STATS (was "moves") -->
+        <div class="ui-panel ui-panel--stats ui-panel--bottom" id="panel-stats">
+            <div>
+                <div class="ui-header">Stats</div>
 
-                    if (action === "hide") {
-                        const isCollapsed = overlay.classList.toggle("overlay-collapsed");
-                        overlay.setAttribute("aria-hidden", isCollapsed ? "true" : "false");
-                    }
-                });
-            });
-        </script>
+                <br>
+
+                <div class="ui-grid">
+                    <div>Moves: <span id="stat-moves">0</span></div>
+                </div>
+
+            </div>
+        </div>
+
+        <!-- PROFILE -->
+        <div class="ui-panel ui-panel--profile" id="panel-profile">
+            <div>
+                <div class="ui-header">Profile</div>
+
+                <br>
+
+                <div class="ui-grid">
+                    <div>Name: <span id="profile-name">Guest</span></div>
+                    <div>Best time: <span id="profile-best-time">--:--</span></div>
+                </div>
+
+            </div>
+        </div>
+
+        <!-- LEADERBOARD (was scoreboard) -->
+        <div class="ui-panel ui-panel--leaderboard" id="panel-leaderboard">
+            <div>
+                <div class="ui-header">Leaderboard</div>
+
+                <br>
+
+                <table>
+                    <thead>
+                    <tr>
+                        <th>Name</th>
+                        <th>Moves</th>
+                        <th>Time</th>
+                    </tr>
+                    </thead>
+                    <tbody id="leaderboard-body"></tbody>
+                </table>
+            </div>
+        </div>
+
+        <a class="attribution" href="https://www.flaticon.com/free-icons/keyboard-key">
+            Keyboard key icons by littleicon
+        </a>
 
         <script type="importmap">
             {
@@ -176,9 +111,5 @@
 
         <script type="module" src="./src/app/App.ts"></script>
 
-        <a class="attribution" href="https://www.flaticon.com/free-icons/keyboard-key" title="keyboard key icons">
-            Keyboard key icons created by littleicon - Flaticon
-        </a>
     </body>
-
 </html>

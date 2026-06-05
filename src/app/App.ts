@@ -35,6 +35,7 @@ class App {
     private readonly RotationHiderPlaneOuter: THREE.Mesh<THREE.PlaneGeometry, THREE.MeshBasicMaterial, THREE.Object3DEventMap>;
     private Disabled: boolean;
     private StartupDone: boolean;
+    private loginOverlay: HTMLElement;
 
     constructor(size: number) {
 
@@ -61,7 +62,7 @@ class App {
         this.Renderer.setPixelRatio(window.devicePixelRatio);
         this.Renderer.setAnimationLoop(this.animate.bind(this));
 
-        document.body.append(this.Renderer.domElement);
+        document.querySelector("#scene-container").append(this.Renderer.domElement)
 
         this.Camera.position.set((this.Size*3), (this.Size*3), (this.Size*3));
         this.Controls.enableDamping = true;
@@ -78,6 +79,8 @@ class App {
         const dir = new THREE.DirectionalLight(0xFF_FF_FF, 2);
         dir.position.set(-this.Size, 2 * this.Size, -this.Size);
         this.Scene.add(dir);
+        
+        this.loginOverlay = document.querySelector('#login-overlay')
 
         const image = this.Loader.load("./assets/other/cardinal-points.png");
 
@@ -270,7 +273,7 @@ class App {
     private async animate(): Promise<void> {
 
         if (!this.StartupDone) {
-            const loginButton = document.querySelector("#login-button");
+            const loginButton = document.getElementById("login-button");
             loginButton.addEventListener("click", async (_) => {
                 const username = document.querySelector("#username-input");
                 const password = document.querySelector("#password-input");
@@ -309,7 +312,7 @@ class App {
                 }
             });
 
-            const skipButton = document.querySelector("#skip-button");
+            const skipButton = document.getElementById("skip-login-button");
             skipButton.addEventListener("click", (event) => {
                 document.getElementById('login-overlay').style.display = 'none';
                 this.Disabled = false;
@@ -691,7 +694,7 @@ class App {
 
         const data = await response.json();
 
-        const scoreboard = document.querySelector("#scoreboard-table-body");
+        const scoreboard = document.querySelector("#leaderboard-body");
 
         for (const score of data.scores) {
             const trelement = document.createElement("tr");
@@ -728,13 +731,13 @@ class App {
 
         const data = await response.json();
 
-        const username = document.querySelector("#user-name");
+        const username = document.querySelector("#profile-name");
 
         if (!data.username) {
             return
         }
 
-        document.getElementById('login-overlay').style.display = 'none';
+        this.loginOverlay.style.display = 'none';
 
         username.textContent = data.username;
 
@@ -747,7 +750,7 @@ class App {
         const json = await result.json();
 
         if (json.success) {
-            document.getElementById('user-best-time').textContent = this.formatMs(json.best_time);
+            document.getElementById('profile-best-time').textContent = this.formatMs(json.best_time);
         }
 
         this.Disabled = false;
