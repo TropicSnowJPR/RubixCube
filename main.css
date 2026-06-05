@@ -2,12 +2,21 @@ body {
     margin: 0;
     overflow: hidden;
     background: #222;
-    font-family: "Asap", sans-serif;
+    font-family: "JetBrains Mono", monospace;
 }
 
-/* =========================
+@font-face {
+    font-family: "JetBrains Mono";
+    src: url("https://cdn.jsdelivr.net/npm/jetbrains-mono@latest/ttf/JetBrainsMono-Bold.ttf") format("truetype");
+    font-weight: 700;
+    font-style: normal;
+}
+
+/*
+=========================
    BASE UI PANEL SYSTEM
-========================= */
+=========================
+*/
 
 .ui-panel {
     position: fixed;
@@ -56,18 +65,22 @@ body {
     display: none;
 }
 
-/* =========================
+/*
+=========================
    HEADER / TYPOGRAPHY
-========================= */
+=========================
+*/
 
 .ui-header {
-    font-family: "Special Gothic Expanded One", sans-serif;
+    font-family: "JetBrains Mono", monospace;
     font-size: 20px;
 }
 
-/* =========================
+/*
+=========================
    CONTROLS GRID
-========================= */
+=========================
+*/
 
 .ui-grid {
     display: grid;
@@ -89,9 +102,11 @@ body {
     background: #111;
 }
 
-/* =========================
+/*
+=========================
    CLOSE BUTTON
-========================= */
+=========================
+*/
 
 .ui-close {
     width: 28px;
@@ -105,9 +120,11 @@ body {
     cursor: pointer;
 }
 
-/* =========================
+/*
+=========================
    TABLE (leaderboard)
-========================= */
+=========================
+*/
 
 table {
     width: 100%;
@@ -119,9 +136,11 @@ th {
     text-align: left;
 }
 
-/* =========================
-   LOGIN (unchanged conceptually, cleaned)
-========================= */
+/*
+ =========================
+   LOGIN
+=========================
+*/
 
 #login-overlay {
     position: fixed;
@@ -156,9 +175,11 @@ button {
     font-size: 16px;
 }
 
-/* =========================
+/*
+=========================
    ATTRIBUTION
-========================= */
+=========================
+*/
 
 .attribution {
     position: fixed;
