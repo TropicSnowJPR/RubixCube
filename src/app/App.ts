@@ -80,7 +80,7 @@ class App {
         dir.position.set(-this.Size, 2 * this.Size, -this.Size);
         this.Scene.add(dir);
         
-        this.loginOverlay = document.querySelector('#login-overlay')
+        this.loginOverlay = document.querySelector('#login-overlay') as HTMLElement
 
         const image = this.Loader.load("./assets/other/cardinal-points.png");
 
@@ -259,7 +259,7 @@ class App {
 
     }
 
-    private formatMs(ms: number): string {
+    private static formatMs(ms: number): string {
         const totalSeconds = Math.floor(ms / 1000);
         const minutes = Math.floor(totalSeconds / 60);
         const seconds = totalSeconds % 60;
@@ -270,54 +270,63 @@ class App {
         return `${mm}:${ss}`;
     }
 
-    private async animate(): Promise<void> {
+    private handleStartup(): void {
+        const loginButton = document.querySelector("#login-button");
+        const skipLoginButton = document.querySelector("#skip-login-button");
 
-        if (!this.StartupDone) {
-            const loginButton = document.getElementById("login-button");
-            loginButton.addEventListener("click", async (_) => {
-                const username = document.querySelector("#username-input");
-                const password = document.querySelector("#password-input");
+        loginButton.addEventListener("click", async (event) => {
+            event.preventDefault();
 
-                if (username.tagName === "INPUT" && password.tagName === "INPUT") {
-                    const params = new URLSearchParams();
-                    params.append('username', String(
-                        // @ts-ignore
-                        username.value
-                    ));
+            const usernameInput = document.querySelector("#username-input") as HTMLInputElement;
+            const passwordInput = document.querySelector("#password-input") as HTMLInputElement;
 
-                    params.append('password', String(
-                        // @ts-ignore
-                        password.value
-                    ));
+            const username = usernameInput.value;
+            const password = passwordInput.value;
 
-                    const result = await fetch('http://127.0.0.1:8000/user/login', {
-                        method: 'POST',
+            if (!username || !password) {
+                const params = new URLSearchParams();
+
+                params.append("username", username);
+                params.append("password", password);
+
+                const result = await fetch(
+                    "http://127.0.0.1:8000/user/login",
+                    {
+                        method: "POST",
                         headers: {
-                            'Content-Type': 'application/x-www-form-urlencoded',
-                            'Accept': 'application/json'
+                            "Content-Type": "application/x-www-form-urlencoded",
+                            "Accept": "application/json"
                         },
                         body: params.toString(),
                         credentials: 'include'
-                    })
-
-                    const json = await result.json();
-
-                    if (json.success) {
-                        document.getElementById('login-overlay').style.display = 'none';
                     }
+                )
+
+                const data = await result.json();
+
+                if (result.status === 200 && result.ok && data.success) {
+                    this.loginOverlay.style.display = 'none';
 
                     await this.updateUsername()
                     this.Disabled = false;
 
                 }
-            });
+            }
+        })
 
-            const skipButton = document.getElementById("skip-login-button");
-            skipButton.addEventListener("click", (event) => {
-                document.getElementById('login-overlay').style.display = 'none';
-                this.Disabled = false;
-            })
+        skipLoginButton.addEventListener("click", (event) => {
+            event.preventDefault();
 
+            this.loginOverlay.style.display = 'none';
+
+            this.Disabled = false;
+        })
+    }
+
+    private animate(): void {
+
+        if (!this.StartupDone) {
+            this.handleStartup();
             this.StartupDone = true
         }
 
@@ -412,7 +421,7 @@ class App {
         this.Camera.lookAt(0, 0, 0);
 
         if (this.PressedKeys["r"] && this.RandomLock === false && !this.Disabled ) {
-            this.addRandomAnimations(100, 0.05);
+            this.addRandomAnimations(Math.floor(Math.random() * 100) + 100, 0.05);
             this.RandomLock = true;
         }
 
@@ -479,7 +488,7 @@ class App {
                 this.movesCounter += 1
             }
 
-            const moveElement = document.querySelector("#move-count")
+            const moveElement = document.querySelector("#stat-moves")
             moveElement.textContent = String(this.movesCounter)
 
             this.counter = Number.parseInt((time * 60).toFixed(0), 10)
@@ -652,7 +661,7 @@ class App {
 
             this.movesCounter = 0
 
-            const moveElement = document.querySelector("#move-count")
+            const moveElement = document.querySelector("#stat-moves")
             moveElement.textContent = String(this.movesCounter)
 
 
@@ -699,14 +708,14 @@ class App {
         for (const score of data.scores) {
             const trelement = document.createElement("tr");
             const td1 = document.createElement("td");
-            td1.textContent = score.username.toString();
+            td1.innerHTML = score.username.toString();
             trelement.append(td1);
             const td2 = document.createElement("td");
-            td2.textContent = score.moves.toString();
+            td2.innerHTML = score.moves.toString();
             trelement.append(td2);
             const td3 = document.createElement("td");
             trelement.append(td3);
-            td3.textContent = this.formatMs(score.solve_time_ms).toString();
+            td3.innerHTML = App.formatMs(score.solve_time_ms).toString();
             scoreboard.append(trelement)
         }
     }
@@ -750,7 +759,7 @@ class App {
         const json = await result.json();
 
         if (json.success) {
-            document.getElementById('profile-best-time').textContent = this.formatMs(json.best_time);
+            document.querySelector('#profile-best-time').innerHTML = App.formatMs(json.best_time);
         }
 
         this.Disabled = false;
