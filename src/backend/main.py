@@ -274,6 +274,30 @@ class Server:
                 "success": True
             }
 
+        @self.app.post("/game/update")
+        def update_game(
+            state: Annotated[str, Form()],
+            cube_size: Annotated[int, Form()],
+        ):
+            if len(state) > 10000:
+                raise HTTPException(
+                    status_code=409,
+                    detail="State string is too long"
+                )
+
+            result = self.db_manager.queryDB(
+                """
+                UPDATE Games SET state = ?, last_updated = CURRENT_TIMESTAMP
+                WHERE cube_size = ? AND completed = 0
+                """,
+                (cube_size,)
+            )
+
+            return {
+                "success": True,
+                "message": "Game state updated successfully"
+            }
+
 server = Server()
 server.set_routes()
 app = server.app

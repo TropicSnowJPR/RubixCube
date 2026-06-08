@@ -5,7 +5,7 @@ import type {Direction} from "./Direction";
 
 export class Cube {
 
-    readonly size: number;
+    size: number;
     state: Piece[] = [];
 
     constructor(size?: number, empty = false) {
@@ -213,14 +213,14 @@ export class Cube {
 
             for ( const sticker of piece.stickers ) {
                 if (sticker.side === side) {
-                    sticker.setSide(sticker.side);
+                    this.updatePositionRotationOffset(sticker)
                     continue;
                 }
                 const newSide = Cube.rotateSide(side, sticker.side, direction);
                 if (!newSide) {
                     throw new Error(`Invalid side rotation: ${sticker.side} with direction ${direction}`);
                 }
-                sticker.setSide(newSide);
+                this.updatePositionRotationOffset(sticker)
             }
 
             const updatedPiece = new Piece(
@@ -427,4 +427,102 @@ export class Cube {
         return true;
     }
 
+    updatePositionRotationOffset( sticker: Sticker ): void {
+
+        switch (sticker.side) {
+
+            case "NORTH": {
+
+                sticker.positionOffset = { x: 0, y: 0, z: -0.5 };
+                sticker.rotationOffset = { pitch: 0, yaw: 180, roll: 0 };
+
+                break;
+
+            }
+
+            case "EAST": {
+
+                sticker.positionOffset = { x: 0.5, y: 0, z: 0 };
+                sticker.rotationOffset = { pitch: 0, yaw: 90, roll: 0 };
+
+                break;
+
+            }
+
+            case "WEST": {
+
+                sticker.positionOffset = { x: -0.5, y: 0, z: 0 };
+                sticker.rotationOffset = { pitch: 0, yaw: -90, roll: 0 };
+
+                break;
+
+            }
+
+            case "SOUTH": {
+
+                sticker.positionOffset = { x: 0, y: 0, z: 0.5 };
+                sticker.rotationOffset = { pitch: 0, yaw: 0, roll: 0 };
+
+                break;
+
+            }
+
+            case "UP": {
+
+                sticker.positionOffset = { x: 0, y: 0.5, z: 0 };
+                sticker.rotationOffset = { pitch: -90, yaw: 0, roll: 0 };
+
+                break;
+
+            }
+
+            case "DOWN": {
+
+                sticker.positionOffset = { x: 0, y: -0.5, z: 0 };
+                sticker.rotationOffset = { pitch: 90, yaw: 0, roll: 0 };
+
+                break;
+
+            }
+
+            default: {
+
+                break;
+
+            }
+
+        }
+
+    }
+
+    setStateFromJSON(json: any): void {
+        const arr = Array.isArray(json) ? json : json?.state;
+
+        if (!Array.isArray(arr)) {
+            throw new TypeError("Invalid cube JSON: expected array or {state: []}");
+        }
+
+        this.state = arr.map((p: any) => {
+            const stickers: Sticker[] = (p.stickers || []).map((s: any) => {
+                const sticker = new Sticker(s.id ?? -1, s.color, s.side);
+
+                sticker.positionOffset = s.positionOffset ?? { x: 0, y: 0, z: 0 };
+                sticker.rotationOffset = s.rotationOffset ?? { pitch: 0, yaw: 0, roll: 0 };
+
+                return sticker;
+            });
+
+            return new Piece(
+                p.id,
+                p.position?.x ?? 0,
+                p.position?.y ?? 0,
+                p.position?.z ?? 0,
+                p.rotation?.pitch ?? 0,
+                p.rotation?.yaw ?? 0,
+                p.rotation?.roll ?? 0,
+                p.type ?? "UNKNOWN",
+                stickers
+            );
+        });
+    }
 }

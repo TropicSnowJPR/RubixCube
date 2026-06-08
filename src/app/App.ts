@@ -188,6 +188,2483 @@ class App {
             },
         };
 
+        const TestState = [
+            {
+                "position": {
+                    "x": 0,
+                    "y": 0,
+                    "z": 3
+                },
+                "rotation": {
+                    "pitch": 0,
+                    "yaw": 0,
+                    "roll": 0
+                },
+                "type": "CORNER",
+                "stickers": [
+                    {
+                        "id": 95,
+                        "color": "ORANGE",
+                        "side": "SOUTH",
+                        "positionOffset": {
+                            "x": 0,
+                            "y": 0,
+                            "z": 0.5
+                        },
+                        "rotationOffset": {
+                            "pitch": 0,
+                            "yaw": 0,
+                            "roll": 0
+                        }
+                    },
+                    {
+                        "id": 94,
+                        "color": "GREEN",
+                        "side": "WEST",
+                        "positionOffset": {
+                            "x": -0.5,
+                            "y": 0,
+                            "z": 0
+                        },
+                        "rotationOffset": {
+                            "pitch": 0,
+                            "yaw": -90,
+                            "roll": 0
+                        }
+                    },
+                    {
+                        "id": 93,
+                        "color": "WHITE",
+                        "side": "DOWN",
+                        "positionOffset": {
+                            "x": 0,
+                            "y": -0.5,
+                            "z": 0
+                        },
+                        "rotationOffset": {
+                            "pitch": 90,
+                            "yaw": 0,
+                            "roll": 0
+                        }
+                    }
+                ],
+                "id": 1.4041051245834981
+            },
+            {
+                "position": {
+                    "x": 1,
+                    "y": 0,
+                    "z": 0
+                },
+                "rotation": {
+                    "pitch": 0,
+                    "yaw": 0,
+                    "roll": 0
+                },
+                "type": "EDGE",
+                "stickers": [
+                    {
+                        "id": 92,
+                        "color": "ORANGE",
+                        "side": "DOWN",
+                        "positionOffset": {
+                            "x": 0,
+                            "y": -0.5,
+                            "z": 0
+                        },
+                        "rotationOffset": {
+                            "pitch": 90,
+                            "yaw": 0,
+                            "roll": 0
+                        }
+                    },
+                    {
+                        "id": 91,
+                        "color": "WHITE",
+                        "side": "NORTH",
+                        "positionOffset": {
+                            "x": 0,
+                            "y": 0,
+                            "z": -0.5
+                        },
+                        "rotationOffset": {
+                            "pitch": 0,
+                            "yaw": 180,
+                            "roll": 0
+                        }
+                    }
+                ],
+                "id": 1.601180198731511
+            },
+            {
+                "position": {
+                    "x": 2,
+                    "y": 3,
+                    "z": 3
+                },
+                "rotation": {
+                    "pitch": 0,
+                    "yaw": 0,
+                    "roll": 0
+                },
+                "type": "EDGE",
+                "stickers": [
+                    {
+                        "id": 90,
+                        "color": "ORANGE",
+                        "side": "UP",
+                        "positionOffset": {
+                            "x": 0,
+                            "y": 0.5,
+                            "z": 0
+                        },
+                        "rotationOffset": {
+                            "pitch": -90,
+                            "yaw": 0,
+                            "roll": 0
+                        }
+                    },
+                    {
+                        "id": 89,
+                        "color": "WHITE",
+                        "side": "SOUTH",
+                        "positionOffset": {
+                            "x": 0,
+                            "y": 0,
+                            "z": 0.5
+                        },
+                        "rotationOffset": {
+                            "pitch": 0,
+                            "yaw": 0,
+                            "roll": 0
+                        }
+                    }
+                ],
+                "id": 3.383015689504605
+            },
+            {
+                "position": {
+                    "x": 3,
+                    "y": 0,
+                    "z": 0
+                },
+                "rotation": {
+                    "pitch": 0,
+                    "yaw": 0,
+                    "roll": 0
+                },
+                "type": "CORNER",
+                "stickers": [
+                    {
+                        "id": 88,
+                        "color": "ORANGE",
+                        "side": "DOWN",
+                        "positionOffset": {
+                            "x": 0,
+                            "y": -0.5,
+                            "z": 0
+                        },
+                        "rotationOffset": {
+                            "pitch": 90,
+                            "yaw": 0,
+                            "roll": 0
+                        }
+                    },
+                    {
+                        "id": 87,
+                        "color": "BLUE",
+                        "side": "EAST",
+                        "positionOffset": {
+                            "x": 0.5,
+                            "y": 0,
+                            "z": 0
+                        },
+                        "rotationOffset": {
+                            "pitch": 0,
+                            "yaw": 90,
+                            "roll": 0
+                        }
+                    },
+                    {
+                        "id": 86,
+                        "color": "WHITE",
+                        "side": "NORTH",
+                        "positionOffset": {
+                            "x": 0,
+                            "y": 0,
+                            "z": -0.5
+                        },
+                        "rotationOffset": {
+                            "pitch": 0,
+                            "yaw": 180,
+                            "roll": 0
+                        }
+                    }
+                ],
+                "id": 4.606244309792354
+            },
+            {
+                "position": {
+                    "x": 0,
+                    "y": 0,
+                    "z": 2
+                },
+                "rotation": {
+                    "pitch": 0,
+                    "yaw": 0,
+                    "roll": 0
+                },
+                "type": "EDGE",
+                "stickers": [
+                    {
+                        "id": 85,
+                        "color": "ORANGE",
+                        "side": "WEST",
+                        "positionOffset": {
+                            "x": -0.5,
+                            "y": 0,
+                            "z": 0
+                        },
+                        "rotationOffset": {
+                            "pitch": 0,
+                            "yaw": -90,
+                            "roll": 0
+                        }
+                    },
+                    {
+                        "id": 84,
+                        "color": "GREEN",
+                        "side": "DOWN",
+                        "positionOffset": {
+                            "x": 0,
+                            "y": -0.5,
+                            "z": 0
+                        },
+                        "rotationOffset": {
+                            "pitch": 90,
+                            "yaw": 0,
+                            "roll": 0
+                        }
+                    }
+                ],
+                "id": 1.9588705059070097
+            },
+            {
+                "position": {
+                    "x": 2,
+                    "y": 1,
+                    "z": 0
+                },
+                "rotation": {
+                    "pitch": 0,
+                    "yaw": 0,
+                    "roll": 0
+                },
+                "type": "CENTER",
+                "stickers": [
+                    {
+                        "id": 83,
+                        "color": "ORANGE",
+                        "side": "NORTH",
+                        "positionOffset": {
+                            "x": 0,
+                            "y": 0,
+                            "z": -0.5
+                        },
+                        "rotationOffset": {
+                            "pitch": 0,
+                            "yaw": 180,
+                            "roll": 0
+                        }
+                    }
+                ],
+                "id": 3.2894609591281014
+            },
+            {
+                "position": {
+                    "x": 2,
+                    "y": 2,
+                    "z": 3
+                },
+                "rotation": {
+                    "pitch": 0,
+                    "yaw": 0,
+                    "roll": 0
+                },
+                "type": "CENTER",
+                "stickers": [
+                    {
+                        "id": 82,
+                        "color": "ORANGE",
+                        "side": "SOUTH",
+                        "positionOffset": {
+                            "x": 0,
+                            "y": 0,
+                            "z": 0.5
+                        },
+                        "rotationOffset": {
+                            "pitch": 0,
+                            "yaw": 0,
+                            "roll": 0
+                        }
+                    }
+                ],
+                "id": 3.54586193714123
+            },
+            {
+                "position": {
+                    "x": 3,
+                    "y": 1,
+                    "z": 0
+                },
+                "rotation": {
+                    "pitch": 0,
+                    "yaw": 0,
+                    "roll": 0
+                },
+                "type": "EDGE",
+                "stickers": [
+                    {
+                        "id": 81,
+                        "color": "ORANGE",
+                        "side": "EAST",
+                        "positionOffset": {
+                            "x": 0.5,
+                            "y": 0,
+                            "z": 0
+                        },
+                        "rotationOffset": {
+                            "pitch": 0,
+                            "yaw": 90,
+                            "roll": 0
+                        }
+                    },
+                    {
+                        "id": 80,
+                        "color": "BLUE",
+                        "side": "NORTH",
+                        "positionOffset": {
+                            "x": 0,
+                            "y": 0,
+                            "z": -0.5
+                        },
+                        "rotationOffset": {
+                            "pitch": 0,
+                            "yaw": 180,
+                            "roll": 0
+                        }
+                    }
+                ],
+                "id": 5.1266929065009705
+            },
+            {
+                "position": {
+                    "x": 1,
+                    "y": 0,
+                    "z": 3
+                },
+                "rotation": {
+                    "pitch": 0,
+                    "yaw": 0,
+                    "roll": 0
+                },
+                "type": "EDGE",
+                "stickers": [
+                    {
+                        "id": 79,
+                        "color": "ORANGE",
+                        "side": "SOUTH",
+                        "positionOffset": {
+                            "x": 0,
+                            "y": 0,
+                            "z": 0.5
+                        },
+                        "rotationOffset": {
+                            "pitch": 0,
+                            "yaw": 0,
+                            "roll": 0
+                        }
+                    },
+                    {
+                        "id": 78,
+                        "color": "GREEN",
+                        "side": "DOWN",
+                        "positionOffset": {
+                            "x": 0,
+                            "y": -0.5,
+                            "z": 0
+                        },
+                        "rotationOffset": {
+                            "pitch": 90,
+                            "yaw": 0,
+                            "roll": 0
+                        }
+                    }
+                ],
+                "id": 3.0974479056820847
+            },
+            {
+                "position": {
+                    "x": 1,
+                    "y": 2,
+                    "z": 3
+                },
+                "rotation": {
+                    "pitch": 0,
+                    "yaw": 0,
+                    "roll": 0
+                },
+                "type": "CENTER",
+                "stickers": [
+                    {
+                        "id": 77,
+                        "color": "ORANGE",
+                        "side": "SOUTH",
+                        "positionOffset": {
+                            "x": 0,
+                            "y": 0,
+                            "z": 0.5
+                        },
+                        "rotationOffset": {
+                            "pitch": 0,
+                            "yaw": 0,
+                            "roll": 0
+                        }
+                    }
+                ],
+                "id": 4.0505972629110785
+            },
+            {
+                "position": {
+                    "x": 1,
+                    "y": 3,
+                    "z": 2
+                },
+                "rotation": {
+                    "pitch": 0,
+                    "yaw": 0,
+                    "roll": 0
+                },
+                "type": "CENTER",
+                "stickers": [
+                    {
+                        "id": 76,
+                        "color": "ORANGE",
+                        "side": "UP",
+                        "positionOffset": {
+                            "x": 0,
+                            "y": 0.5,
+                            "z": 0
+                        },
+                        "rotationOffset": {
+                            "pitch": -90,
+                            "yaw": 0,
+                            "roll": 0
+                        }
+                    }
+                ],
+                "id": 4.624109109378426
+            },
+            {
+                "position": {
+                    "x": 3,
+                    "y": 3,
+                    "z": 2
+                },
+                "rotation": {
+                    "pitch": 0,
+                    "yaw": 0,
+                    "roll": 0
+                },
+                "type": "EDGE",
+                "stickers": [
+                    {
+                        "id": 75,
+                        "color": "ORANGE",
+                        "side": "EAST",
+                        "positionOffset": {
+                            "x": 0.5,
+                            "y": 0,
+                            "z": 0
+                        },
+                        "rotationOffset": {
+                            "pitch": 0,
+                            "yaw": 90,
+                            "roll": 0
+                        }
+                    },
+                    {
+                        "id": 74,
+                        "color": "BLUE",
+                        "side": "UP",
+                        "positionOffset": {
+                            "x": 0,
+                            "y": 0.5,
+                            "z": 0
+                        },
+                        "rotationOffset": {
+                            "pitch": -90,
+                            "yaw": 0,
+                            "roll": 0
+                        }
+                    }
+                ],
+                "id": 6.4367815970777125
+            },
+            {
+                "position": {
+                    "x": 3,
+                    "y": 0,
+                    "z": 3
+                },
+                "rotation": {
+                    "pitch": 0,
+                    "yaw": 0,
+                    "roll": 0
+                },
+                "type": "CORNER",
+                "stickers": [
+                    {
+                        "id": 73,
+                        "color": "ORANGE",
+                        "side": "SOUTH",
+                        "positionOffset": {
+                            "x": 0,
+                            "y": 0,
+                            "z": 0.5
+                        },
+                        "rotationOffset": {
+                            "pitch": 0,
+                            "yaw": 0,
+                            "roll": 0
+                        }
+                    },
+                    {
+                        "id": 72,
+                        "color": "GREEN",
+                        "side": "EAST",
+                        "positionOffset": {
+                            "x": 0.5,
+                            "y": 0,
+                            "z": 0
+                        },
+                        "rotationOffset": {
+                            "pitch": 0,
+                            "yaw": 90,
+                            "roll": 0
+                        }
+                    },
+                    {
+                        "id": 71,
+                        "color": "YELLOW",
+                        "side": "DOWN",
+                        "positionOffset": {
+                            "x": 0,
+                            "y": -0.5,
+                            "z": 0
+                        },
+                        "rotationOffset": {
+                            "pitch": 90,
+                            "yaw": 0,
+                            "roll": 0
+                        }
+                    }
+                ],
+                "id": 3.8992688070710404
+            },
+            {
+                "position": {
+                    "x": 1,
+                    "y": 3,
+                    "z": 0
+                },
+                "rotation": {
+                    "pitch": 0,
+                    "yaw": 0,
+                    "roll": 0
+                },
+                "type": "EDGE",
+                "stickers": [
+                    {
+                        "id": 70,
+                        "color": "ORANGE",
+                        "side": "UP",
+                        "positionOffset": {
+                            "x": 0,
+                            "y": 0.5,
+                            "z": 0
+                        },
+                        "rotationOffset": {
+                            "pitch": -90,
+                            "yaw": 0,
+                            "roll": 0
+                        }
+                    },
+                    {
+                        "id": 69,
+                        "color": "YELLOW",
+                        "side": "NORTH",
+                        "positionOffset": {
+                            "x": 0,
+                            "y": 0,
+                            "z": -0.5
+                        },
+                        "rotationOffset": {
+                            "pitch": 0,
+                            "yaw": 180,
+                            "roll": 0
+                        }
+                    }
+                ],
+                "id": 4.77328288968986
+            },
+            {
+                "position": {
+                    "x": 0,
+                    "y": 1,
+                    "z": 0
+                },
+                "rotation": {
+                    "pitch": 0,
+                    "yaw": 0,
+                    "roll": 0
+                },
+                "type": "EDGE",
+                "stickers": [
+                    {
+                        "id": 68,
+                        "color": "ORANGE",
+                        "side": "NORTH",
+                        "positionOffset": {
+                            "x": 0,
+                            "y": 0,
+                            "z": -0.5
+                        },
+                        "rotationOffset": {
+                            "pitch": 0,
+                            "yaw": 180,
+                            "roll": 0
+                        }
+                    },
+                    {
+                        "id": 67,
+                        "color": "YELLOW",
+                        "side": "WEST",
+                        "positionOffset": {
+                            "x": -0.5,
+                            "y": 0,
+                            "z": 0
+                        },
+                        "rotationOffset": {
+                            "pitch": 0,
+                            "yaw": -90,
+                            "roll": 0
+                        }
+                    }
+                ],
+                "id": 6.2852616896713736
+            },
+            {
+                "position": {
+                    "x": 0,
+                    "y": 0,
+                    "z": 0
+                },
+                "rotation": {
+                    "pitch": 0,
+                    "yaw": 0,
+                    "roll": 0
+                },
+                "type": "CORNER",
+                "stickers": [
+                    {
+                        "id": 66,
+                        "color": "ORANGE",
+                        "side": "DOWN",
+                        "positionOffset": {
+                            "x": 0,
+                            "y": -0.5,
+                            "z": 0
+                        },
+                        "rotationOffset": {
+                            "pitch": 90,
+                            "yaw": 0,
+                            "roll": 0
+                        }
+                    },
+                    {
+                        "id": 65,
+                        "color": "BLUE",
+                        "side": "WEST",
+                        "positionOffset": {
+                            "x": -0.5,
+                            "y": 0,
+                            "z": 0
+                        },
+                        "rotationOffset": {
+                            "pitch": 0,
+                            "yaw": -90,
+                            "roll": 0
+                        }
+                    },
+                    {
+                        "id": 64,
+                        "color": "YELLOW",
+                        "side": "NORTH",
+                        "positionOffset": {
+                            "x": 0,
+                            "y": 0,
+                            "z": -0.5
+                        },
+                        "rotationOffset": {
+                            "pitch": 0,
+                            "yaw": 180,
+                            "roll": 0
+                        }
+                    }
+                ],
+                "id": 7.417701737120948
+            },
+            {
+                "position": {
+                    "x": 0,
+                    "y": 2,
+                    "z": 3
+                },
+                "rotation": {
+                    "pitch": 0,
+                    "yaw": 0,
+                    "roll": 0
+                },
+                "type": "EDGE",
+                "stickers": [
+                    {
+                        "id": 63,
+                        "color": "GREEN",
+                        "side": "WEST",
+                        "positionOffset": {
+                            "x": -0.5,
+                            "y": 0,
+                            "z": 0
+                        },
+                        "rotationOffset": {
+                            "pitch": 0,
+                            "yaw": -90,
+                            "roll": 0
+                        }
+                    },
+                    {
+                        "id": 62,
+                        "color": "WHITE",
+                        "side": "SOUTH",
+                        "positionOffset": {
+                            "x": 0,
+                            "y": 0,
+                            "z": 0.5
+                        },
+                        "rotationOffset": {
+                            "pitch": 0,
+                            "yaw": 0,
+                            "roll": 0
+                        }
+                    }
+                ],
+                "id": 2.0068256789848746
+            },
+            {
+                "position": {
+                    "x": 2,
+                    "y": 1,
+                    "z": 3
+                },
+                "rotation": {
+                    "pitch": 0,
+                    "yaw": 0,
+                    "roll": 0
+                },
+                "type": "CENTER",
+                "stickers": [
+                    {
+                        "id": 61,
+                        "color": "WHITE",
+                        "side": "SOUTH",
+                        "positionOffset": {
+                            "x": 0,
+                            "y": 0,
+                            "z": 0.5
+                        },
+                        "rotationOffset": {
+                            "pitch": 0,
+                            "yaw": 0,
+                            "roll": 0
+                        }
+                    }
+                ],
+                "id": 2.5089102883361774
+            },
+            {
+                "position": {
+                    "x": 1,
+                    "y": 0,
+                    "z": 2
+                },
+                "rotation": {
+                    "pitch": 0,
+                    "yaw": 0,
+                    "roll": 0
+                },
+                "type": "CENTER",
+                "stickers": [
+                    {
+                        "id": 60,
+                        "color": "WHITE",
+                        "side": "DOWN",
+                        "positionOffset": {
+                            "x": 0,
+                            "y": -0.5,
+                            "z": 0
+                        },
+                        "rotationOffset": {
+                            "pitch": 90,
+                            "yaw": 0,
+                            "roll": 0
+                        }
+                    }
+                ],
+                "id": 3.419079373554843
+            },
+            {
+                "position": {
+                    "x": 3,
+                    "y": 1,
+                    "z": 3
+                },
+                "rotation": {
+                    "pitch": 0,
+                    "yaw": 0,
+                    "roll": 0
+                },
+                "type": "EDGE",
+                "stickers": [
+                    {
+                        "id": 59,
+                        "color": "BLUE",
+                        "side": "SOUTH",
+                        "positionOffset": {
+                            "x": 0,
+                            "y": 0,
+                            "z": 0.5
+                        },
+                        "rotationOffset": {
+                            "pitch": 0,
+                            "yaw": 0,
+                            "roll": 0
+                        }
+                    },
+                    {
+                        "id": 58,
+                        "color": "WHITE",
+                        "side": "EAST",
+                        "positionOffset": {
+                            "x": 0.5,
+                            "y": 0,
+                            "z": 0
+                        },
+                        "rotationOffset": {
+                            "pitch": 0,
+                            "yaw": 90,
+                            "roll": 0
+                        }
+                    }
+                ],
+                "id": 4.818178315532198
+            },
+            {
+                "position": {
+                    "x": 2,
+                    "y": 2,
+                    "z": 0
+                },
+                "rotation": {
+                    "pitch": 0,
+                    "yaw": 0,
+                    "roll": 0
+                },
+                "type": "CENTER",
+                "stickers": [
+                    {
+                        "id": 57,
+                        "color": "GREEN",
+                        "side": "NORTH",
+                        "positionOffset": {
+                            "x": 0,
+                            "y": 0,
+                            "z": -0.5
+                        },
+                        "rotationOffset": {
+                            "pitch": 0,
+                            "yaw": 180,
+                            "roll": 0
+                        }
+                    }
+                ],
+                "id": 2.5600040516803584
+            },
+            {
+                "position": {
+                    "x": 2,
+                    "y": 1,
+                    "z": 1
+                },
+                "rotation": {
+                    "pitch": 0,
+                    "yaw": 0,
+                    "roll": 0
+                },
+                "type": "CORE",
+                "stickers": [
+
+                ],
+                "id": 3.7350663860427886
+            },
+            {
+                "position": {
+                    "x": 1,
+                    "y": 1,
+                    "z": 2
+                },
+                "rotation": {
+                    "pitch": 0,
+                    "yaw": 0,
+                    "roll": 0
+                },
+                "type": "CORE",
+                "stickers": [
+
+                ],
+                "id": 5.433234492475297
+            },
+            {
+                "position": {
+                    "x": 3,
+                    "y": 1,
+                    "z": 1
+                },
+                "rotation": {
+                    "pitch": 0,
+                    "yaw": 0,
+                    "roll": 0
+                },
+                "type": "CENTER",
+                "stickers": [
+                    {
+                        "id": 56,
+                        "color": "BLUE",
+                        "side": "EAST",
+                        "positionOffset": {
+                            "x": 0.5,
+                            "y": 0,
+                            "z": 0
+                        },
+                        "rotationOffset": {
+                            "pitch": 0,
+                            "yaw": 90,
+                            "roll": 0
+                        }
+                    }
+                ],
+                "id": 6.311873560184403
+            },
+            {
+                "position": {
+                    "x": 2,
+                    "y": 0,
+                    "z": 2
+                },
+                "rotation": {
+                    "pitch": 0,
+                    "yaw": 0,
+                    "roll": 0
+                },
+                "type": "CENTER",
+                "stickers": [
+                    {
+                        "id": 55,
+                        "color": "GREEN",
+                        "side": "DOWN",
+                        "positionOffset": {
+                            "x": 0,
+                            "y": -0.5,
+                            "z": 0
+                        },
+                        "rotationOffset": {
+                            "pitch": 90,
+                            "yaw": 0,
+                            "roll": 0
+                        }
+                    }
+                ],
+                "id": 3.648165808867948
+            },
+            {
+                "position": {
+                    "x": 2,
+                    "y": 1,
+                    "z": 2
+                },
+                "rotation": {
+                    "pitch": 0,
+                    "yaw": 0,
+                    "roll": 0
+                },
+                "type": "CORE",
+                "stickers": [
+
+                ],
+                "id": 5.135774679293064
+            },
+            {
+                "position": {
+                    "x": 2,
+                    "y": 2,
+                    "z": 1
+                },
+                "rotation": {
+                    "pitch": 0,
+                    "yaw": 0,
+                    "roll": 0
+                },
+                "type": "CORE",
+                "stickers": [
+
+                ],
+                "id": 5.805302521208279
+            },
+            {
+                "position": {
+                    "x": 1,
+                    "y": 1,
+                    "z": 0
+                },
+                "rotation": {
+                    "pitch": 0,
+                    "yaw": 0,
+                    "roll": 0
+                },
+                "type": "CENTER",
+                "stickers": [
+                    {
+                        "id": 54,
+                        "color": "BLUE",
+                        "side": "NORTH",
+                        "positionOffset": {
+                            "x": 0,
+                            "y": 0,
+                            "z": -0.5
+                        },
+                        "rotationOffset": {
+                            "pitch": 0,
+                            "yaw": 180,
+                            "roll": 0
+                        }
+                    }
+                ],
+                "id": 6.454192725348131
+            },
+            {
+                "position": {
+                    "x": 0,
+                    "y": 3,
+                    "z": 2
+                },
+                "rotation": {
+                    "pitch": 0,
+                    "yaw": 0,
+                    "roll": 0
+                },
+                "type": "EDGE",
+                "stickers": [
+                    {
+                        "id": 53,
+                        "color": "GREEN",
+                        "side": "WEST",
+                        "positionOffset": {
+                            "x": -0.5,
+                            "y": 0,
+                            "z": 0
+                        },
+                        "rotationOffset": {
+                            "pitch": 0,
+                            "yaw": -90,
+                            "roll": 0
+                        }
+                    },
+                    {
+                        "id": 52,
+                        "color": "YELLOW",
+                        "side": "UP",
+                        "positionOffset": {
+                            "x": 0,
+                            "y": 0.5,
+                            "z": 0
+                        },
+                        "rotationOffset": {
+                            "pitch": -90,
+                            "yaw": 0,
+                            "roll": 0
+                        }
+                    }
+                ],
+                "id": 5.2166456494330395
+            },
+            {
+                "position": {
+                    "x": 0,
+                    "y": 2,
+                    "z": 2
+                },
+                "rotation": {
+                    "pitch": 0,
+                    "yaw": 0,
+                    "roll": 0
+                },
+                "type": "CENTER",
+                "stickers": [
+                    {
+                        "id": 51,
+                        "color": "YELLOW",
+                        "side": "WEST",
+                        "positionOffset": {
+                            "x": -0.5,
+                            "y": 0,
+                            "z": 0
+                        },
+                        "rotationOffset": {
+                            "pitch": 0,
+                            "yaw": -90,
+                            "roll": 0
+                        }
+                    }
+                ],
+                "id": 6.774687593156787
+            },
+            {
+                "position": {
+                    "x": 3,
+                    "y": 2,
+                    "z": 2
+                },
+                "rotation": {
+                    "pitch": 0,
+                    "yaw": 0,
+                    "roll": 0
+                },
+                "type": "CENTER",
+                "stickers": [
+                    {
+                        "id": 50,
+                        "color": "YELLOW",
+                        "side": "EAST",
+                        "positionOffset": {
+                            "x": 0.5,
+                            "y": 0,
+                            "z": 0
+                        },
+                        "rotationOffset": {
+                            "pitch": 0,
+                            "yaw": 90,
+                            "roll": 0
+                        }
+                    }
+                ],
+                "id": 6.866847195540425
+            },
+            {
+                "position": {
+                    "x": 3,
+                    "y": 0,
+                    "z": 2
+                },
+                "rotation": {
+                    "pitch": 0,
+                    "yaw": 0,
+                    "roll": 0
+                },
+                "type": "EDGE",
+                "stickers": [
+                    {
+                        "id": 49,
+                        "color": "BLUE",
+                        "side": "DOWN",
+                        "positionOffset": {
+                            "x": 0,
+                            "y": -0.5,
+                            "z": 0
+                        },
+                        "rotationOffset": {
+                            "pitch": 90,
+                            "yaw": 0,
+                            "roll": 0
+                        }
+                    },
+                    {
+                        "id": 48,
+                        "color": "YELLOW",
+                        "side": "EAST",
+                        "positionOffset": {
+                            "x": 0.5,
+                            "y": 0,
+                            "z": 0
+                        },
+                        "rotationOffset": {
+                            "pitch": 0,
+                            "yaw": 90,
+                            "roll": 0
+                        }
+                    }
+                ],
+                "id": 8.151474286151583
+            },
+            {
+                "position": {
+                    "x": 0,
+                    "y": 3,
+                    "z": 1
+                },
+                "rotation": {
+                    "pitch": 0,
+                    "yaw": 0,
+                    "roll": 0
+                },
+                "type": "EDGE",
+                "stickers": [
+                    {
+                        "id": 47,
+                        "color": "GREEN",
+                        "side": "UP",
+                        "positionOffset": {
+                            "x": 0,
+                            "y": 0.5,
+                            "z": 0
+                        },
+                        "rotationOffset": {
+                            "pitch": -90,
+                            "yaw": 0,
+                            "roll": 0
+                        }
+                    },
+                    {
+                        "id": 46,
+                        "color": "WHITE",
+                        "side": "WEST",
+                        "positionOffset": {
+                            "x": -0.5,
+                            "y": 0,
+                            "z": 0
+                        },
+                        "rotationOffset": {
+                            "pitch": 0,
+                            "yaw": -90,
+                            "roll": 0
+                        }
+                    }
+                ],
+                "id": 2.8695192785088945
+            },
+            {
+                "position": {
+                    "x": 0,
+                    "y": 1,
+                    "z": 2
+                },
+                "rotation": {
+                    "pitch": 0,
+                    "yaw": 0,
+                    "roll": 0
+                },
+                "type": "CENTER",
+                "stickers": [
+                    {
+                        "id": 45,
+                        "color": "WHITE",
+                        "side": "WEST",
+                        "positionOffset": {
+                            "x": -0.5,
+                            "y": 0,
+                            "z": 0
+                        },
+                        "rotationOffset": {
+                            "pitch": 0,
+                            "yaw": -90,
+                            "roll": 0
+                        }
+                    }
+                ],
+                "id": 3.942131209612734
+            },
+            {
+                "position": {
+                    "x": 0,
+                    "y": 2,
+                    "z": 1
+                },
+                "rotation": {
+                    "pitch": 0,
+                    "yaw": 0,
+                    "roll": 0
+                },
+                "type": "CENTER",
+                "stickers": [
+                    {
+                        "id": 44,
+                        "color": "WHITE",
+                        "side": "WEST",
+                        "positionOffset": {
+                            "x": -0.5,
+                            "y": 0,
+                            "z": 0
+                        },
+                        "rotationOffset": {
+                            "pitch": 0,
+                            "yaw": -90,
+                            "roll": 0
+                        }
+                    }
+                ],
+                "id": 5.138744821580434
+            },
+            {
+                "position": {
+                    "x": 2,
+                    "y": 3,
+                    "z": 0
+                },
+                "rotation": {
+                    "pitch": 0,
+                    "yaw": 0,
+                    "roll": 0
+                },
+                "type": "EDGE",
+                "stickers": [
+                    {
+                        "id": 43,
+                        "color": "BLUE",
+                        "side": "NORTH",
+                        "positionOffset": {
+                            "x": 0,
+                            "y": 0,
+                            "z": -0.5
+                        },
+                        "rotationOffset": {
+                            "pitch": 0,
+                            "yaw": 180,
+                            "roll": 0
+                        }
+                    },
+                    {
+                        "id": 42,
+                        "color": "WHITE",
+                        "side": "UP",
+                        "positionOffset": {
+                            "x": 0,
+                            "y": 0.5,
+                            "z": 0
+                        },
+                        "rotationOffset": {
+                            "pitch": -90,
+                            "yaw": 0,
+                            "roll": 0
+                        }
+                    }
+                ],
+                "id": 5.51016203214021
+            },
+            {
+                "position": {
+                    "x": 2,
+                    "y": 3,
+                    "z": 1
+                },
+                "rotation": {
+                    "pitch": 0,
+                    "yaw": 0,
+                    "roll": 0
+                },
+                "type": "CENTER",
+                "stickers": [
+                    {
+                        "id": 41,
+                        "color": "GREEN",
+                        "side": "UP",
+                        "positionOffset": {
+                            "x": 0,
+                            "y": 0.5,
+                            "z": 0
+                        },
+                        "rotationOffset": {
+                            "pitch": -90,
+                            "yaw": 0,
+                            "roll": 0
+                        }
+                    }
+                ],
+                "id": 4.076586984416427
+            },
+            {
+                "position": {
+                    "x": 1,
+                    "y": 2,
+                    "z": 1
+                },
+                "rotation": {
+                    "pitch": 0,
+                    "yaw": 0,
+                    "roll": 0
+                },
+                "type": "CORE",
+                "stickers": [
+
+                ],
+                "id": 5.4338584474829625
+            },
+            {
+                "position": {
+                    "x": 2,
+                    "y": 2,
+                    "z": 2
+                },
+                "rotation": {
+                    "pitch": 0,
+                    "yaw": 0,
+                    "roll": 0
+                },
+                "type": "CORE",
+                "stickers": [
+
+                ],
+                "id": 6.255985014632033
+            },
+            {
+                "position": {
+                    "x": 2,
+                    "y": 0,
+                    "z": 1
+                },
+                "rotation": {
+                    "pitch": 0,
+                    "yaw": 0,
+                    "roll": 0
+                },
+                "type": "CENTER",
+                "stickers": [
+                    {
+                        "id": 40,
+                        "color": "BLUE",
+                        "side": "DOWN",
+                        "positionOffset": {
+                            "x": 0,
+                            "y": -0.5,
+                            "z": 0
+                        },
+                        "rotationOffset": {
+                            "pitch": 90,
+                            "yaw": 0,
+                            "roll": 0
+                        }
+                    }
+                ],
+                "id": 6.26120482359044
+            },
+            {
+                "position": {
+                    "x": 3,
+                    "y": 1,
+                    "z": 2
+                },
+                "rotation": {
+                    "pitch": 0,
+                    "yaw": 0,
+                    "roll": 0
+                },
+                "type": "CENTER",
+                "stickers": [
+                    {
+                        "id": 39,
+                        "color": "GREEN",
+                        "side": "EAST",
+                        "positionOffset": {
+                            "x": 0.5,
+                            "y": 0,
+                            "z": 0
+                        },
+                        "rotationOffset": {
+                            "pitch": 0,
+                            "yaw": 90,
+                            "roll": 0
+                        }
+                    }
+                ],
+                "id": 5.462420122141905
+            },
+            {
+                "position": {
+                    "x": 1,
+                    "y": 1,
+                    "z": 1
+                },
+                "rotation": {
+                    "pitch": 0,
+                    "yaw": 0,
+                    "roll": 0
+                },
+                "type": "CORE",
+                "stickers": [
+
+                ],
+                "id": 5.555599480453255
+            },
+            {
+                "position": {
+                    "x": 1,
+                    "y": 2,
+                    "z": 2
+                },
+                "rotation": {
+                    "pitch": 0,
+                    "yaw": 0,
+                    "roll": 0
+                },
+                "type": "CORE",
+                "stickers": [
+
+                ],
+                "id": 6.9777387732913825
+            },
+            {
+                "position": {
+                    "x": 2,
+                    "y": 3,
+                    "z": 2
+                },
+                "rotation": {
+                    "pitch": 0,
+                    "yaw": 0,
+                    "roll": 0
+                },
+                "type": "CENTER",
+                "stickers": [
+                    {
+                        "id": 38,
+                        "color": "BLUE",
+                        "side": "UP",
+                        "positionOffset": {
+                            "x": 0,
+                            "y": 0.5,
+                            "z": 0
+                        },
+                        "rotationOffset": {
+                            "pitch": -90,
+                            "yaw": 0,
+                            "roll": 0
+                        }
+                    }
+                ],
+                "id": 7.786911860873681
+            },
+            {
+                "position": {
+                    "x": 3,
+                    "y": 0,
+                    "z": 1
+                },
+                "rotation": {
+                    "pitch": 0,
+                    "yaw": 0,
+                    "roll": 0
+                },
+                "type": "EDGE",
+                "stickers": [
+                    {
+                        "id": 37,
+                        "color": "GREEN",
+                        "side": "EAST",
+                        "positionOffset": {
+                            "x": 0.5,
+                            "y": 0,
+                            "z": 0
+                        },
+                        "rotationOffset": {
+                            "pitch": 0,
+                            "yaw": 90,
+                            "roll": 0
+                        }
+                    },
+                    {
+                        "id": 36,
+                        "color": "YELLOW",
+                        "side": "DOWN",
+                        "positionOffset": {
+                            "x": 0,
+                            "y": -0.5,
+                            "z": 0
+                        },
+                        "rotationOffset": {
+                            "pitch": 90,
+                            "yaw": 0,
+                            "roll": 0
+                        }
+                    }
+                ],
+                "id": 6.266559445257831
+            },
+            {
+                "position": {
+                    "x": 3,
+                    "y": 2,
+                    "z": 1
+                },
+                "rotation": {
+                    "pitch": 0,
+                    "yaw": 0,
+                    "roll": 0
+                },
+                "type": "CENTER",
+                "stickers": [
+                    {
+                        "id": 35,
+                        "color": "YELLOW",
+                        "side": "EAST",
+                        "positionOffset": {
+                            "x": 0.5,
+                            "y": 0,
+                            "z": 0
+                        },
+                        "rotationOffset": {
+                            "pitch": 0,
+                            "yaw": 90,
+                            "roll": 0
+                        }
+                    }
+                ],
+                "id": 7.309076952670251
+            },
+            {
+                "position": {
+                    "x": 1,
+                    "y": 2,
+                    "z": 0
+                },
+                "rotation": {
+                    "pitch": 0,
+                    "yaw": 0,
+                    "roll": 0
+                },
+                "type": "CENTER",
+                "stickers": [
+                    {
+                        "id": 34,
+                        "color": "YELLOW",
+                        "side": "NORTH",
+                        "positionOffset": {
+                            "x": 0,
+                            "y": 0,
+                            "z": -0.5
+                        },
+                        "rotationOffset": {
+                            "pitch": 0,
+                            "yaw": 180,
+                            "roll": 0
+                        }
+                    }
+                ],
+                "id": 8.127828168809904
+            },
+            {
+                "position": {
+                    "x": 3,
+                    "y": 3,
+                    "z": 1
+                },
+                "rotation": {
+                    "pitch": 0,
+                    "yaw": 0,
+                    "roll": 0
+                },
+                "type": "EDGE",
+                "stickers": [
+                    {
+                        "id": 33,
+                        "color": "BLUE",
+                        "side": "EAST",
+                        "positionOffset": {
+                            "x": 0.5,
+                            "y": 0,
+                            "z": 0
+                        },
+                        "rotationOffset": {
+                            "pitch": 0,
+                            "yaw": 90,
+                            "roll": 0
+                        }
+                    },
+                    {
+                        "id": 32,
+                        "color": "YELLOW",
+                        "side": "UP",
+                        "positionOffset": {
+                            "x": 0,
+                            "y": 0.5,
+                            "z": 0
+                        },
+                        "rotationOffset": {
+                            "pitch": -90,
+                            "yaw": 0,
+                            "roll": 0
+                        }
+                    }
+                ],
+                "id": 8.789600600560528
+            },
+            {
+                "position": {
+                    "x": 3,
+                    "y": 3,
+                    "z": 0
+                },
+                "rotation": {
+                    "pitch": 0,
+                    "yaw": 0,
+                    "roll": 0
+                },
+                "type": "CORNER",
+                "stickers": [
+                    {
+                        "id": 31,
+                        "color": "RED",
+                        "side": "UP",
+                        "positionOffset": {
+                            "x": 0,
+                            "y": 0.5,
+                            "z": 0
+                        },
+                        "rotationOffset": {
+                            "pitch": -90,
+                            "yaw": 0,
+                            "roll": 0
+                        }
+                    },
+                    {
+                        "id": 30,
+                        "color": "GREEN",
+                        "side": "NORTH",
+                        "positionOffset": {
+                            "x": 0,
+                            "y": 0,
+                            "z": -0.5
+                        },
+                        "rotationOffset": {
+                            "pitch": 0,
+                            "yaw": 180,
+                            "roll": 0
+                        }
+                    },
+                    {
+                        "id": 29,
+                        "color": "WHITE",
+                        "side": "EAST",
+                        "positionOffset": {
+                            "x": 0.5,
+                            "y": 0,
+                            "z": 0
+                        },
+                        "rotationOffset": {
+                            "pitch": 0,
+                            "yaw": 90,
+                            "roll": 0
+                        }
+                    }
+                ],
+                "id": 3.250852311407476
+            },
+            {
+                "position": {
+                    "x": 1,
+                    "y": 3,
+                    "z": 3
+                },
+                "rotation": {
+                    "pitch": 0,
+                    "yaw": 0,
+                    "roll": 0
+                },
+                "type": "EDGE",
+                "stickers": [
+                    {
+                        "id": 28,
+                        "color": "RED",
+                        "side": "SOUTH",
+                        "positionOffset": {
+                            "x": 0,
+                            "y": 0,
+                            "z": 0.5
+                        },
+                        "rotationOffset": {
+                            "pitch": 0,
+                            "yaw": 0,
+                            "roll": 0
+                        }
+                    },
+                    {
+                        "id": 27,
+                        "color": "WHITE",
+                        "side": "UP",
+                        "positionOffset": {
+                            "x": 0,
+                            "y": 0.5,
+                            "z": 0
+                        },
+                        "rotationOffset": {
+                            "pitch": -90,
+                            "yaw": 0,
+                            "roll": 0
+                        }
+                    }
+                ],
+                "id": 5.1572533777419585
+            },
+            {
+                "position": {
+                    "x": 2,
+                    "y": 0,
+                    "z": 0
+                },
+                "rotation": {
+                    "pitch": 0,
+                    "yaw": 0,
+                    "roll": 0
+                },
+                "type": "EDGE",
+                "stickers": [
+                    {
+                        "id": 26,
+                        "color": "RED",
+                        "side": "NORTH",
+                        "positionOffset": {
+                            "x": 0,
+                            "y": 0,
+                            "z": -0.5
+                        },
+                        "rotationOffset": {
+                            "pitch": 0,
+                            "yaw": 180,
+                            "roll": 0
+                        }
+                    },
+                    {
+                        "id": 25,
+                        "color": "WHITE",
+                        "side": "DOWN",
+                        "positionOffset": {
+                            "x": 0,
+                            "y": -0.5,
+                            "z": 0
+                        },
+                        "rotationOffset": {
+                            "pitch": 90,
+                            "yaw": 0,
+                            "roll": 0
+                        }
+                    }
+                ],
+                "id": 5.827416450631669
+            },
+            {
+                "position": {
+                    "x": 3,
+                    "y": 3,
+                    "z": 3
+                },
+                "rotation": {
+                    "pitch": 0,
+                    "yaw": 0,
+                    "roll": 0
+                },
+                "type": "CORNER",
+                "stickers": [
+                    {
+                        "id": 24,
+                        "color": "RED",
+                        "side": "UP",
+                        "positionOffset": {
+                            "x": 0,
+                            "y": 0.5,
+                            "z": 0
+                        },
+                        "rotationOffset": {
+                            "pitch": -90,
+                            "yaw": 0,
+                            "roll": 0
+                        }
+                    },
+                    {
+                        "id": 23,
+                        "color": "BLUE",
+                        "side": "SOUTH",
+                        "positionOffset": {
+                            "x": 0,
+                            "y": 0,
+                            "z": 0.5
+                        },
+                        "rotationOffset": {
+                            "pitch": 0,
+                            "yaw": 0,
+                            "roll": 0
+                        }
+                    },
+                    {
+                        "id": 22,
+                        "color": "WHITE",
+                        "side": "EAST",
+                        "positionOffset": {
+                            "x": 0.5,
+                            "y": 0,
+                            "z": 0
+                        },
+                        "rotationOffset": {
+                            "pitch": 0,
+                            "yaw": 90,
+                            "roll": 0
+                        }
+                    }
+                ],
+                "id": 7.402167558373033
+            },
+            {
+                "position": {
+                    "x": 0,
+                    "y": 0,
+                    "z": 1
+                },
+                "rotation": {
+                    "pitch": 0,
+                    "yaw": 0,
+                    "roll": 0
+                },
+                "type": "EDGE",
+                "stickers": [
+                    {
+                        "id": 21,
+                        "color": "RED",
+                        "side": "WEST",
+                        "positionOffset": {
+                            "x": -0.5,
+                            "y": 0,
+                            "z": 0
+                        },
+                        "rotationOffset": {
+                            "pitch": 0,
+                            "yaw": -90,
+                            "roll": 0
+                        }
+                    },
+                    {
+                        "id": 20,
+                        "color": "GREEN",
+                        "side": "DOWN",
+                        "positionOffset": {
+                            "x": 0,
+                            "y": -0.5,
+                            "z": 0
+                        },
+                        "rotationOffset": {
+                            "pitch": 90,
+                            "yaw": 0,
+                            "roll": 0
+                        }
+                    }
+                ],
+                "id": 4.905635464900759
+            },
+            {
+                "position": {
+                    "x": 1,
+                    "y": 0,
+                    "z": 1
+                },
+                "rotation": {
+                    "pitch": 0,
+                    "yaw": 0,
+                    "roll": 0
+                },
+                "type": "CENTER",
+                "stickers": [
+                    {
+                        "id": 19,
+                        "color": "RED",
+                        "side": "DOWN",
+                        "positionOffset": {
+                            "x": 0,
+                            "y": -0.5,
+                            "z": 0
+                        },
+                        "rotationOffset": {
+                            "pitch": 90,
+                            "yaw": 0,
+                            "roll": 0
+                        }
+                    }
+                ],
+                "id": 6.646074173977417
+            },
+            {
+                "position": {
+                    "x": 1,
+                    "y": 1,
+                    "z": 3
+                },
+                "rotation": {
+                    "pitch": 0,
+                    "yaw": 0,
+                    "roll": 0
+                },
+                "type": "CENTER",
+                "stickers": [
+                    {
+                        "id": 18,
+                        "color": "RED",
+                        "side": "SOUTH",
+                        "positionOffset": {
+                            "x": 0,
+                            "y": 0,
+                            "z": 0.5
+                        },
+                        "rotationOffset": {
+                            "pitch": 0,
+                            "yaw": 0,
+                            "roll": 0
+                        }
+                    }
+                ],
+                "id": 6.7552278066556095
+            },
+            {
+                "position": {
+                    "x": 3,
+                    "y": 2,
+                    "z": 0
+                },
+                "rotation": {
+                    "pitch": 0,
+                    "yaw": 0,
+                    "roll": 0
+                },
+                "type": "EDGE",
+                "stickers": [
+                    {
+                        "id": 17,
+                        "color": "RED",
+                        "side": "EAST",
+                        "positionOffset": {
+                            "x": 0.5,
+                            "y": 0,
+                            "z": 0
+                        },
+                        "rotationOffset": {
+                            "pitch": 0,
+                            "yaw": 90,
+                            "roll": 0
+                        }
+                    },
+                    {
+                        "id": 16,
+                        "color": "BLUE",
+                        "side": "NORTH",
+                        "positionOffset": {
+                            "x": 0,
+                            "y": 0,
+                            "z": -0.5
+                        },
+                        "rotationOffset": {
+                            "pitch": 0,
+                            "yaw": 180,
+                            "roll": 0
+                        }
+                    }
+                ],
+                "id": 8.607569313005218
+            },
+            {
+                "position": {
+                    "x": 0,
+                    "y": 1,
+                    "z": 3
+                },
+                "rotation": {
+                    "pitch": 0,
+                    "yaw": 0,
+                    "roll": 0
+                },
+                "type": "EDGE",
+                "stickers": [
+                    {
+                        "id": 15,
+                        "color": "RED",
+                        "side": "SOUTH",
+                        "positionOffset": {
+                            "x": 0,
+                            "y": 0,
+                            "z": 0.5
+                        },
+                        "rotationOffset": {
+                            "pitch": 0,
+                            "yaw": 0,
+                            "roll": 0
+                        }
+                    },
+                    {
+                        "id": 14,
+                        "color": "GREEN",
+                        "side": "WEST",
+                        "positionOffset": {
+                            "x": -0.5,
+                            "y": 0,
+                            "z": 0
+                        },
+                        "rotationOffset": {
+                            "pitch": 0,
+                            "yaw": -90,
+                            "roll": 0
+                        }
+                    }
+                ],
+                "id": 5.308292400905909
+            },
+            {
+                "position": {
+                    "x": 0,
+                    "y": 1,
+                    "z": 1
+                },
+                "rotation": {
+                    "pitch": 0,
+                    "yaw": 0,
+                    "roll": 0
+                },
+                "type": "CENTER",
+                "stickers": [
+                    {
+                        "id": 13,
+                        "color": "RED",
+                        "side": "WEST",
+                        "positionOffset": {
+                            "x": -0.5,
+                            "y": 0,
+                            "z": 0
+                        },
+                        "rotationOffset": {
+                            "pitch": 0,
+                            "yaw": -90,
+                            "roll": 0
+                        }
+                    }
+                ],
+                "id": 6.649972263390134
+            },
+            {
+                "position": {
+                    "x": 1,
+                    "y": 3,
+                    "z": 1
+                },
+                "rotation": {
+                    "pitch": 0,
+                    "yaw": 0,
+                    "roll": 0
+                },
+                "type": "CENTER",
+                "stickers": [
+                    {
+                        "id": 12,
+                        "color": "RED",
+                        "side": "UP",
+                        "positionOffset": {
+                            "x": 0,
+                            "y": 0.5,
+                            "z": 0
+                        },
+                        "rotationOffset": {
+                            "pitch": -90,
+                            "yaw": 0,
+                            "roll": 0
+                        }
+                    }
+                ],
+                "id": 7.641353720354509
+            },
+            {
+                "position": {
+                    "x": 3,
+                    "y": 2,
+                    "z": 3
+                },
+                "rotation": {
+                    "pitch": 0,
+                    "yaw": 0,
+                    "roll": 0
+                },
+                "type": "EDGE",
+                "stickers": [
+                    {
+                        "id": 11,
+                        "color": "RED",
+                        "side": "EAST",
+                        "positionOffset": {
+                            "x": 0.5,
+                            "y": 0,
+                            "z": 0
+                        },
+                        "rotationOffset": {
+                            "pitch": 0,
+                            "yaw": 90,
+                            "roll": 0
+                        }
+                    },
+                    {
+                        "id": 10,
+                        "color": "BLUE",
+                        "side": "SOUTH",
+                        "positionOffset": {
+                            "x": 0,
+                            "y": 0,
+                            "z": 0.5
+                        },
+                        "rotationOffset": {
+                            "pitch": 0,
+                            "yaw": 0,
+                            "roll": 0
+                        }
+                    }
+                ],
+                "id": 9.252547768316738
+            },
+            {
+                "position": {
+                    "x": 0,
+                    "y": 3,
+                    "z": 3
+                },
+                "rotation": {
+                    "pitch": 0,
+                    "yaw": 0,
+                    "roll": 0
+                },
+                "type": "CORNER",
+                "stickers": [
+                    {
+                        "id": 9,
+                        "color": "RED",
+                        "side": "WEST",
+                        "positionOffset": {
+                            "x": -0.5,
+                            "y": 0,
+                            "z": 0
+                        },
+                        "rotationOffset": {
+                            "pitch": 0,
+                            "yaw": -90,
+                            "roll": 0
+                        }
+                    },
+                    {
+                        "id": 8,
+                        "color": "GREEN",
+                        "side": "SOUTH",
+                        "positionOffset": {
+                            "x": 0,
+                            "y": 0,
+                            "z": 0.5
+                        },
+                        "rotationOffset": {
+                            "pitch": 0,
+                            "yaw": 0,
+                            "roll": 0
+                        }
+                    },
+                    {
+                        "id": 7,
+                        "color": "YELLOW",
+                        "side": "UP",
+                        "positionOffset": {
+                            "x": 0,
+                            "y": 0.5,
+                            "z": 0
+                        },
+                        "rotationOffset": {
+                            "pitch": -90,
+                            "yaw": 0,
+                            "roll": 0
+                        }
+                    }
+                ],
+                "id": 7.280088685340888
+            },
+            {
+                "position": {
+                    "x": 0,
+                    "y": 2,
+                    "z": 0
+                },
+                "rotation": {
+                    "pitch": 0,
+                    "yaw": 0,
+                    "roll": 0
+                },
+                "type": "EDGE",
+                "stickers": [
+                    {
+                        "id": 6,
+                        "color": "RED",
+                        "side": "WEST",
+                        "positionOffset": {
+                            "x": -0.5,
+                            "y": 0,
+                            "z": 0
+                        },
+                        "rotationOffset": {
+                            "pitch": 0,
+                            "yaw": -90,
+                            "roll": 0
+                        }
+                    },
+                    {
+                        "id": 5,
+                        "color": "YELLOW",
+                        "side": "NORTH",
+                        "positionOffset": {
+                            "x": 0,
+                            "y": 0,
+                            "z": -0.5
+                        },
+                        "rotationOffset": {
+                            "pitch": 0,
+                            "yaw": 180,
+                            "roll": 0
+                        }
+                    }
+                ],
+                "id": 7.428642844208304
+            },
+            {
+                "position": {
+                    "x": 2,
+                    "y": 0,
+                    "z": 3
+                },
+                "rotation": {
+                    "pitch": 0,
+                    "yaw": 0,
+                    "roll": 0
+                },
+                "type": "EDGE",
+                "stickers": [
+                    {
+                        "id": 4,
+                        "color": "RED",
+                        "side": "SOUTH",
+                        "positionOffset": {
+                            "x": 0,
+                            "y": 0,
+                            "z": 0.5
+                        },
+                        "rotationOffset": {
+                            "pitch": 0,
+                            "yaw": 0,
+                            "roll": 0
+                        }
+                    },
+                    {
+                        "id": 3,
+                        "color": "YELLOW",
+                        "side": "DOWN",
+                        "positionOffset": {
+                            "x": 0,
+                            "y": -0.5,
+                            "z": 0
+                        },
+                        "rotationOffset": {
+                            "pitch": 90,
+                            "yaw": 0,
+                            "roll": 0
+                        }
+                    }
+                ],
+                "id": 9.343382678410492
+            },
+            {
+                "position": {
+                    "x": 0,
+                    "y": 3,
+                    "z": 0
+                },
+                "rotation": {
+                    "pitch": 0,
+                    "yaw": 0,
+                    "roll": 0
+                },
+                "type": "CORNER",
+                "stickers": [
+                    {
+                        "id": 2,
+                        "color": "RED",
+                        "side": "WEST",
+                        "positionOffset": {
+                            "x": -0.5,
+                            "y": 0,
+                            "z": 0
+                        },
+                        "rotationOffset": {
+                            "pitch": 0,
+                            "yaw": -90,
+                            "roll": 0
+                        }
+                    },
+                    {
+                        "id": 1,
+                        "color": "BLUE",
+                        "side": "NORTH",
+                        "positionOffset": {
+                            "x": 0,
+                            "y": 0,
+                            "z": -0.5
+                        },
+                        "rotationOffset": {
+                            "pitch": 0,
+                            "yaw": 180,
+                            "roll": 0
+                        }
+                    },
+                    {
+                        "id": 0,
+                        "color": "YELLOW",
+                        "side": "UP",
+                        "positionOffset": {
+                            "x": 0,
+                            "y": 0.5,
+                            "z": 0
+                        },
+                        "rotationOffset": {
+                            "pitch": -90,
+                            "yaw": 0,
+                            "roll": 0
+                        }
+                    }
+                ],
+                "id": 9.827264359543753
+            }
+        ]
+
+        this.RubiksCube.setStateFromJSON(TestState)
+
         for (const state of this.RubiksCube.state) {
 
             if (state.type === "CORE") {
@@ -199,28 +2676,48 @@ class App {
                 const config = sideConfig[sticker.side as keyof typeof sideConfig];
 
                 if (config) {
-
-                    const piece = state.position;
-
-                    Dummy.position.set(piece.x + sticker.positionOffset.x - this.Size / 2, piece.y + sticker.positionOffset.y - this.Size / 2, piece.z + sticker.positionOffset.z - this.Size / 2);
-
-                    Dummy.rotation.set(THREE.MathUtils.degToRad(sticker.rotationOffset.pitch), THREE.MathUtils.degToRad(sticker.rotationOffset.yaw), THREE.MathUtils.degToRad(sticker.rotationOffset.roll));
-
+                    Dummy.position.set(
+                        sticker.positionOffset.x - this.Size / 2 + state.position.x,
+                        sticker.positionOffset.y - this.Size / 2 + state.position.y,
+                        sticker.positionOffset.z - this.Size / 2 + state.position.z
+                    );
+                    Dummy.rotation.set(
+                        THREE.MathUtils.degToRad(sticker.rotationOffset.pitch + state.rotation.pitch),
+                        THREE.MathUtils.degToRad(sticker.rotationOffset.yaw + state.rotation.yaw),
+                        THREE.MathUtils.degToRad(sticker.rotationOffset.roll + state.rotation.roll)
+                    );
                     Dummy.updateMatrix();
-
-                    sticker.id = InstancedPlaneMeshIterator
-
-                    this.InstancedPlaneMesh.setMatrixAt(InstancedPlaneMeshIterator, Dummy.matrix);
-
+                    this.InstancedPlaneMesh.setMatrixAt(sticker.id, Dummy.matrix);
                     this.InstancedPlaneMesh.instanceMatrix.needsUpdate = true;
-
-                    attr.setXY(InstancedPlaneMeshIterator, config.uv[0], config.uv[1]);
-
+                    attr.setXY(sticker.id, config.uv[0], config.uv[1]);
                     attr.needsUpdate = true;
-
                     InstancedPlaneMeshIterator -= 1;
-
                 }
+
+
+                // if (config) {
+                //
+                //     const piece = state.position;
+                //
+                //     Dummy.position.set(piece.x + sticker.positionOffset.x - this.Size / 2, piece.y + sticker.positionOffset.y - this.Size / 2, piece.z + sticker.positionOffset.z - this.Size / 2);
+                //
+                //     Dummy.rotation.set(THREE.MathUtils.degToRad(sticker.rotationOffset.pitch), THREE.MathUtils.degToRad(sticker.rotationOffset.yaw), THREE.MathUtils.degToRad(sticker.rotationOffset.roll));
+                //
+                //     Dummy.updateMatrix();
+                //
+                //     sticker.id = InstancedPlaneMeshIterator
+                //
+                //     this.InstancedPlaneMesh.setMatrixAt(InstancedPlaneMeshIterator, Dummy.matrix);
+                //
+                //     this.InstancedPlaneMesh.instanceMatrix.needsUpdate = true;
+                //
+                //     attr.setXY(InstancedPlaneMeshIterator, config.uv[0], config.uv[1]);
+                //
+                //     attr.needsUpdate = true;
+                //
+                //     InstancedPlaneMeshIterator -= 1;
+                //
+                // }
 
             }
 
@@ -274,16 +2771,14 @@ class App {
         const loginButton = document.querySelector("#login-button");
         const skipLoginButton = document.querySelector("#skip-login-button");
 
-        loginButton.addEventListener("click", async (event) => {
-            event.preventDefault();
-
+        loginButton.addEventListener("click", async (_) => {
             const usernameInput = document.querySelector("#username-input") as HTMLInputElement;
             const passwordInput = document.querySelector("#password-input") as HTMLInputElement;
 
             const username = usernameInput.value;
             const password = passwordInput.value;
 
-            if (!username || !password) {
+            if (username && password) {
                 const params = new URLSearchParams();
 
                 params.append("username", username);
@@ -314,9 +2809,7 @@ class App {
             }
         })
 
-        skipLoginButton.addEventListener("click", (event) => {
-            event.preventDefault();
-
+        skipLoginButton.addEventListener("click", (_) => {
             this.loginOverlay.style.display = 'none';
 
             this.Disabled = false;
@@ -680,6 +3173,9 @@ class App {
 
             this.RubiksCube.rotateLayer(side, depth - 1, direction);
         }
+
+        console.log(JSON.stringify(this.RubiksCube.state))
+
     }
 
     async updateScoreboard(): Promise<void> {
