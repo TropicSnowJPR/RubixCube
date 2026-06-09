@@ -120,17 +120,11 @@ export class Cube {
     }
 
     rotateLayer(
-        side:
-            "NORTH" |
-            "EAST" |
-            "WEST" |
-            "SOUTH" |
-            "UP" |
-            "DOWN",
+
+        side: "NORTH" | "EAST" | "WEST" | "SOUTH" | "UP" | "DOWN",
         index: number,
-        direction:
-            "CLOCKWISE" |
-            "COUNTERCLOCKWISE"
+        direction: "CLOCKWISE" | "COUNTERCLOCKWISE"
+
     ): Piece[] {
 
         const Layer = this.getLayer(side, index)
@@ -143,84 +137,94 @@ export class Cube {
 
             const mid = (this.size - 1) / 2;
 
-            if (side === "NORTH") {
-                const relX = oldX - mid;
-                const relY = oldY - mid;
-                if (direction === "COUNTERCLOCKWISE") {
-                    piece.position.x = relY + mid;
-                    piece.position.y = -relX + mid;
-                } else {
-                    piece.position.x = -relY + mid;
-                    piece.position.y = relX + mid;
+            switch (side) {
+                case "NORTH": {
+                    const relX = oldX - mid;
+                    const relY = oldY - mid;
+                    if (direction === "COUNTERCLOCKWISE") {
+                        piece.position.x = relY + mid;
+                        piece.position.y = -relX + mid;
+                    } else {
+                        piece.position.x = -relY + mid;
+                        piece.position.y = relX + mid;
+                    }
+                    break;
                 }
-
-            } else if (side === "SOUTH") {
-                const relX = oldX - mid;
-                const relY = oldY - mid;
-                if (direction === "CLOCKWISE") {
-                    piece.position.x = relY + mid;
-                    piece.position.y = -relX + mid;
-                } else {
-                    piece.position.x = -relY + mid;
-                    piece.position.y = relX + mid;
+                case "SOUTH": {
+                    const relX = oldX - mid;
+                    const relY = oldY - mid;
+                    if (direction === "CLOCKWISE") {
+                        piece.position.x = relY + mid;
+                        piece.position.y = -relX + mid;
+                    } else {
+                        piece.position.x = -relY + mid;
+                        piece.position.y = relX + mid;
+                    }
+                    break;
                 }
-
-            } else if (side === "EAST") {
-                const relY = oldY - mid;
-                const relZ = oldZ - mid;
-                if (direction === "CLOCKWISE") {
-                    piece.position.y = relZ + mid;
-                    piece.position.z = -relY + mid;
-                } else {
-                    piece.position.y = -relZ + mid;
-                    piece.position.z = relY + mid;
+                case "EAST": {
+                    const relY = oldY - mid;
+                    const relZ = oldZ - mid;
+                    if (direction === "CLOCKWISE") {
+                        piece.position.y = relZ + mid;
+                        piece.position.z = -relY + mid;
+                    } else {
+                        piece.position.y = -relZ + mid;
+                        piece.position.z = relY + mid;
+                    }
+                    break;
                 }
-
-            } else if (side === "WEST") {
-                const relY = oldY - mid;
-                const relZ = oldZ - mid;
-                if (direction === "COUNTERCLOCKWISE") {
-                    piece.position.y = relZ + mid;
-                    piece.position.z = -relY + mid;
-                } else {
-                    piece.position.y = -relZ + mid;
-                    piece.position.z = relY + mid;
+                case "WEST": {
+                    const relY = oldY - mid;
+                    const relZ = oldZ - mid;
+                    if (direction === "COUNTERCLOCKWISE") {
+                        piece.position.y = relZ + mid;
+                        piece.position.z = -relY + mid;
+                    } else {
+                        piece.position.y = -relZ + mid;
+                        piece.position.z = relY + mid;
+                    }
+                    break;
                 }
-
-            } else if (side === "UP") {
-                const relX = oldX - mid;
-                const relZ = oldZ - mid;
-                if (direction === "CLOCKWISE") {
-                    piece.position.x = relZ + mid;
-                    piece.position.z = -relX + mid;
-                } else {
-                    piece.position.x = -relZ + mid;
-                    piece.position.z = relX + mid;
+                case "UP": {
+                    const relX = oldX - mid;
+                    const relZ = oldZ - mid;
+                    if (direction === "CLOCKWISE") {
+                        piece.position.x = relZ + mid;
+                        piece.position.z = -relX + mid;
+                    } else {
+                        piece.position.x = -relZ + mid;
+                        piece.position.z = relX + mid;
+                    }
+                    break;
                 }
-
-            } else if (side === "DOWN") {
-                const relX = oldX - mid;
-                const relZ = oldZ - mid;
-                if (direction === "COUNTERCLOCKWISE") {
-                    piece.position.x = relZ + mid;
-                    piece.position.z = -relX + mid;
-                } else {
-                    piece.position.x = -relZ + mid;
-                    piece.position.z = relX + mid;
+                case "DOWN": {
+                    const relX = oldX - mid;
+                    const relZ = oldZ - mid;
+                    if (direction === "COUNTERCLOCKWISE") {
+                        piece.position.x = relZ + mid;
+                        piece.position.z = -relX + mid;
+                    } else {
+                        piece.position.x = -relZ + mid;
+                        piece.position.z = relX + mid;
+                    }
+                    break;
                 }
-
+                default: {
+                    break
+                }
             }
 
             for ( const sticker of piece.stickers ) {
                 if (sticker.side === side) {
-                    this.updatePositionRotationOffset(sticker)
+                    this._updateOffset(sticker)
                     continue;
                 }
                 const newSide = Cube.rotateSide(side, sticker.side, direction);
                 if (!newSide) {
                     throw new Error(`Invalid side rotation: ${sticker.side} with direction ${direction}`);
                 }
-                this.updatePositionRotationOffset(sticker)
+                this._updateOffset(sticker)
             }
 
             const updatedPiece = new Piece(
@@ -369,6 +373,12 @@ export class Cube {
                     z: sticker.positionOffset.z
                 };
 
+                newSticker.positionOffset = {
+                    x: sticker.rotationOffset.pitch,
+                    y: sticker.rotationOffset.yaw,
+                    z: sticker.rotationOffset.roll
+                };
+
                 return newSticker;
 
             });
@@ -427,7 +437,7 @@ export class Cube {
         return true;
     }
 
-    updatePositionRotationOffset( sticker: Sticker ): void {
+    _updateOffset( sticker: Sticker ): void {
 
         switch (sticker.side) {
 
@@ -487,6 +497,7 @@ export class Cube {
 
             default: {
 
+                console.warn("Invalid Side")
                 break;
 
             }
@@ -495,15 +506,44 @@ export class Cube {
 
     }
 
-    setStateFromJSON(json: any): void {
-        const arr = Array.isArray(json) ? json : json?.state;
+    setStateFromJSON(json: {
+        position: {
+            x: number
+            y: number
+            z: number
+        }
+        rotation: {
+            pitch: number
+            yaw: number
+            roll: number
+        }
+        type: string
+        stickers: {
+            id: number
+            color: string
+            side: string
+            positionOffset: {
+                x: number
+                y: number
+                z: number
+            }
+            rotationOffset: {
+                pitch: number
+                yaw: number
+                roll: number
+            }
+        }[];
+        id: number;
+    }[]): void {
+        const arr = Array.isArray(json) ? json : undefined;
 
         if (!Array.isArray(arr)) {
             throw new TypeError("Invalid cube JSON: expected array or {state: []}");
         }
 
-        this.state = arr.map((p: any) => {
-            const stickers: Sticker[] = (p.stickers || []).map((s: any) => {
+        this.state = arr.map((p: Piece) => {
+
+            const stickers: Sticker[] = (p.stickers || []).map((s: Sticker) => {
                 const sticker = new Sticker(s.id ?? -1, s.color, s.side);
 
                 sticker.positionOffset = s.positionOffset ?? { x: 0, y: 0, z: 0 };
@@ -512,7 +552,9 @@ export class Cube {
                 return sticker;
             });
 
-            return new Piece(
+            console.log(stickers);
+
+            const piece = new Piece(
                 p.id,
                 p.position?.x ?? 0,
                 p.position?.y ?? 0,
@@ -520,9 +562,15 @@ export class Cube {
                 p.rotation?.pitch ?? 0,
                 p.rotation?.yaw ?? 0,
                 p.rotation?.roll ?? 0,
-                p.type ?? "UNKNOWN",
+                p.type ?? "CORE",
                 stickers
             );
+
+            console.log(piece);
+
+            return piece;
         });
+
+        console.log(JSON.stringify(this.state, null, 2));
     }
 }

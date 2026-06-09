@@ -94,6 +94,8 @@ export class Animation {
 
             for (const sticker of state.stickers) {
 
+                console.log(this.cube.state)
+
                 StickerOrbitList.push({
                     position: {
                         x: state.position.x + sticker.positionOffset.x,
@@ -108,15 +110,6 @@ export class Animation {
                     id: sticker.id,
                     side: sticker.side
                 });
-
-                const TestSphere = new THREE.Mesh(new THREE.SphereGeometry(0.1), new THREE.MeshBasicMaterial({ color: 0xFF_FF_FF, transparent: true, opacity: 0.5 }))
-                TestSphere.position.set(
-                    state.position.x + sticker.positionOffset.x - ( this.size - 1 ) / 2,
-                    state.position.y + sticker.positionOffset.y - ( this.size - 1 ) / 2,
-                    state.position.z + sticker.positionOffset.z - ( this.size - 1 ) / 2
-                );
-
-                // this.SCENE.add(TestSphere);
 
             }
         }

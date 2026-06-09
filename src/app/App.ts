@@ -188,7 +188,35 @@ class App {
             },
         };
 
-        const TestState = [
+        const TestState: {
+            position: {
+                x: number
+                y: number
+                z: number
+            }
+            rotation: {
+                pitch: number
+                yaw: number
+                roll: number
+            }
+            type: string
+            stickers: {
+                id: number
+                color: string
+                side: string
+                positionOffset: {
+                    x: number
+                    y: number
+                    z: number
+                }
+                rotationOffset: {
+                    pitch: number
+                    yaw: number
+                    roll: number
+                }
+            }[];
+            id: number;
+        }[] = [
             {
                 "position": {
                     "x": 0,
@@ -2676,22 +2704,37 @@ class App {
                 const config = sideConfig[sticker.side as keyof typeof sideConfig];
 
                 if (config) {
+
                     Dummy.position.set(
-                        sticker.positionOffset.x - this.Size / 2 + state.position.x,
-                        sticker.positionOffset.y - this.Size / 2 + state.position.y,
-                        sticker.positionOffset.z - this.Size / 2 + state.position.z
+
+                        state.position.x + sticker.positionOffset.x - this.Size / 2,
+
+                        state.position.y + sticker.positionOffset.y - this.Size / 2,
+
+                        state.position.z + sticker.positionOffset.z - this.Size / 2
+
                     );
+
                     Dummy.rotation.set(
+
                         THREE.MathUtils.degToRad(sticker.rotationOffset.pitch + state.rotation.pitch),
+
                         THREE.MathUtils.degToRad(sticker.rotationOffset.yaw + state.rotation.yaw),
+
                         THREE.MathUtils.degToRad(sticker.rotationOffset.roll + state.rotation.roll)
+
                     );
+
                     Dummy.updateMatrix();
+
                     this.InstancedPlaneMesh.setMatrixAt(sticker.id, Dummy.matrix);
                     this.InstancedPlaneMesh.instanceMatrix.needsUpdate = true;
+
                     attr.setXY(sticker.id, config.uv[0], config.uv[1]);
                     attr.needsUpdate = true;
+
                     InstancedPlaneMeshIterator -= 1;
+
                 }
 
 
