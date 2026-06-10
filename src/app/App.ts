@@ -188,35 +188,7 @@ class App {
             },
         };
 
-        const TestState: {
-            position: {
-                x: number
-                y: number
-                z: number
-            }
-            rotation: {
-                pitch: number
-                yaw: number
-                roll: number
-            }
-            type: string
-            stickers: {
-                id: number
-                color: string
-                side: string
-                positionOffset: {
-                    x: number
-                    y: number
-                    z: number
-                }
-                rotationOffset: {
-                    pitch: number
-                    yaw: number
-                    roll: number
-                }
-            }[];
-            id: number;
-        }[] = [
+        const TestState = [
             {
                 "position": {
                     "x": 0,

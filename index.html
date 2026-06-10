@@ -14,88 +14,6 @@
 
         <div id="scene-container"></div>
 
-        <!-- LOGIN -->
-        <div id="login-overlay">
-            <div class="modal">
-                <h1>Rubik's Cube Sim</h1>
-
-                <input id="username-input" type="text" placeholder="Username" required>
-                <input id="password-input" type="password" placeholder="Password" required>
-
-                <button id="login-button" class="btn">Login as User</button>
-                <button id="skip-login-button" class="btn">Continue as Guest</button>
-            </div>
-        </div>
-
-        <!-- CONTROLS -->
-        <div class="ui-panel ui-panel--controls" id="panel-controls">
-            <div class="ui-header">Controls</div>
-
-            <div class="ui-grid">
-                <div class="ui-item"><img src="./assets/other/letter-q.png" alt="q"><span>Rotate top</span></div>
-                <div class="ui-item"><img src="./assets/other/letter-w.png" alt="w"><span>Rotate south</span></div>
-                <div class="ui-item"><img src="./assets/other/letter-e.png" alt="e"><span>Rotate bottom</span></div>
-                <div class="ui-item"><img src="./assets/other/letter-a.png" alt="a"><span>Rotate west</span></div>
-                <div class="ui-item"><img src="./assets/other/letter-s.png" alt="s"><span>Rotate north</span></div>
-                <div class="ui-item"><img src="./assets/other/letter-d.png" alt="d"><span>Rotate east</span></div>
-                <div class="ui-item"><img src="./assets/other/letter-r.png" alt="r"><span>Scramble</span></div>
-                <div class="ui-item"><img src="./assets/other/letter-x.png" alt="x"><span>Reverse hold</span></div>
-            </div>
-        </div>
-
-        <!-- STATS (was "moves") -->
-        <div class="ui-panel ui-panel--stats ui-panel--bottom" id="panel-stats">
-            <div>
-                <div class="ui-header">Stats</div>
-
-                <br>
-
-                <div class="ui-grid">
-                    <div>Moves: <span id="stat-moves">0</span></div>
-                </div>
-
-            </div>
-        </div>
-
-        <!-- PROFILE -->
-        <div class="ui-panel ui-panel--profile" id="panel-profile">
-            <div>
-                <div class="ui-header">Profile</div>
-
-                <br>
-
-                <div class="ui-grid">
-                    <div>Name: <span id="profile-name">Guest</span></div>
-                    <div>Best time: <span id="profile-best-time">--:--</span></div>
-                </div>
-
-            </div>
-        </div>
-
-        <!-- LEADERBOARD (was scoreboard) -->
-        <div class="ui-panel ui-panel--leaderboard" id="panel-leaderboard">
-            <div>
-                <div class="ui-header">Leaderboard</div>
-
-                <br>
-
-                <table>
-                    <thead>
-                    <tr>
-                        <th>Name</th>
-                        <th>Moves</th>
-                        <th>Time</th>
-                    </tr>
-                    </thead>
-                    <tbody id="leaderboard-body"></tbody>
-                </table>
-            </div>
-        </div>
-
-        <a class="attribution" href="https://www.flaticon.com/free-icons/keyboard-key">
-            Keyboard key icons by littleicon
-        </a>
-
         <script type="importmap">
             {
                 "imports": {
@@ -105,7 +23,7 @@
             }
         </script>
 
-        <script type="module" src="./src/app/App.ts"></script>
+        <script type="module" src="./src/refactored-app/App.ts"></script>
 
     </body>
 </html>
