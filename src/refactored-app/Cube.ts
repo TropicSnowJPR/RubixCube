@@ -1,6 +1,6 @@
 import { Piece } from "./Piece";
-import type { Texture } from "three";
-import { TextureLoader, MeshBasicMaterial, MeshStandardMaterial, BoxGeometry, Mesh, SRGBColorSpace } from "three";
+import {Quaternion, Texture} from "three";
+import { TextureLoader, MeshStandardMaterial, BoxGeometry, Mesh, SRGBColorSpace, Vector3 } from "three";
 
 export class Cube {
 
@@ -21,6 +21,24 @@ export class Cube {
     }));
     private readonly Geometry: BoxGeometry = new BoxGeometry(1, 1, 1);
     private readonly ThreeJSPieceElement: Mesh = new Mesh(this.Geometry, this.Materials)
+    private PIHALF = Math.PI / 2;
+
+    private readonly AXIS = {
+        X: new Vector3(1, 0, 0),
+        Y: new Vector3(0, 1, 0),
+        Z: new Vector3(0, 0, 1),
+    };
+
+    private readonly FACE_ROTATION_MAP = {
+        NORTH: { axis: "Z", dir: 1 },
+        SOUTH: { axis: "Z", dir: -1 },
+
+        EAST:  { axis: "X", dir: -1 },
+        WEST:  { axis: "X", dir: 1 },
+
+        UP:    { axis: "Y", dir: -1 },
+        DOWN:  { axis: "Y", dir: 1 },
+    } as const;
 
     constructor(CubeSize = 3, InitialState?: Piece[]) {
 
@@ -102,149 +120,82 @@ export class Cube {
     }
 
     rotateFace(
-
-        face: "NORTH" | "EAST" | "WEST" | "SOUTH" | "UP" | "DOWN",
+        face: keyof typeof this.FACE_ROTATION_MAP,
         depth: number,
         direction: "CLOCKWISE" | "COUNTERCLOCKWISE"
-
     ) {
 
-        const Layer = this.getLayer(face, depth)
+        let { axis, dir } = (this.FACE_ROTATION_MAP)[face];
+        if (direction === "COUNTERCLOCKWISE") {
+            dir = dir === -1 ? 1 : -1;
 
-        for ( const piece of Layer ) {
-
-            const lastX = piece.getPosition().x;
-            const lastY = piece.getPosition().y;
-            const lastZ = piece.getPosition().z;
-
-            const mid = (this.Size - 1) / 2;
-
-            switch (face) {
-                
-                case "NORTH": {
-                    
-                    const relX = lastX - mid;
-                    const relY = lastY - mid;
-                    
-                    if (direction === "COUNTERCLOCKWISE") {
-                        piece.setXPosition( relY + mid );
-                        piece.setYPosition( -relX + mid )
-                        piece.setRollRotation( -Math.PI / 2 )
-                    } else {
-                        piece.setXPosition( -relY + mid);
-                        piece.setYPosition( relX + mid )
-                        piece.setRollRotation( Math.PI / 2 )
-                    }
-                    
-                    break;
-                    
-                }
-                
-                case "SOUTH": {
-                    
-                    const relX = lastX - mid;
-                    const relY = lastY - mid;
-                    
-                    if (direction === "CLOCKWISE") {
-                        piece.setXPosition(  relY + mid )
-                        piece.setYPosition( -relX + mid )
-                        piece.setRollRotation( -Math.PI / 2 )
-                    } else {
-                        piece.setXPosition( -relY + mid )
-                        piece.setYPosition( relX + mid )
-                        piece.setRollRotation( Math.PI / 2 )
-                    }
-                    
-                    break;
-                    
-                }
-                
-                case "EAST": {
-                    
-                    const relY = lastY - mid;
-                    const relZ = lastZ - mid;
-                    
-                    if (direction === "CLOCKWISE") {
-                        piece.setYPosition( relZ + mid )
-                        piece.setZPosition( -relY + mid )
-                        piece.setPitchRotation( -Math.PI / 2 )
-                    } else {
-                        piece.setYPosition( -relZ + mid )
-                        piece.setZPosition( relY + mid )
-                        piece.setPitchRotation( Math.PI / 2 )
-                    }
-                    
-                    break;
-                    
-                }
-                
-                case "WEST": {
-                    
-                    const relY = lastY - mid;
-                    const relZ = lastZ - mid;
-                    
-                    if (direction === "COUNTERCLOCKWISE") {
-                        piece.setYPosition( relZ + mid )
-                        piece.setZPosition( -relY + mid )
-                        piece.setPitchRotation( -Math.PI / 2 )
-                    } else {
-                        piece.setYPosition( -relZ + mid )
-                        piece.setZPosition( relY + mid )
-                        piece.setPitchRotation( Math.PI / 2 )
-                    }
-                    
-                    break;
-                    
-                }
-                
-                case "UP": {
-                    
-                    const relX = lastX - mid;
-                    const relZ = lastZ - mid;
-                    
-                    if (direction === "CLOCKWISE") {
-                        piece.setXPosition( relZ + mid )
-                        piece.setZPosition( -relX + mid )
-                        piece.setYawRotation( -Math.PI / 2 )
-                    } else {
-                        piece.setXPosition( -relZ + mid )
-                        piece.setZPosition( relX + mid )
-                        piece.setYawRotation( Math.PI / 2 )
-                    }
-                    
-                    break;
-                    
-                }
-                
-                case "DOWN": {
-                    
-                    const relX = lastX - mid;
-                    const relZ = lastZ - mid;
-                    
-                    if (direction === "COUNTERCLOCKWISE") {
-                        piece.setXPosition( relZ + mid )
-                        piece.setZPosition( -relX + mid )
-                        piece.setYawRotation( -Math.PI / 2 )
-                    } else {
-                        piece.setXPosition( -relZ + mid )
-                        piece.setZPosition(  relX + mid )
-                        piece.setYawRotation( Math.PI / 2 )
-                    }
-                    
-                    break;
-                    
-                }
-                
-                default: {
-                    
-                    break
-                    
-                }
-                
-            }
-            
         }
+        const mid = (this.Size - 1) / 2;
 
+        const layer = this.getLayer(face, depth);
+
+        for (const piece of layer) {
+            this.rotatePiece(piece, axis, dir, mid);
+        }
+    }
+
+    rotatePiece(piece: Piece, axis: "X" | "Y" | "Z", dir: 1 | -1, mid: number) {
+
+        const pos = piece.getPosition();
+
+        // convert to centered coordinate system
+        const centered = new Vector3(
+            pos.x - mid,
+            pos.y - mid,
+            pos.z - mid
+        );
+
+        // rotate logically
+        const rotated = this.rotateVec3(centered, axis, dir);
+
+        // convert back
+        piece.setPosition(
+            rotated.x + mid,
+            rotated.y + mid,
+            rotated.z + mid
+        );
+
+        // visual rotation (ONLY if you need it)
+        const q = new Quaternion().setFromAxisAngle(
+            (this.AXIS)[axis],
+            dir * (Math.PI / 2)
+        );
+
+        piece.getThreeJSElement().quaternion.premultiply(q);
+    }
+
+    rotateVec3(v: Vector3, axis: "X" | "Y" | "Z", dir: 1 | -1): Vector3 {
+        const { x, y, z } = v;
+
+        // 90° rotation only (Rubik constraint)
+        switch (axis) {
+
+            case "X":
+                return new Vector3(
+                    x,
+                    dir * -z,
+                    dir * y
+                );
+
+            case "Y":
+                return new Vector3(
+                    dir * z,
+                    y,
+                    dir * -x
+                );
+
+            case "Z":
+                return new Vector3(
+                    dir * -y,
+                    dir * x,
+                    z
+                );
+        }
     }
 
     public static jsonToState(

@@ -1,23 +1,23 @@
 import {Cube} from "./Cube";
-import {Scene, PerspectiveCamera, WebGLRenderer, GridHelper} from "three";
+import {Scene, PerspectiveCamera, WebGLRenderer, GridHelper, AxesHelper} from "three";
 import {OrbitControls} from "three/examples/jsm/controls/OrbitControls";
 import * as THREE from "three";
 import type {Direction} from "./Direction";
 import type {Side} from "./Side";
-import {Animation} from "../app/Classes/Animation";
 
 class App {
-    private Scene: Scene;
-    private Camera: PerspectiveCamera;
+    private readonly Scene: Scene;
+    private readonly Camera: PerspectiveCamera;
     private Controls: OrbitControls;
     private Renderer: WebGLRenderer;
     private Cube: Cube;
 
-    private Size = 3;
+    private Size = 10;
 
-    private PressedKeys: Record<string, boolean>;
+    private readonly PressedKeys: Record<string, boolean>;
     private Counter = 0;
-    private Grid: GridHelper;
+    private readonly Grid: GridHelper;
+    private readonly AxesHelper: AxesHelper
     private RandomLock = false;
 
 
@@ -65,9 +65,13 @@ class App {
         dir.position.set(-this.Size, 2 * this.Size, -this.Size);
         this.Scene.add(dir);
 
-    this.Grid = new GridHelper( this.Size+6,this.Size+6 )
+        this.Grid = new GridHelper( this.Size+6,this.Size+6 )
         this.Scene.add( this.Grid );
         this.Grid.position.set(this.Size / 2 - 0.5, - 0.5, this.Size / 2 - 0.5);
+
+        this.AxesHelper = new AxesHelper( this.Size + 6 );
+        this.Scene.add( this.AxesHelper );
+        this.AxesHelper.position.set(- 3.5, - 0.5,  - 3.5);
 
 
         for (const Element of this.Cube.getPieces()) {
