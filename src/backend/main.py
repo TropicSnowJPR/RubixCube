@@ -1,10 +1,16 @@
 import secrets
+import os
 from typing import Annotated
-from fastapi import FastAPI, Response, Cookie, Form, HTTPException
+from fastapi import FastAPI, Response, Request, Cookie, Form, HTTPException
+from fastapi.responses import HTMLResponse
+from fastapi.staticfiles import StaticFiles
+from fastapi.responses import FileResponse
+from fastapi.staticfiles import StaticFiles
+from fastapi.templating import Jinja2Templates
 from fastapi.middleware.cors import CORSMiddleware  # Importieren Sie die Middleware
 import bcrypt
-import db.SQLite as SQLite
-
+import sqlite3
+from pathlib import Path
 
 class Server:
     """SomeDocString"""
@@ -13,15 +19,18 @@ class Server:
             title="rubix-backend",
             version="1.0.0",
         )
-        self.db_manager = SQLite.SQLiteDBManager()
+        self.db_manager = SQLite()
 
         self.app.add_middleware(
             CORSMiddleware,
             allow_origins=["http://localhost:5173", "http://127.0.0.1:5173"],
             allow_credentials=True,
             allow_methods=["*"],
-            allow_headers=["*"],
+            allow_headers=["*"]
         )
+                
+        self.app.mount("/", StaticFiles(directory="dist", html=True), name="frontend")
+        self.templates = Jinja2Templates(directory="templates")
 
     def _generate_token_for_user(self, user_id: int) -> str:
         token = secrets.token_urlsafe(32)
@@ -34,9 +43,12 @@ class Server:
     def set_routes(self) -> None:
         """Setup routes"""
 
+        @self.app.get("/")
+        async def root():
+            return FileResponse(os.path.join("dist", "index.html"))
 
         @self.app.get("/active")
-        async def root():
+        async def active():
             return {
                 "success": "true"
             }
@@ -274,29 +286,93 @@ class Server:
                 "success": True
             }
 
-        @self.app.post("/game/update")
-        def update_game(
-            state: Annotated[str, Form()],
-            cube_size: Annotated[int, Form()],
-        ):
-            if len(state) > 10000:
-                raise HTTPException(
-                    status_code=409,
-                    detail="State string is too long"
-                )
+        # @self.app.post("/game/update")
+        # def update_game(
+        #     state: Annotated[str, Form()],
+        #     cube_size: Annotated[int, Form()],
+        # ):
+        #     if len(state) > 10000:
+        #         raise HTTPException(
+        #             status_code=409,
+        #             detail="State string is too long"
+        #         )
+        #
+        #     result = self.db_manager.queryDB(
+        #         """
+        #         UPDATE Games SET state = ?, last_updated = CURRENT_TIMESTAMP
+        #         WHERE cube_size = ? AND completed = 0
+        #         """,
+        #         (cube_size,)
+        #     )
+        #
+        #     return {
+        #         "success": True,
+        #         "message": "Game state updated successfully"
+        #     }
+            
+class SQLite:
+    def __init__(self):
+        db_path = Path(__file__).resolve().parents[2] / "public" / "db" / "rubix.db"
+        db_path.parent.mkdir(parents=True, exist_ok=True)
+        self.db = sqlite3.connect(db_path)
+        self.cursor = self.db.cursor()
+        self.initTables()
 
-            result = self.db_manager.queryDB(
-                """
-                UPDATE Games SET state = ?, last_updated = CURRENT_TIMESTAMP
-                WHERE cube_size = ? AND completed = 0
-                """,
-                (cube_size,)
-            )
+    def initTables(self):
+        self.cursor.execute("PRAGMA foreign_keys = ON")
 
-            return {
-                "success": True,
-                "message": "Game state updated successfully"
-            }
+        self.cursor.execute(
+            '''CREATE TABLE IF NOT EXISTS Users (
+                id INTEGER PRIMARY KEY AUTOINCREMENT,
+                username VARCHAR UNIQUE NOT NULL,
+                password_hash VARCHAR NOT NULL,
+                password_salt VARCHAR NOT NULL,
+                created_at TIMESTAMP
+            )'''
+        )
+
+        self.cursor.execute(
+            '''CREATE TABLE IF NOT EXISTS Games (
+                id INTEGER PRIMARY KEY AUTOINCREMENT,
+                user_id INTEGER NOT NULL,
+                cube_size INTEGER NOT NULL,
+                state TEXT NOT NULL,
+                started_at TIMESTAMP,
+                updated_at TIMESTAMP,
+                completed BOOLEAN,
+                FOREIGN KEY(user_id) REFERENCES Users(id)
+            )'''
+        )
+
+        self.cursor.execute(
+            '''CREATE TABLE IF NOT EXISTS Scores (
+                id INTEGER PRIMARY KEY AUTOINCREMENT,
+                game_id INTEGER NOT NULL,
+                user_id INTEGER NOT NULL,
+                moves_count INTEGER,
+                solve_time_ms INTEGER,
+                created_at TIMESTAMP,
+                FOREIGN KEY(game_id) REFERENCES Games(id),
+                FOREIGN KEY(user_id) REFERENCES Users(id)
+            )'''
+        )
+        
+        self.cursor.execute(
+            '''CREATE TABLE IF NOT EXISTS Tokens (
+                id INTEGER PRIMARY KEY AUTOINCREMENT,
+                user_id INTEGER NOT NULL,
+                token VARCHAR UNIQUE NOT NULL,
+                created_at TIMESTAMP,
+                FOREIGN KEY(user_id) REFERENCES Users(id)
+            )'''
+        )
+
+        self.db.commit()
+        
+    def queryDB(self, query, params=()):
+        self.cursor.execute(query, params)
+        self.db.commit()
+        return self.cursor.fetchall()
 
 server = Server()
 server.set_routes()

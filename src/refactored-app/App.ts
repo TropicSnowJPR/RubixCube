@@ -142,7 +142,11 @@ class App {
         if (RotationFace && this.Counter <= 0) {
             this.Cube.rotateFace(RotationFace, RotationDepth - 1, RotationType);
 
-            this.Counter = 30;
+            // this.Counter = 30;
+        }
+
+        if (this.Cube.AnimationQueue.getCurrentAnimation() !== undefined) {
+            this.Cube.AnimationQueue.getCurrentAnimation().update();
         }
 
         this.Counter -= 1;

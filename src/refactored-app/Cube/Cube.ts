@@ -1,4 +1,6 @@
 import { Piece } from "./Piece";
+import { AnimationQueue } from "./AnimationQueue";
+import { Animation } from "./Animation";
 import type { Texture } from "three";
 import {
     TextureLoader,
@@ -16,12 +18,12 @@ export class Cube {
 
     private readonly TextureLoader = new TextureLoader();
     private readonly Textures: Texture[] = [
-        this.TextureLoader.load("../assets/textures/orange.png"),
-        this.TextureLoader.load("../assets/textures/red.png"),
-        this.TextureLoader.load("../assets/textures/yellow.png"),
-        this.TextureLoader.load("../assets/textures/white.png"),
-        this.TextureLoader.load("../assets/textures/green.png"),
-        this.TextureLoader.load("../assets/textures/blue.png"),
+        this.TextureLoader.load("../textures/orange.png"),
+        this.TextureLoader.load("../textures/red.png"),
+        this.TextureLoader.load("../textures/yellow.png"),
+        this.TextureLoader.load("../textures/white.png"),
+        this.TextureLoader.load("../textures/green.png"),
+        this.TextureLoader.load("../textures/blue.png"),
     ];
     private readonly Materials: MeshStandardMaterial[] = this.Textures.map(
         (texture) =>
@@ -34,6 +36,9 @@ export class Cube {
         this.Geometry,
         this.Materials,
     );
+
+    readonly AnimationQueue = new AnimationQueue();
+
     private readonly AXIS = {
         X: new Vector3(1, 0, 0),
         Y: new Vector3(0, 1, 0),
@@ -96,10 +101,11 @@ export class Cube {
     private getLayer(
         face: "NORTH" | "EAST" | "WEST" | "SOUTH" | "UP" | "DOWN",
         depth: number,
+        pieceList: Piece[] = this.Pieces
     ): Piece[] {
         const layerPieces: Piece[] = [];
 
-        for (const piece of this.Pieces) {
+        for (const piece of pieceList) {
             if (
                 (face === "NORTH" && piece.getPosition().z === depth) ||
                 (face === "EAST" &&
@@ -123,38 +129,54 @@ export class Cube {
         depth: number,
         direction: "CLOCKWISE" | "COUNTERCLOCKWISE",
     ): void {
-        let { axis, dir } = this.FACE_ROTATION_MAP[face];
-        if (direction === "COUNTERCLOCKWISE") {
+        const { axis, dir: initialDir } = this.FACE_ROTATION_MAP[face];
+        let dir = initialDir;
+        if (direction === "CLOCKWISE") {
             dir = dir === -1 ? 1 : -1;
         }
         const mid = (this.Size - 1) / 2;
 
-        const layer = this.getLayer(face, depth);
+        const PieceList: Piece[] = [];
 
-        for (const piece of layer) {
-            this.rotatePiece(piece, axis, dir, mid);
+        let Pieces = this.getPieces();
+
+        if (this.AnimationQueue.getLastAnimation() === null) {
+            Pieces = this.AnimationQueue.getLastAnimation().goalState;
         }
+
+        for ( const Piece of Pieces ) {
+            PieceList.push(Piece.clone());
+        }
+
+        const layer = this.getLayer(face, depth, PieceList);
+
+        const goalState = []
+        for (const piece of layer) {
+            goalState.push(this.rotatePiece(piece, axis, dir, mid));
+        }
+
+        
+        const NewAnimation = new Animation(Math.random(), this.getPieces(), goalState, new Quaternion(), 0.05);
+        this.AnimationQueue.addAnimation( NewAnimation )
+
+
     }
 
-    rotatePiece(piece: Piece, axis: "X" | "Y" | "Z", dir: 1 | -1, mid: number): void {
+    rotatePiece(piece: Piece, axis: "X" | "Y" | "Z", dir: 1 | -1, mid: number): Piece {
         const pos = piece.getPosition();
-
-        // convert to centered coordinate system
-        const centered = new Vector3(pos.x - mid, pos.y - mid, pos.z - mid);
-
-        // rotate logically
+        const centered = new Vector3(pos.x - mid, pos.y - mid, pos.z - mid); // < --- Center the piece around the origin for rotation
         const rotated = Cube.rotateVec3(centered, axis, dir);
 
-        // convert back
         piece.setPosition(rotated.x + mid, rotated.y + mid, rotated.z + mid);
 
-        // visual rotation (ONLY if you need it)
         const q = new Quaternion().setFromAxisAngle(
             this.AXIS[axis],
             dir * (Math.PI / 2),
         );
 
         piece.getThreeJSElement().quaternion.premultiply(q);
+
+        return piece
     }
 
     static rotateVec3(v: Vector3, axis: "X" | "Y" | "Z", dir: 1 | -1): Vector3 {

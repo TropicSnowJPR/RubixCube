@@ -1,0 +1,10 @@
+/.old/
+/.venv/
+/dist/
+/node_modules/
+/.oxfmtrc.json
+/.oxlintrc.json
+/AGENTS.md
+/package-lock.json
+/pyproject.toml
+/.idea/

@@ -1,6 +1,6 @@
-import type { Mesh, Object3D } from "three";
-import type { Rotation } from "./HelperClasses/Rotation";
-import type { Position } from "./HelperClasses/Position";
+import type {Mesh, Object3D} from "three";
+import type {Rotation} from "./HelperClasses/Rotation";
+import type {Position} from "./HelperClasses/Position";
 
 export class Piece {
     private id: number;
@@ -23,5 +23,10 @@ export class Piece {
 
     getThreeJSElement(): Object3D {
         return this.threeJSElement;
+    }
+
+    clone(): Piece {
+        const clonedMesh = this.threeJSElement.clone();
+        return new Piece(this.id, clonedMesh);
     }
 }
