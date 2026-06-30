@@ -1,16 +1,16 @@
-import secrets
 import os
+import secrets
+import sqlite3
+from pathlib import Path
 from typing import Annotated
-from fastapi import FastAPI, Response, Request, Cookie, Form, HTTPException
-from fastapi.responses import HTMLResponse
-from fastapi.staticfiles import StaticFiles
+
+import bcrypt
+from fastapi import FastAPI, Response, Cookie, Form, HTTPException
+from fastapi.middleware.cors import CORSMiddleware  # Importieren Sie die Middleware
 from fastapi.responses import FileResponse
 from fastapi.staticfiles import StaticFiles
 from fastapi.templating import Jinja2Templates
-from fastapi.middleware.cors import CORSMiddleware  # Importieren Sie die Middleware
-import bcrypt
-import sqlite3
-from pathlib import Path
+
 
 class Server:
     """SomeDocString"""
@@ -318,7 +318,7 @@ class SQLite:
         self.cursor = self.db.cursor()
         self.initTables()
 
-    def initTables(self):
+    def init_tables(self):
         self.cursor.execute("PRAGMA foreign_keys = ON")
 
         self.cursor.execute(
@@ -369,7 +369,7 @@ class SQLite:
 
         self.db.commit()
         
-    def queryDB(self, query, params=()):
+    def query_db(self, query, params=()):
         self.cursor.execute(query, params)
         self.db.commit()
         return self.cursor.fetchall()

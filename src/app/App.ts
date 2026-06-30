@@ -1,10 +1,10 @@
-import { Cube } from "./Cube/Cube";
-import type { Vector3 } from "three";
-import { Scene, PerspectiveCamera, WebGLRenderer } from "three";
-import { OrbitControls } from "three/examples/jsm/controls/OrbitControls";
-import * as THREE from "three";
-import type { Direction } from "./Cube/HelperClasses/Direction";
-import type { Side } from "./Cube/HelperClasses/Side";
+import {Cube} from "./Cube/Cube";
+import {
+    AmbientLight, DirectionalLight, HemisphereLight, PerspectiveCamera, Scene, SRGBColorSpace, Vector3, WebGLRenderer
+} from "three";
+import {OrbitControls} from "three/examples/jsm/controls/OrbitControls";
+import type {Direction} from "./Cube/HelperClasses/Direction";
+import type {Side} from "./Cube/HelperClasses/Side";
 import Stats from 'three/examples/jsm/libs/stats.module'
 
 class App {
@@ -21,8 +21,7 @@ class App {
     private RandomLock = false;
     private readonly Center: Vector3;
     private stats: Stats;
-    private CurrentAnimation: { duration: number } = { duration: 0.05 };
-
+    
     constructor() {
 
         this.Renderer = new WebGLRenderer({
@@ -34,12 +33,13 @@ class App {
         this.Renderer.setSize(window.innerWidth, window.innerHeight);
         this.Renderer.setPixelRatio(window.devicePixelRatio);
         this.Renderer.setAnimationLoop(this.animate.bind(this));
-        this.Renderer.outputColorSpace = THREE.SRGBColorSpace;
+        this.Renderer.outputColorSpace = SRGBColorSpace;
 
         document.querySelector("#scene-container").append(this.Renderer.domElement);
 
         this.stats = new Stats()
         document.body.append(this.stats.dom)
+        this.stats.showPanel(1)
 
         this.Scene = new Scene();
 
@@ -59,7 +59,7 @@ class App {
 
         this.Camera.position.set(this.Size * 3, this.Size * 3, this.Size * 3);
 
-        this.Center = new THREE.Vector3(
+        this.Center = new Vector3(
             this.Size / 2 - 0.5,
             this.Size / 2 - 0.5,
             this.Size / 2 - 0.5,
@@ -74,11 +74,11 @@ class App {
         this.Controls.enablePan = false;
         this.Controls.dampingFactor = 0.05;
 
-        this.Scene.add(new THREE.AmbientLight(0xFF_FF_FF, 1));
+        this.Scene.add(new AmbientLight(0xFF_FF_FF, 1));
 
-        this.Scene.add(new THREE.HemisphereLight(0xFF_FF_FF, 0xFF_FF_FF, 2));
+        this.Scene.add(new HemisphereLight(0xFF_FF_FF, 0xFF_FF_FF, 2));
 
-        const dir = new THREE.DirectionalLight(0xFF_FF_FF, 1);
+        const dir = new DirectionalLight(0xFF_FF_FF, 1);
 
         dir.position.set(-this.Size, 2 * this.Size, -this.Size);
 
@@ -154,7 +154,7 @@ class App {
 
         this.Counter -= 1;
 
-        this.stats.update()
+        this.stats.update();
         this.Controls.update();
         this.Renderer.render(this.Scene, this.Camera);
 

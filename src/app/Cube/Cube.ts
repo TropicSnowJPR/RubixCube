@@ -1,18 +1,8 @@
-import { Piece } from "./Piece";
-import { AnimationQueue } from "./AnimationQueue";
-import { Animation } from "./Animation";
-import {Group, Object3D, Texture} from "three";
-import {
-    TextureLoader,
-    MeshStandardMaterial,
-    BoxGeometry,
-    Mesh,
-    SRGBColorSpace,
-    Vector3,
-    Quaternion
-} from "three";
-import {PieceState} from "./PieceState";
-import {seededRandom} from "three/src/math/MathUtils";
+import {Piece} from "./Piece";
+import {AnimationQueue} from "./AnimationQueue";
+import {Animation} from "./Animation";
+import type {Texture} from "three";
+import {BoxGeometry, Mesh, MeshStandardMaterial, SRGBColorSpace, TextureLoader, Vector3} from "three";
 
 export class Cube {
 
