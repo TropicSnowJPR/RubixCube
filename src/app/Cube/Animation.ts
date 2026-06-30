@@ -7,7 +7,7 @@ export class Animation {
     private readonly startState: Piece[];
     private duration: number;
     private firstRun = true
-    private isFinished = false;
+    isFinished = false;
     private timer: Timer
     private readonly axisVec: Vector3;
     private readonly angle: number;
