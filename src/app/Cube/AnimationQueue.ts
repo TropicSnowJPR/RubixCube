@@ -24,14 +24,6 @@ export class AnimationQueue {
         return this.Queue[0];
     }
 
-    getLastAnimation(): Animation {
-        if (this.Queue.length === 0) {
-            return undefined;
-        }
-
-        return this.Queue[this.Queue.length - 1];
-    }
-
     addAnimation(animation: Animation): void {
         this.Queue.push(animation);
     }

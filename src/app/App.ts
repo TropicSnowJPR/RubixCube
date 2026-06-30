@@ -5,6 +5,7 @@ import { OrbitControls } from "three/examples/jsm/controls/OrbitControls";
 import * as THREE from "three";
 import type { Direction } from "./Cube/HelperClasses/Direction";
 import type { Side } from "./Cube/HelperClasses/Side";
+import Stats from 'three/examples/jsm/libs/stats.module'
 
 class App {
     private readonly Scene: Scene;
@@ -19,26 +20,26 @@ class App {
     private Counter = 0;
     private RandomLock = false;
     private readonly Center: Vector3;
+    private stats: Stats;
+    private CurrentAnimation: { duration: number } = { duration: 0.05 };
 
     constructor() {
+
         this.Renderer = new WebGLRenderer({
             antialias: true,
             alpha: true,
             powerPreference: "high-performance",
             precision: "highp",
         });
-
         this.Renderer.setSize(window.innerWidth, window.innerHeight);
-
         this.Renderer.setPixelRatio(window.devicePixelRatio);
-
         this.Renderer.setAnimationLoop(this.animate.bind(this));
-
         this.Renderer.outputColorSpace = THREE.SRGBColorSpace;
 
-        document
-            .querySelector("#scene-container")
-            .append(this.Renderer.domElement);
+        document.querySelector("#scene-container").append(this.Renderer.domElement);
+
+        this.stats = new Stats()
+        document.body.append(this.stats.dom)
 
         this.Scene = new Scene();
 
@@ -46,7 +47,7 @@ class App {
             30,
             window.innerWidth / window.innerHeight,
             0.1,
-            100,
+            10_000,
         );
 
         this.Controls = new OrbitControls(
@@ -96,9 +97,11 @@ class App {
         document.addEventListener("keyup", (event) => {
             this.PressedKeys[event.key.toLowerCase()] = false;
         });
+
     }
 
     private animate(): void {
+
         let RotationType: Direction = "CLOCKWISE";
         let RotationFace: Side | undefined = undefined;
         let RotationDepth = 1;
@@ -108,30 +111,30 @@ class App {
                 Math.floor(Math.random() * 100) + 100,
                 0.05,
             );
-            // this.RandomLock = true;
+            this.RandomLock = true;
         }
 
         if (this.PressedKeys["x"]) {
             RotationType = "COUNTERCLOCKWISE";
         }
 
-        if (this.PressedKeys["q"]) {
+        if ( this.PressedKeys["q"] ) {
             RotationFace = "UP";
-        } else if (this.PressedKeys["w"]) {
+        } else if ( this.PressedKeys["w"] ) {
             RotationFace = "NORTH";
-        } else if (this.PressedKeys["e"]) {
+        } else if ( this.PressedKeys["e"] ) {
             RotationFace = "DOWN";
-        } else if (this.PressedKeys["a"]) {
+        } else if ( this.PressedKeys["a"] ) {
             RotationFace = "WEST";
-        } else if (this.PressedKeys["s"]) {
+        } else if ( this.PressedKeys["s"] ) {
             RotationFace = "SOUTH";
-        } else if (this.PressedKeys["d"]) {
+        } else if ( this.PressedKeys["d"] ) {
             RotationFace = "EAST";
         }
 
         for (let i = 1; i <= 10; i += 1) {
             if (this.PressedKeys[i.toString()]) {
-                if (i > Math.floor(this.Size - 1)) {
+                if (i > Math.floor(this.Size)) {
                     break;
                 }
                 RotationDepth = i;
@@ -142,7 +145,7 @@ class App {
         if (RotationFace && this.Counter <= 0) {
             this.Cube.rotateFace(RotationFace, RotationDepth - 1, RotationType);
 
-            // this.Counter = 30;
+            this.Counter = 30;
         }
 
         if (this.Cube.AnimationQueue.getCurrentAnimation() !== undefined) {
@@ -151,24 +154,31 @@ class App {
 
         this.Counter -= 1;
 
+        this.stats.update()
         this.Controls.update();
         this.Renderer.render(this.Scene, this.Camera);
+
     }
 
     private addRandomAnimations(count = 100, _duration = 0.05): void {
+
         const sides: Side[] = ["NORTH", "SOUTH", "EAST", "WEST", "UP", "DOWN"];
         const directions: Direction[] = ["CLOCKWISE", "COUNTERCLOCKWISE"];
         const maxDepth = Math.max(1, Math.floor(this.Size));
 
         for (let i = 0; i < count; i += 1) {
+
             const side = sides[Math.floor(Math.random() * sides.length)];
             const direction =
                 directions[Math.floor(Math.random() * directions.length)];
             const depth = 1 + Math.floor(Math.random() * maxDepth);
 
             this.Cube.rotateFace(side, depth - 1, direction);
+
         }
+
     }
+
 }
 
 new App();

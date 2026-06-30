@@ -8,3 +8,5 @@
 /package-lock.json
 /pyproject.toml
 /.idea/
+/src/backend/venv/
+/src/backend/.idea/
