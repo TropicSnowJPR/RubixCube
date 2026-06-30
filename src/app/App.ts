@@ -109,9 +109,9 @@ class App {
         if (this.PressedKeys["r"] && this.RandomLock === false) {
             this.addRandomAnimations(
                 Math.floor(Math.random() * 100) + 100,
-                0.05,
+                1,
             );
-            this.RandomLock = true;
+            //this.RandomLock = true;
         }
 
         if (this.PressedKeys["x"]) {
@@ -173,7 +173,7 @@ class App {
                 directions[Math.floor(Math.random() * directions.length)];
             const depth = 1 + Math.floor(Math.random() * maxDepth);
 
-            this.Cube.rotateFace(side, depth - 1, direction);
+            this.Cube.rotateFace(side, depth - 1, direction, 0.1);
 
         }
 

@@ -1,4 +1,4 @@
-import type { Animation } from "./Animation";
+import type {Animation} from "./Animation";
 
 export class AnimationQueue {
     Queue: Animation[];
@@ -8,17 +8,13 @@ export class AnimationQueue {
     }
 
     getCurrentAnimation(): Animation {
-        while (true) {
-            if (this.Queue.length === 0) {
-                return;
-            }
+        if (this.Queue.length === 0) {
+            return;
+        }
 
-            if (this.Queue[0].isFinished) {
-                this.Queue.shift();
-                continue;
-            }
-
-            break;
+        if (this.Queue[0].isFinished) {
+            this.Queue.shift()
+            return
         }
 
         return this.Queue[0];

@@ -1,6 +1,8 @@
-import type { Vector3 } from "three";
-import { Quaternion, Timer } from "three";
-import type { Piece } from "./Piece";
+import type {Vector3} from "three";
+import {Quaternion, Timer} from "three";
+import type {Piece} from "./Piece";
+import {Cube} from "./Cube";
+import {radToDeg} from "three/src/math/MathUtils";
 
 export class Animation {
 
@@ -13,22 +15,20 @@ export class Animation {
     private readonly angle: number;
     private readonly Pivot: Vector3;
     private currentAngle = 0
+    private depth: number;
+    private face: "NORTH" | "SOUTH" | "EAST" | "WEST" | "UP" | "DOWN";
+    private cubesize: number;
 
-    constructor(
+    constructor(cubesize: number, depth: number, face: "NORTH" | "SOUTH" | "EAST" | "WEST" | "UP" | "DOWN", startState: Piece[], axisVec: Vector3, angle: number, pivot: Vector3, duration: number,) {
 
-        startState: Piece[],
-        axisVec: Vector3,
-        angle: number,
-        pivot: Vector3,
-        duration: number,
-
-    ) {
-
+        this.depth = depth;
+        this.face = face
         this.startState = startState;
         this.axisVec = axisVec;
         this.angle = angle;
         this.Pivot = pivot;
         this.duration = duration;
+        this.cubesize = cubesize;
 
     }
 
@@ -42,7 +42,7 @@ export class Animation {
 
         }
 
-        if ( Math.round(this.currentAngle * 10_000_000) / 10_000_000 === Math.round(this.angle * 10_000_000) / 10_000_000 ) {
+        if ( radToDeg(this.currentAngle) === radToDeg(this.angle) || radToDeg(this.currentAngle) > radToDeg(this.angle)) {
 
             this.isFinished = true;
 
@@ -60,23 +60,33 @@ export class Animation {
 
         }
 
-        for (const piece of this.startState) {
+        let trueAngle
+
+        if (this.duration > 0.1) {
+            trueAngle = this.angle / (this.duration * 60)
+        } else {
+            trueAngle = Math.PI / 2
+        }
+
+
+
+        for (const piece of Cube.getLayer(this.face, this.depth, this.cubesize, this.startState)) {
 
             const mesh = piece.getThreeJSElement();
 
             mesh.position.sub(this.Pivot);
 
-            mesh.position.applyAxisAngle( this.axisVec, this.angle / (5 * 60) );
+            mesh.position.applyAxisAngle( this.axisVec, trueAngle );
 
             mesh.position.add(this.Pivot);
 
             mesh.quaternion.premultiply(
-                new Quaternion().setFromAxisAngle( this.axisVec, this.angle / (5 * 60) )
+                new Quaternion().setFromAxisAngle( this.axisVec, trueAngle )
             );
 
         }
 
-        this.currentAngle += this.angle / (5 * 60);
+        this.currentAngle += trueAngle;
 
     }
 

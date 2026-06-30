@@ -114,9 +114,10 @@ export class Cube {
 
     }
 
-    private getLayer(
+    static getLayer(
         face: "NORTH" | "EAST" | "WEST" | "SOUTH" | "UP" | "DOWN",
         depth: number,
+        cubeSize: number,
         pieceList: Piece[]
     ): Piece[] {
 
@@ -125,10 +126,10 @@ export class Cube {
         for (const piece of pieceList) {
             if (
                 ( face === "NORTH" && Math.round( piece.getPosition().z ) === depth) ||
-                ( face === "EAST"  && Math.round( piece.getPosition().x ) === this.Size - 1 - depth) ||
+                ( face === "EAST"  && Math.round( piece.getPosition().x ) === cubeSize - 1 - depth) ||
                 ( face === "WEST"  && Math.round( piece.getPosition().x ) === depth) ||
-                ( face === "SOUTH" && Math.round( piece.getPosition().z ) === this.Size - 1 - depth) ||
-                ( face === "UP"    && Math.round( piece.getPosition().y ) === this.Size - 1 - depth) ||
+                ( face === "SOUTH" && Math.round( piece.getPosition().z ) === cubeSize - 1 - depth) ||
+                ( face === "UP"    && Math.round( piece.getPosition().y ) === cubeSize - 1 - depth) ||
                 ( face === "DOWN"  && Math.round( piece.getPosition().y ) === depth)
             ) {
                 layerPieces.push(piece);
@@ -144,9 +145,8 @@ export class Cube {
         face: keyof typeof this.FACE_ROTATION_MAP,
         depth: number,
         direction: "CLOCKWISE" | "COUNTERCLOCKWISE",
+        duration = 0.2
     ): void {
-
-        const layer = this.getLayer(face, depth, this.Pieces);
 
         const { axis, dir: initialDir } = this.FACE_ROTATION_MAP[face];
         let dir = initialDir;
@@ -160,7 +160,7 @@ export class Cube {
         const axisVec = this.AXIS[axis];
         const angle = dir * Math.PI / 2;
 
-        const FaceAnimation = new Animation(layer, axisVec, angle, new Vector3((this.Size-1)/2, (this.Size-1)/2, (this.Size-1)/2), 1)
+        const FaceAnimation = new Animation(this.Size, depth, face, this.Pieces, axisVec, angle, new Vector3((this.Size-1)/2, (this.Size-1)/2, (this.Size-1)/2), duration)
 
         this.AnimationQueue.addAnimation(FaceAnimation)
 
