@@ -10,3 +10,4 @@
 /.idea/
 /src/backend/venv/
 /src/backend/.idea/
+/qodana.yaml
