@@ -108,8 +108,7 @@ class App {
 
         if (this.PressedKeys["r"] && this.RandomLock === false) {
             this.addRandomAnimations(
-                Math.floor(Math.random() * 100) + 100,
-                1,
+                Math.floor(Math.random() * 100) + 100, 0.01,
             );
             //this.RandomLock = true;
         }
@@ -143,9 +142,9 @@ class App {
         }
 
         if (RotationFace && this.Counter <= 0) {
-            this.Cube.rotateFace(RotationFace, RotationDepth - 1, RotationType);
+            this.Cube.rotateFace(RotationFace, RotationDepth - 1, RotationType, 0.1);
 
-            this.Counter = 30;
+            this.Counter = 15;
         }
 
         if (this.Cube.AnimationQueue.getCurrentAnimation() !== undefined) {
@@ -160,7 +159,7 @@ class App {
 
     }
 
-    private addRandomAnimations(count = 100, _duration = 0.05): void {
+    private addRandomAnimations(count = 100, duration = 0.05): void {
 
         const sides: Side[] = ["NORTH", "SOUTH", "EAST", "WEST", "UP", "DOWN"];
         const directions: Direction[] = ["CLOCKWISE", "COUNTERCLOCKWISE"];
@@ -173,7 +172,7 @@ class App {
                 directions[Math.floor(Math.random() * directions.length)];
             const depth = 1 + Math.floor(Math.random() * maxDepth);
 
-            this.Cube.rotateFace(side, depth - 1, direction, 0.1);
+            this.Cube.rotateFace(side, depth - 1, direction, duration);
 
         }
 

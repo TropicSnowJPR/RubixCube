@@ -164,22 +164,6 @@ export class Cube {
 
         this.AnimationQueue.addAnimation(FaceAnimation)
 
-        // for (const piece of layer) {
-        //
-        //     const mesh = piece.getThreeJSElement();
-        //
-        //     mesh.position.sub(new Vector3((this.Size-1)/2, (this.Size-1)/2, (this.Size-1)/2));
-        //
-        //     mesh.position.applyAxisAngle(axisVec, angle);
-        //
-        //     mesh.position.add(new Vector3((this.Size-1)/2, (this.Size-1)/2, (this.Size-1)/2));
-        //
-        //     mesh.quaternion.premultiply(
-        //         new Quaternion().setFromAxisAngle(axisVec, angle)
-        //     );
-        //
-        // }
-
     }
 
 }

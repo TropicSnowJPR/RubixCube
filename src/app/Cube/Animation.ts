@@ -1,5 +1,5 @@
 import type {Vector3} from "three";
-import {Quaternion, Timer} from "three";
+import {Quaternion} from "three";
 import type {Piece} from "./Piece";
 import {Cube} from "./Cube";
 import {radToDeg} from "three/src/math/MathUtils";
@@ -8,9 +8,7 @@ export class Animation {
 
     private readonly startState: Piece[];
     private duration: number;
-    private firstRun = true
     isFinished = false;
-    private timer: Timer
     private readonly axisVec: Vector3;
     private readonly angle: number;
     private readonly Pivot: Vector3;
@@ -34,15 +32,7 @@ export class Animation {
 
     update(): void {
 
-        if (this.firstRun) {
-
-            this.timer = new Timer();
-            this.timer.connect( document );
-            this.firstRun = false;
-
-        }
-
-        if ( radToDeg(this.currentAngle) === radToDeg(this.angle) || radToDeg(this.currentAngle) > radToDeg(this.angle)) {
+        if ( ( radToDeg(this.currentAngle) > radToDeg(this.angle) - 0.001 && radToDeg(this.currentAngle) < radToDeg(this.angle) + 0.001 ) || radToDeg(Math.abs(this.currentAngle)) > radToDeg(Math.abs(this.angle))) {
 
             this.isFinished = true;
 
@@ -60,15 +50,12 @@ export class Animation {
 
         }
 
-        let trueAngle
-
-        if (this.duration > 0.1) {
-            trueAngle = this.angle / (this.duration * 60)
-        } else {
-            trueAngle = Math.PI / 2
+        let trueAngle = this.angle / (this.duration * 60)
+        if ( Math.abs(this.currentAngle) === 0 && Math.abs(trueAngle) > Math.abs(this.angle) ) {
+            trueAngle = this.angle
+        } else if ( Math.abs(this.currentAngle) > 0 && Math.abs(trueAngle) > Math.abs(this.angle) ) {
+            trueAngle = this.angle - this.currentAngle;
         }
-
-
 
         for (const piece of Cube.getLayer(this.face, this.depth, this.cubesize, this.startState)) {
 
