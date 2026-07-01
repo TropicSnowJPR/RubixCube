@@ -10,8 +10,7 @@
   "scripts": {
     "vite": "vite",
     "build": "vite build",
-    "preview": "vite preview",
-    "build:atlas": "tsx scripts/buildAtlas.ts"
+    "preview": "vite preview"
   },
   "dependencies": {
     "core-js": "^3.49.0",
