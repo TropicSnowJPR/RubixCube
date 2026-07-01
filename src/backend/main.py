@@ -23,18 +23,18 @@ class Server:
 
         self.app.add_middleware(
             CORSMiddleware,
-            allow_origins=["http://localhost:5173", "http://127.0.0.1:5173"],
+            allow_origins=["http://127.0.0.1:3000", "http://localhost:3000"],
             allow_credentials=True,
             allow_methods=["*"],
-            allow_headers=["*"]
+            allow_headers=["*"],
         )
-                
+
         self.app.mount("/", StaticFiles(directory="dist", html=True), name="frontend")
         self.templates = Jinja2Templates(directory="templates")
 
     def _generate_token_for_user(self, user_id: int) -> str:
         token = secrets.token_urlsafe(32)
-        self.db_manager.queryDB(
+        self.db_manager.query_db(
             "INSERT INTO Tokens (user_id, token, created_at) VALUES (?, ?, CURRENT_TIMESTAMP)",
             (user_id, token),
         )
@@ -47,19 +47,13 @@ class Server:
         async def root():
             return FileResponse(os.path.join("dist", "index.html"))
 
-        @self.app.get("/active")
-        async def active():
-            return {
-                "success": "true"
-            }
-
 
         @self.app.post("/user/create")
         async def create_user(
             username: Annotated[str, Form()],
             password: Annotated[str, Form()]
         ):
-            user = self.db_manager.queryDB(
+            user = self.db_manager.query_db(
                 "SELECT id FROM Users WHERE username = ?",
                 (username,)
             )
@@ -98,7 +92,7 @@ class Server:
 
             password_hash = bcrypt.hashpw(password.encode('utf-8'), salt)
 
-            self.db_manager.queryDB(
+            self.db_manager.query_db(
                 "INSERT INTO Users (username, password_hash, password_salt, created_at) VALUES (?, ?, ?, CURRENT_TIMESTAMP)",
                 (username, password_hash, salt)
             )
@@ -117,7 +111,7 @@ class Server:
             response: Response
         ):
 
-            result = self.db_manager.queryDB(
+            result = self.db_manager.query_db(
                 "SELECT id, password_hash FROM Users WHERE username = ?",
                 (username,)
             )
@@ -132,7 +126,7 @@ class Server:
                 user_id, stored_password_hash = result[0]
 
                 if bcrypt.checkpw(password.encode('utf-8'), stored_password_hash):
-                    token_result = self.db_manager.queryDB("SELECT token FROM Tokens WHERE user_id = ?", (user_id,))
+                    token_result = self.db_manager.query_db("SELECT token FROM Tokens WHERE user_id = ?", (user_id,))
                     if token_result:
                         token = token_result[0]
                     else:
@@ -180,7 +174,7 @@ class Server:
                     "message": "Not authenticated"
                 }
 
-            result = self.db_manager.queryDB(
+            result = self.db_manager.query_db(
                 "SELECT user_id FROM Tokens WHERE token = ?",
                 (token,)
             )
@@ -193,7 +187,7 @@ class Server:
 
             user_id = result[0][0]
 
-            username = self.db_manager.queryDB( "SELECT username FROM Users WHERE id = ?", (user_id,))
+            username = self.db_manager.query_db( "SELECT username FROM Users WHERE id = ?", (user_id,))
 
             return {
                 "success": True,
@@ -211,7 +205,7 @@ class Server:
                     "message": "Not authenticated"
                 }
 
-            result = self.db_manager.queryDB(
+            result = self.db_manager.query_db(
                 "SELECT user_id FROM Tokens WHERE token = ?",
                 (token,)
             )
@@ -223,7 +217,7 @@ class Server:
                 }
 
             user_id = result[0][0]
-            user_best_score_result = self.db_manager.queryDB(
+            user_best_score_result = self.db_manager.query_db(
                 """
                 SELECT Scores.moves_count, Scores.solve_time_ms, Games.cube_size
                 FROM Scores
@@ -260,7 +254,7 @@ class Server:
         async def get_best_scores(
             cube_size: Annotated[int, Form()]
         ):
-            scores = self.db_manager.queryDB(
+            scores = self.db_manager.query_db(
                 """
                 SELECT Scores.user_id, Users.username, Scores.moves_count, Scores.solve_time_ms
                 FROM Scores
@@ -297,7 +291,7 @@ class Server:
         #             detail="State string is too long"
         #         )
         #
-        #     result = self.db_manager.queryDB(
+        #     result = self.db_manager.query_db(
         #         """
         #         UPDATE Games SET state = ?, last_updated = CURRENT_TIMESTAMP
         #         WHERE cube_size = ? AND completed = 0
@@ -316,7 +310,7 @@ class SQLite:
         db_path.parent.mkdir(parents=True, exist_ok=True)
         self.db = sqlite3.connect(db_path)
         self.cursor = self.db.cursor()
-        self.initTables()
+        self.init_tables()
 
     def init_tables(self):
         self.cursor.execute("PRAGMA foreign_keys = ON")
@@ -373,6 +367,9 @@ class SQLite:
         self.cursor.execute(query, params)
         self.db.commit()
         return self.cursor.fetchall()
+
+
+
 
 server = Server()
 server.set_routes()

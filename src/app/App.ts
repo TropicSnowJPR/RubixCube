@@ -47,6 +47,9 @@ class App {
     private readonly OutlinePass: OutlinePass;
     private SelectedFace: "UP" | "DOWN" | "NORTH" | "SOUTH" | "EAST" | "WEST";
     private SelectedDepth = 0;
+    private loginOverlay: any;
+    private Disabled: boolean;
+    private StartupDone: boolean;
     
     constructor() {
 
@@ -137,6 +140,8 @@ class App {
         for (const Element of this.Cube.getPieces()) {
             this.Scene.add(Element.getThreeJSElement());
         }
+
+        this.loginOverlay = document.querySelector('#login-overlay') as HTMLElement
 
         this.PressedKeys = {};
 
@@ -243,7 +248,116 @@ class App {
         this.SelectedFace = bestFace;
     }
 
+    private handleStartup(): void {
+        const loginButton = document.querySelector("#login-button");
+        const skipLoginButton = document.querySelector("#skip-login-button");
+
+        loginButton.addEventListener("click", async (_) => {
+            const usernameInput = document.querySelector("#username-input") as HTMLInputElement;
+            const passwordInput = document.querySelector("#password-input") as HTMLInputElement;
+
+            const username = usernameInput.value;
+            const password = passwordInput.value;
+
+            if (username && password) {
+                const params = new URLSearchParams();
+
+                params.append("username", username);
+                params.append("password", password);
+
+                const result = await fetch(
+                    "http://127.0.0.1:8000/user/login",
+                    {
+                        method: "POST",
+                        headers: {
+                            "Content-Type": "application/x-www-form-urlencoded",
+                            "Accept": "application/json"
+                        },
+                        body: params.toString(),
+                        credentials: 'include'
+                    }
+                )
+
+                const data = await result.json();
+
+                if (result.status === 200 && result.ok && data.success) {
+                    this.loginOverlay.style.display = 'none';
+
+                    await this.updateUsername()
+                    this.Disabled = false;
+
+                }
+            }
+        })
+
+        skipLoginButton.addEventListener("click", (_) => {
+            this.loginOverlay.style.display = 'none';
+
+            this.Disabled = false;
+        })
+    }
+
+    async updateUsername(): Promise<void> {
+        const params = new URLSearchParams();
+
+        const response = await fetch('http://127.0.0.1:8000/me', {
+            method: 'POST', // Use the correct content‑type for Form()
+            headers: {
+                'Content-Type': 'application/x-www-form-urlencoded', 'Accept': 'application/json'
+            }, body: params.toString(), credentials: "include"
+        });
+
+        if (!response.ok) {
+            throw new Error('Failed to fetch scoreboard');
+        }
+
+        const data = await response.json();
+
+        const username = document.querySelector("#profile-name");
+
+        if (!data.username) {
+            return
+        }
+
+        this.loginOverlay.style.display = 'none';
+
+        username.textContent = data.username;
+
+        const result = await fetch('http://127.0.0.1:8000/score/best/me', {
+            method: 'POST', headers: {
+                'Content-Type': 'application/x-www-form-urlencoded', 'Accept': 'application/json'
+            }, body: params.toString(), credentials: 'include'
+        })
+
+        const json = await result.json();
+
+        if (json.success) {
+            document.querySelector('#profile-best-time').innerHTML = App.formatMs(json.best_time);
+        }
+
+        this.Disabled = false;
+
+    }
+
+    private static formatMs(ms: number): string {
+        const totalSeconds = Math.floor(ms / 1000);
+        const minutes = Math.floor(totalSeconds / 60);
+        const seconds = totalSeconds % 60;
+
+        const mm = String(minutes).padStart(2, "0");
+        const ss = String(seconds).padStart(2, "0");
+
+        return `${mm}:${ss}`;
+    }
+
+
+
     private animate(): void {
+
+        if (!this.StartupDone) {
+            this.handleStartup();
+            this.StartupDone = true
+        }
 
         let RotationType: Direction = "CLOCKWISE";
         let RotationFace: Side | undefined = undefined;
