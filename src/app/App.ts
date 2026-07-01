@@ -21,6 +21,10 @@ class App {
     private RandomLock = false;
     private readonly Center: Vector3;
     private stats: Stats;
+
+    private fps = 0;
+    private lastTime = performance.now();
+    private frames = 0;
     
     constructor() {
 
@@ -147,8 +151,16 @@ class App {
             this.Counter = 15;
         }
 
+        const now = performance.now();  const dt = now - this.lastTime;
+        this.frames += 1;
+        if (dt >= 250) {
+            this.fps = (this.frames * 1000) / dt;
+            this.frames = 0;
+            this.lastTime = now;
+        }
+
         if (this.Cube.AnimationQueue.getCurrentAnimation() !== undefined) {
-            this.Cube.AnimationQueue.getCurrentAnimation().update();
+            this.Cube.AnimationQueue.getCurrentAnimation().update(this.fps);
         }
 
         this.Counter -= 1;

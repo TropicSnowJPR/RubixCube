@@ -30,7 +30,7 @@ export class Animation {
 
     }
 
-    update(): void {
+    update(fps = 60): void {
 
         if ( ( radToDeg(this.currentAngle) > radToDeg(this.angle) - 0.001 && radToDeg(this.currentAngle) < radToDeg(this.angle) + 0.001 ) || radToDeg(Math.abs(this.currentAngle)) > radToDeg(Math.abs(this.angle))) {
 
@@ -50,10 +50,12 @@ export class Animation {
 
         }
 
-        let trueAngle = this.angle / (this.duration * 60)
+
+
+        let trueAngle = this.angle / (this.duration * fps) // <-- Make this live frame based
         if ( Math.abs(this.currentAngle) === 0 && Math.abs(trueAngle) > Math.abs(this.angle) ) {
             trueAngle = this.angle
-        } else if ( Math.abs(this.currentAngle) > 0 && Math.abs(trueAngle) > Math.abs(this.angle) ) {
+        } else if ( Math.abs(this.currentAngle) > 0 && Math.abs(trueAngle) + Math.abs(this.currentAngle) > Math.abs(this.angle) ) {
             trueAngle = this.angle - this.currentAngle;
         }
 
