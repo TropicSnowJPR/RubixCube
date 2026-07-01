@@ -1,11 +1,27 @@
 import {Cube} from "./Cube/Cube";
 import {
-    AmbientLight, DirectionalLight, HemisphereLight, PerspectiveCamera, Scene, SRGBColorSpace, Vector3, WebGLRenderer
+    AmbientLight,
+    DirectionalLight,
+    HemisphereLight,
+    Matrix3,
+    PerspectiveCamera,
+    Raycaster,
+    Scene,
+    SRGBColorSpace,
+    Vector2,
+    Vector3,
+    WebGLRenderer
 } from "three";
 import {OrbitControls} from "three/examples/jsm/controls/OrbitControls";
 import type {Direction} from "./Cube/HelperClasses/Direction";
 import type {Side} from "./Cube/HelperClasses/Side";
 import Stats from 'three/examples/jsm/libs/stats.module'
+import {OutputPass} from "three/examples/jsm/postprocessing/OutputPass";
+import {ShaderPass} from "three/examples/jsm/postprocessing/ShaderPass";
+import {FXAAShader} from "three/examples/jsm/shaders/FXAAShader";
+import {OutlinePass} from "three/examples/jsm/postprocessing/OutlinePass";
+import {RenderPass} from "three/examples/jsm/postprocessing/RenderPass";
+import {EffectComposer} from "three/examples/jsm/postprocessing/EffectComposer";
 
 class App {
     private readonly Scene: Scene;
@@ -25,6 +41,13 @@ class App {
     private fps = 0;
     private lastTime = performance.now();
     private frames = 0;
+    private Composer: EffectComposer;
+    private Raycaster: Raycaster;
+    private Mouse: Vector2;
+    private OutlinePass: OutlinePass;
+    private SelectedFace: "UP" | "DOWN" | "NORTH" | "SOUTH" | "EAST" | "WEST";
+    private lastKnownScrollPosition: number;
+    private SelectedDepth = 0;
     
     constructor() {
 
@@ -40,7 +63,7 @@ class App {
         this.Renderer.outputColorSpace = SRGBColorSpace;
 
         document.querySelector("#scene-container").append(this.Renderer.domElement);
-
+        
         this.stats = new Stats()
         document.body.append(this.stats.dom)
         this.stats.showPanel(1)
@@ -53,6 +76,25 @@ class App {
             0.1,
             10_000,
         );
+
+        this.Composer = new EffectComposer(this.Renderer);
+
+        this.Composer.addPass(new RenderPass(this.Scene, this.Camera));
+
+        this.OutlinePass = new OutlinePass(new Vector2(window.innerWidth, window.innerHeight), this.Scene, this.Camera)
+        this.OutlinePass.visibleEdgeColor.set('#ffffff');
+        this.OutlinePass.hiddenEdgeColor.set('#ffffff');
+        this.OutlinePass.edgeStrength = 3;
+        this.OutlinePass.edgeThickness = 1;
+        this.OutlinePass.edgeGlow = 0;
+        this.OutlinePass.pulsePeriod = 0;
+
+        this.Composer.addPass(this.OutlinePass);
+        this.Composer.addPass(new OutputPass());
+        this.Composer.addPass(new ShaderPass(FXAAShader));
+
+        this.Raycaster = new Raycaster();
+        this.Mouse = new Vector2();
 
         this.Controls = new OrbitControls(
             this.Camera,
@@ -102,6 +144,99 @@ class App {
             this.PressedKeys[event.key.toLowerCase()] = false;
         });
 
+        this.Renderer.domElement.addEventListener("pointermove", (event) => {
+            this.Mouse.x = (event.clientX / window.innerWidth) * 2 - 1;
+            this.Mouse.y = -(event.clientY / window.innerHeight) * 2 + 1;
+        });
+
+        this.Renderer.domElement.addEventListener("click", (_) => {
+            if (this.SelectedFace !== undefined && this.SelectedDepth !== undefined) {
+                this.Cube.rotateFace(this.SelectedFace, this.SelectedDepth, "CLOCKWISE", 0.2);
+            }
+        })
+
+        this.Renderer.domElement.addEventListener("contextmenu", (event) => {
+            event.preventDefault()
+            if (this.SelectedFace !== undefined && this.SelectedDepth !== undefined) {
+                this.Cube.rotateFace(this.SelectedFace, this.SelectedDepth, "COUNTERCLOCKWISE", 0.2);
+
+            }
+        })
+
+        this.Renderer.domElement.addEventListener("wheel", (event) => {
+            const direction = Math.sign(event.deltaY);
+
+            if (direction < 0) {
+                if (this.SelectedDepth < this.Size - 1) {
+                    this.SelectedDepth += 1;
+                }
+            } else if (direction > 0) {
+                if (this.SelectedDepth > 0) {
+                    this.SelectedDepth -= 1;
+                }
+            }
+        });
+
+
+    }
+
+    private getFace(): void {
+        this.Raycaster.setFromCamera(this.Mouse, this.Camera);
+
+        const intersects = this.Raycaster.intersectObject(this.Scene, true);
+
+        if (intersects.length === 0) {
+            this.OutlinePass.selectedObjects = [];
+            return;
+        }
+
+        const hit = intersects[0];
+
+        const normal = hit.face!.normal.clone();
+
+        hit.object.updateMatrixWorld(true);
+
+        const worldNormal = normal.applyNormalMatrix(
+            new Matrix3().getNormalMatrix(hit.object.matrixWorld)
+        ).normalize();
+
+        const worldPos = new Vector3();
+        hit.object.getWorldPosition(worldPos);
+
+        const localNormal = worldNormal.clone();
+
+        const cubeUp = new Vector3(0, 1, 0);
+        const cubeDown = new Vector3(0, -1, 0);
+        const cubeNorth = new Vector3(0, 0, -1);
+        const cubeSouth = new Vector3(0, 0, 1);
+        const cubeEast = new Vector3(1, 0, 0);
+        const cubeWest = new Vector3(-1, 0, 0);
+
+        const FACE_VECTORS = {
+            UP: cubeUp,
+            DOWN: cubeDown,
+            NORTH: cubeNorth,
+            SOUTH: cubeSouth,
+            EAST: cubeEast,
+            WEST: cubeWest,
+        } as const;
+
+        let bestFace: keyof typeof FACE_VECTORS | null = null;
+        let bestScore = -Infinity;
+
+        for (const [name, dir] of Object.entries(FACE_VECTORS) as [keyof typeof FACE_VECTORS, Vector3][]) {
+
+            const score = localNormal.dot(dir);
+
+            if (score > bestScore) {
+                bestScore = score;
+                bestFace = name;
+            }
+        }
+
+        if (!bestFace) return;
+
+        this.SelectedFace = bestFace;
     }
 
     private animate(): void {
@@ -165,9 +300,23 @@ class App {
 
         this.Counter -= 1;
 
+        this.SelectedFace = undefined
+
+        this.getFace();
+
+        const pieceList = Cube.getLayer(this.SelectedFace, this.SelectedDepth , this.Size, this.Cube.getPieces())
+
+        const objList = []
+
+        for ( const obj of pieceList ) {
+            objList.push(obj.getThreeJSElement())
+        }
+
+        this.OutlinePass.selectedObjects = objList
+
         this.stats.update();
         this.Controls.update();
-        this.Renderer.render(this.Scene, this.Camera);
+        this.Composer.render();
 
     }
 
