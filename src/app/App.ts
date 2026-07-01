@@ -27,10 +27,10 @@ class App {
     private readonly Scene: Scene;
     private readonly Camera: PerspectiveCamera;
     private Controls: OrbitControls;
-    private Renderer: WebGLRenderer;
+    private readonly Renderer: WebGLRenderer;
     private Cube: Cube;
 
-    private Size = 3;
+    private readonly Size: number
 
     private readonly PressedKeys: Record<string, boolean>;
     private Counter = 0;
@@ -43,16 +43,17 @@ class App {
     private frames = 0;
     private Composer: EffectComposer;
     private Raycaster: Raycaster;
-    private Mouse: Vector2;
-    private OutlinePass: OutlinePass;
+    private readonly Mouse: Vector2;
+    private readonly OutlinePass: OutlinePass;
     private SelectedFace: "UP" | "DOWN" | "NORTH" | "SOUTH" | "EAST" | "WEST";
     private SelectedDepth = 0;
     
     constructor() {
 
-        if (Number.parseInt(localStorage.getItem("size"), 10)) {
-            this.Size = Number.parseInt(localStorage.getItem("size"), 10)
-        }
+        const raw = localStorage.getItem("size");
+        const parsed = raw === null ? Number.NaN : Number.parseInt(raw, 10);
+
+        this.Size = Number.isFinite(parsed) ? parsed : 3;
 
         this.Renderer = new WebGLRenderer({
             antialias: true,
@@ -195,7 +196,7 @@ class App {
 
         const hit = intersects[0];
 
-        const normal = hit.face!.normal.clone();
+        const normal = hit.face?.normal.clone();
 
         hit.object.updateMatrixWorld(true);
 
@@ -224,7 +225,7 @@ class App {
             WEST: cubeWest,
         } as const;
 
-        let bestFace: keyof typeof FACE_VECTORS | null = null;
+        let bestFace: keyof typeof FACE_VECTORS | undefined = undefined
         let bestScore = -Infinity;
 
         for (const [name, dir] of Object.entries(FACE_VECTORS) as [keyof typeof FACE_VECTORS, Vector3][]) {
