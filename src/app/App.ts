@@ -46,10 +46,13 @@ class App {
     private Mouse: Vector2;
     private OutlinePass: OutlinePass;
     private SelectedFace: "UP" | "DOWN" | "NORTH" | "SOUTH" | "EAST" | "WEST";
-    private lastKnownScrollPosition: number;
     private SelectedDepth = 0;
     
     constructor() {
+
+        if (Number.parseInt(localStorage.getItem("size"), 10)) {
+            this.Size = Number.parseInt(localStorage.getItem("size"), 10)
+        }
 
         this.Renderer = new WebGLRenderer({
             antialias: true,
@@ -234,7 +237,7 @@ class App {
             }
         }
 
-        if (!bestFace) return;
+        if (!bestFace) { return; }
 
         this.SelectedFace = bestFace;
     }
@@ -250,6 +253,15 @@ class App {
                 Math.floor(Math.random() * 100) + 100, 0.01,
             );
             this.RandomLock = true;
+        }
+
+        if (this.PressedKeys["l"]) {
+            for (let i = 1; i <= 10; i += 1) {
+                if (this.PressedKeys[i.toString()]) {
+                    localStorage.setItem("size", String(i))
+                    location.reload();
+                }
+            }
         }
 
         if (this.PressedKeys["x"]) {

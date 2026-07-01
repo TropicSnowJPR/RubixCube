@@ -49,7 +49,6 @@ export class Cube {
 
         for (const texture of Textures) {
             texture.colorSpace = SRGBColorSpace;
-            texture.needsUpdate = true;
         }
 
         const Geometry = new BoxGeometry(1, 1, 1);
