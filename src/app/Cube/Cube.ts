@@ -39,33 +39,34 @@ export class Cube {
         const TL = new TextureLoader();
 
         const Textures: Texture[] = [
-                TL.load("../textures/orange.png"),
-                TL.load("../textures/red.png"),
-                TL.load("../textures/yellow.png"),
-                TL.load("../textures/white.png"),
-                TL.load("../textures/green.png"),
-                TL.load("../textures/blue.png"),
-            ];
-
-        const Materials: MeshStandardMaterial[] = Textures.map(
-            (texture) =>
-                new MeshStandardMaterial({
-                    map: texture,
-                }),
-        );
-
-        const Geometry: BoxGeometry = new BoxGeometry(1, 1, 1);
-
-        const ThreeJSPieceElement: Mesh = new Mesh(
-            Geometry,
-            Materials,
-        );
-
+            TL.load("../textures/orange.png"),
+            TL.load("../textures/red.png"),
+            TL.load("../textures/yellow.png"),
+            TL.load("../textures/white.png"),
+            TL.load("../textures/green.png"),
+            TL.load("../textures/blue.png"),
+        ];
 
         for (const texture of Textures) {
             texture.colorSpace = SRGBColorSpace;
             texture.needsUpdate = true;
         }
+
+        const Geometry = new BoxGeometry(1, 1, 1);
+
+        const blackMaterial = new MeshStandardMaterial({color: 0x00_00_00});
+
+        const createMaterials = (x: number, y: number, z: number): MeshStandardMaterial[] => {
+            const s = this.Size;
+
+            return [x === s - 1 ? new MeshStandardMaterial({map: Textures[0]}) : blackMaterial, // +X
+                x === 0 ? new MeshStandardMaterial({map: Textures[1]}) : blackMaterial, // -X
+                y === s - 1 ? new MeshStandardMaterial({map: Textures[2]}) : blackMaterial, // +Y
+                y === 0 ? new MeshStandardMaterial({map: Textures[3]}) : blackMaterial, // -Y
+                z === s - 1 ? new MeshStandardMaterial({map: Textures[4]}) : blackMaterial, // +Z
+                z === 0 ? new MeshStandardMaterial({map: Textures[5]}) : blackMaterial, // -Z
+            ];
+        };
 
         if (InitialState) {
 
@@ -87,14 +88,12 @@ export class Cube {
 
                     for (let z = 0; z < this.Size; z += 1) {
 
-                        const ClonedThreeJSPieceElement =
-                            ThreeJSPieceElement.clone(true);
-                        ClonedThreeJSPieceElement.position.set(x, y, z);
+                        const materials = createMaterials(x, y, z);
 
-                        const newPiece = new Piece(
-                            x * this.Size * this.Size + y * this.Size + z,
-                            ClonedThreeJSPieceElement,
-                        );
+                        const mesh = new Mesh(Geometry, materials);
+                        mesh.position.set(x, y, z);
+
+                        const newPiece = new Piece(x * this.Size * this.Size + y * this.Size + z, mesh,);
 
                         this.Pieces.push(newPiece);
 

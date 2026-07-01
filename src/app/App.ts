@@ -110,7 +110,7 @@ class App {
             this.addRandomAnimations(
                 Math.floor(Math.random() * 100) + 100, 0.01,
             );
-            //this.RandomLock = true;
+            this.RandomLock = true;
         }
 
         if (this.PressedKeys["x"]) {
@@ -142,7 +142,7 @@ class App {
         }
 
         if (RotationFace && this.Counter <= 0) {
-            this.Cube.rotateFace(RotationFace, RotationDepth - 1, RotationType, 0.1);
+            this.Cube.rotateFace(RotationFace, RotationDepth - 1, RotationType, 0.2);
 
             this.Counter = 15;
         }
